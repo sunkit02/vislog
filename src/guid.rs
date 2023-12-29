@@ -6,7 +6,7 @@ pub struct GUID {
     inner: [u8; 16],
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, PartialEq, Eq)]
 pub enum GUIDParsingError {
     #[error("String provided is too short")]
     TooShort,
@@ -45,7 +45,11 @@ impl TryFrom<&str> for GUID {
                         '-' => continue,
                         _ => {
                             if let Some(n) = hex_to_num(c) {
-                                byte |= n << (byte_index ^ 1);
+                                // Result of `byte_index ^ 1` is either 1 or 0 and determines
+                                // whether the current `n` gets shifted 4 bits to the left.
+                                // `byte_index` should be 1 when `byte_index` == 0 and 0 when
+                                // `byte_index` == 1
+                                byte |= n << 4 * (byte_index ^ 1);
                                 byte_index += 1;
                             } else {
                                 return Err(GUIDParsingError::InvalidCharacter);
@@ -60,7 +64,7 @@ impl TryFrom<&str> for GUID {
             inner[i] = byte;
         }
 
-        todo!()
+        Ok(Self { inner })
     }
 }
 
@@ -111,13 +115,64 @@ mod test {
     #[test]
     fn hex_to_num_invalid_chars() {
         // All ascii chars that are printable
-        // NOTE: This is by no means a comprehensive test. This is only used to show that
-        // the function `hex_to_num` rejects invalid `char`s
+        // NOTE: This is by no means a comprehensive test. This is only used to show that the
+        // function `hex_to_num` rejects invalid `char`s
         let invalid_char_iter = ('!'..='/')
             .chain(':'..='@')
             .chain('['..='`')
             .chain('{'..='~');
 
         invalid_char_iter.for_each(|c| assert_eq!(hex_to_num(c), None));
+    }
+
+    #[test]
+    fn parse_guid_from_str_with_hyphens() {
+        let s = "C7AD875E-1344-4D9B-A883-32E748890908";
+        let guid = GUID::try_from(s).expect("Failed to parse GUID");
+
+        let expected = GUID {
+            inner: [
+                0xC7, 0xAD, 0x87, 0x5E, 0x13, 0x44, 0x4D, 0x9B, 0xA8, 0x83, 0x32, 0xE7, 0x48, 0x89,
+                0x09, 0x08,
+            ],
+        };
+
+        assert_eq!(guid, expected);
+    }
+
+    #[test]
+    fn parse_guid_from_str_without_hyphens() {
+        let s = "C7AD875E13444D9BA88332E748890908";
+        let guid = GUID::try_from(s).expect("Failed to parse GUID");
+
+        let expected = GUID {
+            inner: [
+                0xC7, 0xAD, 0x87, 0x5E, 0x13, 0x44, 0x4D, 0x9B, 0xA8, 0x83, 0x32, 0xE7, 0x48, 0x89,
+                0x09, 0x08,
+            ],
+        };
+
+        assert_eq!(guid, expected);
+    }
+
+    #[test]
+    fn error_when_parse_guid_from_str_when_too_long() {
+        let s = "C7AD875E-1344-4D9B-A883-32E748890908-123321123";
+
+        assert_eq!(GUID::try_from(s), Err(GUIDParsingError::TooLong));
+    }
+
+    #[test]
+    fn error_when_parse_guid_from_str_when_too_short() {
+        let s = "C7AD875E-1344-4D9B-A883";
+
+        assert_eq!(GUID::try_from(s), Err(GUIDParsingError::TooShort));
+    }
+
+    #[test]
+    fn error_when_parse_guid_from_str_with_invalid_char() {
+        let s = "+7AD875E-1344-4D9B-A883-32E748890908";
+
+        assert_eq!(GUID::try_from(s), Err(GUIDParsingError::InvalidCharacter));
     }
 }

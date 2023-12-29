@@ -1,4 +1,7 @@
-use serde::{Deserialize, Deserializer};
+use serde::{
+    de::{self, Visitor},
+    Deserialize, Deserializer,
+};
 
 use crate::guid::GUID;
 
@@ -16,32 +19,51 @@ pub struct Program {
 
     /// Name of the program
     pub title: String,
-    // /// Course requirements for the Program
-    // pub requirements: Option<Requirements>,
+
+    /// Course requirements for the Program
+    pub requirements: Option<Requirements>,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone)]
 pub enum Requirements {
     Single(RequirementModule),
     Many(Vec<RequirementModule>),
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone)]
 pub enum RequirementModule {
     BasicRequirements {
         title: String,
-        req_narrative: Option<String>,
         requirements: Vec<Requirement>,
     },
-    SelectFromCourses {
-        title: String,
-        /// Number of courses or credits to select from the listed coureses
-        /// TODO: Give a better name
-        select_n: SelectN,
-        req_narrative: Option<String>,
-        courses: Vec<Course>,
-    },
+    // SelectFromCourses {
+    //     title: String,
+    //     /// Number of courses or credits to select from the listed coureses
+    //     /// TODO: Give a better name
+    //     select_n: SelectN,
+    //     req_narrative: Option<String>,
+    //     courses: Vec<Course>,
+    // },
     Unimplemented,
+}
+
+impl RequirementModule {
+    pub fn is_basic(&self) -> bool {
+        match self {
+            RequirementModule::BasicRequirements {
+                title: _,
+                requirements: _,
+            } => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_unimplemented(&self) -> bool {
+        match self {
+            RequirementModule::Unimplemented => true,
+            _ => false,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -49,7 +71,7 @@ pub struct Requirement {
     pub title: String,
 
     #[serde(rename = "course")]
-    pub courses: Vec<Course>,
+    pub courses: Option<Vec<Course>>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -99,83 +121,144 @@ pub enum CourseSelectionUnit {
     Courses,
 }
 
-// impl<'de> Deserialize<'de> for Program {
-//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-//     where
-//         D: Deserializer<'de>,
-//     {
-//         todo!()
-//     }
-// }
-//
-// struct ProgramVisitor;
-//
-// impl<'de> Visitor<'de> for ProgramVisitor {
-//     type Value = Program;
-//
-//     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-//         // TODO: Improve this message
-//         formatter.write_str("a JSON object representing a program at Union University")
-//     }
-//
-//     fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
-//     where
-//         A: serde::de::MapAccess<'de>,
-//     {
-//         let mut url: Option<String> = None;
-//         let mut guid_str: Option<String> = None;
-//         let mut title: Option<String> = None;
-//         let mut requirements: Option<Option<Requirements>> = None;
-//
-//         while let Ok(Some(key)) = map.next_key::<String>() {
-//             match key.as_str() {
-//                 "url" => {
-//                     if url.is_some() {
-//                         return Err(de::Error::duplicate_field("url"));
-//                     }
-//
-//                     url = Some(map.next_value()?);
-//                 }
-//                 "guid" => {
-//                     if guid_str.is_some() {
-//                         return Err(de::Error::duplicate_field("guid"));
-//                     }
-//                     guid_str = Some(map.next_value()?);
-//                 }
-//                 "title" => {
-//                     if title.is_some() {
-//                         return Err(de::Error::duplicate_field("title"));
-//                     }
-//                     title = Some(map.next_value()?);
-//                 }
-//                 "requirements" => {
-//                     if requirements.is_some() {
-//                         return Err(de::Error::duplicate_field("requirements"));
-//                     }
-//                     requirements = Some(map.next_value()?);
-//                 }
-//                 _ => {
-//                     let _ = map.next_value::<de::IgnoredAny>();
-//                 }
-//             }
-//         }
-//
-//         let url = url.ok_or_else(|| de::Error::missing_field("url"))?;
-//         let guid_str = guid_str.ok_or_else(|| de::Error::missing_field("guid"))?;
-//         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
-//         let requirements = requirements.ok_or_else(|| de::Error::missing_field("requirements"))?;
-//
-//         let guid_str = &guid_str[1..guid_str.len() - 1];
-//         let guid = GUID::try_from(guid_str).map_err(|e| serde::de::Error::custom(e.to_string()))?;
-//
-//         Ok(Program {
-//             url,
-//             guid,
-//             title,
-//             requirements,
-//         })
-//     }
-// }
+impl<'de> Deserialize<'de> for Requirements {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(RequirementsVisitor)
+    }
+}
+
+struct RequirementsVisitor;
+
+impl<'de> Visitor<'de> for RequirementsVisitor {
+    type Value = Requirements;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("a JSON object representing a `RequirementModule` or a JSON array of `RequirementModule`s")
+    }
+
+    /// Case for [Requirements::Single] variant
+    fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::MapAccess<'de>,
+    {
+        println!("map visited");
+
+        let mut title: Option<String> = None;
+        let mut req_narrative: Option<Option<String>> = None;
+        let mut requirements: Option<Vec<Requirement>> = None;
+
+        while let Ok(Some(key)) = map.next_key::<String>() {
+            match key.as_str() {
+                "title" => {
+                    if title.is_some() {
+                        return Err(de::Error::duplicate_field("title"));
+                    }
+                    title = Some(map.next_value()?);
+                }
+                "req_narrative" => {
+                    if req_narrative.is_some() {
+                        return Err(de::Error::duplicate_field("req_narrative"));
+                    }
+                    req_narrative = Some(map.next_value()?);
+                }
+                "requirement_list" => {
+                    if requirements.is_some() {
+                        return Err(de::Error::duplicate_field("requirements"));
+                    }
+                    requirements = Some(map.next_value()?);
+                }
+                _ => {
+                    let _ = map.next_value::<de::IgnoredAny>();
+                }
+            }
+        }
+
+        let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
+        let requirements = requirements.ok_or_else(|| de::Error::missing_field("requirements"))?;
+
+        let requirement_module = RequirementModule::BasicRequirements {
+            title,
+            requirements,
+        };
+
+        Ok(Requirements::Single(requirement_module))
+    }
+
+    /// Case for [Requirements::Many] variant
+    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::SeqAccess<'de>,
+    {
+        println!("seq visited");
+
+        let mut modules = Vec::new();
+        while let Ok(Some(module)) = seq.next_element() {
+            println!("Hello");
+            modules.push(module);
+        }
+
+        Ok(Requirements::Many(modules))
+    }
+}
+
+impl<'de> Deserialize<'de> for RequirementModule {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_any(RequirementModuleVisitor)
+    }
+}
+
+struct RequirementModuleVisitor;
+
+impl<'de> Visitor<'de> for RequirementModuleVisitor {
+    type Value = RequirementModule;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        // TODO: Improve this message
+        formatter.write_str("a JSON object representing a program at Union University")
+    }
+
+    fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+    where
+        A: serde::de::MapAccess<'de>,
+    {
+        let mut title: Option<String> = None;
+        let mut requirements: Option<Vec<Requirement>> = None;
+
+        while let Ok(Some(key)) = map.next_key::<String>() {
+            match key.as_str() {
+                "title" => {
+                    if title.is_some() {
+                        return Err(de::Error::duplicate_field("title"));
+                    }
+                    title = Some(map.next_value()?);
+                }
+                "requirement_list" => {
+                    if requirements.is_some() {
+                        return Err(de::Error::duplicate_field("requirement_list"));
+                    }
+                    requirements = Some(map.next_value()?);
+                }
+                _ => {
+                    let _ = map.next_value::<de::IgnoredAny>();
+                }
+            }
+        }
+
+        let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
+        let requirements = requirements.ok_or_else(|| de::Error::missing_field("requirements"))?;
+
+        Ok(RequirementModule::BasicRequirements {
+            title,
+            requirements,
+        })
+    }
+}
 
 fn deserialize_guid_with_curly_braces<'de, D>(de: D) -> Result<GUID, D::Error>
 where
@@ -228,17 +311,78 @@ mod test {
     }
 
     #[test]
-    fn can_parse_cs_major() {
-        let cs_major_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
-
-        let parsed_cs_major = serde_json::from_str::<Program>(cs_major_json.as_str()).unwrap();
+    fn can_parse_program_with_a_single_basic_requirement() {
+        let program_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
+        let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
+            .expect("Failed to parse `Program`");
 
         let expected_url = "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-computer-science/major-in-computer-science-42-hours";
         let expected_guid = GUID::try_from("5B72AC3A-9A84-4CF5-B1BE-B3E0B48163A5").unwrap();
         let expected_title = "Major in Computer Science—42 hours";
 
-        assert_eq!(parsed_cs_major.url, expected_url);
-        assert_eq!(parsed_cs_major.guid, expected_guid);
-        assert_eq!(parsed_cs_major.title, expected_title);
+        let expected_req_mod_title = "Degree Requirements";
+
+        assert_eq!(parsed_program.url, expected_url);
+        assert_eq!(parsed_program.guid, expected_guid);
+        assert_eq!(parsed_program.title, expected_title);
+
+        assert!(parsed_program.requirements.is_some());
+
+        if let Some(Requirements::Single(req_mod)) = parsed_program.requirements {
+            if let RequirementModule::BasicRequirements {
+                title,
+                requirements,
+            } = req_mod
+            {
+                assert_eq!(title, expected_req_mod_title);
+                assert_eq!(requirements[0].title, "Prerequisites:");
+                assert_eq!(
+                    requirements[0]
+                        .courses
+                        .as_ref()
+                        .expect("Should have courses")
+                        .len(),
+                    4
+                );
+
+                assert_eq!(requirements[1].title, "Major Requirements:");
+                assert_eq!(
+                    requirements[1]
+                        .courses
+                        .as_ref()
+                        .expect("Should have courses")
+                        .len(),
+                    16
+                );
+            } else {
+                panic!("Expected requirement_module to be the `BasicRequirements` variant");
+            }
+        } else {
+            panic!("Expected requirements to be the `Single` variant")
+        }
+    }
+
+    #[test]
+    fn can_parse_program_with_many_basic_requirements() {
+        let program_json = std::fs::read_to_string("./data/digital_media_major.json").unwrap();
+        let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
+            .expect("Failed to parse `Program`");
+
+        let expected_url = "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-communication-arts/major-in-digital-media-communications-48-hours";
+        let expected_guid = GUID::try_from("0780CBF3-68C6-4999-95B9-7722170F47DD").unwrap();
+        let expected_title = "Major in Digital Media Communications—48 hours";
+
+        assert_eq!(parsed_program.url, expected_url);
+        assert_eq!(parsed_program.guid, expected_guid);
+        assert_eq!(parsed_program.title, expected_title);
+
+        assert!(parsed_program.requirements.is_some());
+
+        if let Some(Requirements::Many(req_mods)) = parsed_program.requirements {
+            // TODO: Check the sub types for equivalence
+            assert_eq!(req_mods.len(), 2);
+        } else {
+            panic!("Expected requirements to be the `Many` variant")
+        }
     }
 }

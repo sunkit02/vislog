@@ -1,0 +1,722 @@
+{
+  "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/College-of-Arts-and-Sciences/Department-of-Communication-Arts/Major-in-Digital-Media-Communications-48-hours",
+  "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-communication-arts/major-in-digital-media-communications-48-hours",
+  "GUID": "{0780CBF3-68C6-4999-95B9-7722170F47DD}",
+  "title": "Major in Digital Media Communications—48 hours",
+  "content": null,
+  "bottom_content": null,
+  "in_program_list": "True",
+  "credits": "0",
+  "credits_min": null,
+  "credits_max": null,
+  "auto_credits": "False",
+  "requirements": [
+    {
+      "title": "Degree Requirements",
+      "content": null,
+      "credits": "0",
+      "credits_min": null,
+      "credits_max": null,
+      "auto_credits": "False",
+      "requirement_list": [
+        {
+          "title": "Major Requirements: 24 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/100/com-121",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/100/COM-121",
+              "guid": "{99F0573E-B9A4-4DBF-ADB7-F53363A9FBD0}",
+              "name": "Writing Across Media Platforms",
+              "number": "121",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-220",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-220",
+              "guid": "{B7945088-5B1A-4E7C-B20E-14D01447DE59}",
+              "name": "Visual Storytelling",
+              "number": "220",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-236",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-236",
+              "guid": "{BB319359-C4FD-4D2C-B83E-E3353902C941}",
+              "name": "Digital Photography",
+              "number": "236",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-313",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-313",
+              "guid": "{0CDD0C66-0131-4207-9D0E-6507836A8D02}",
+              "name": "Media Theory & Trends",
+              "number": "313",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-327",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-327",
+              "guid": "{0A25A04E-1B68-4023-80F5-E7EC5F6987A6}",
+              "name": "Interactive Media I",
+              "number": "327",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-360",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-360",
+              "guid": "{571D805B-EF1A-4814-973B-5086509C83EE}",
+              "name": "Publication Design",
+              "number": "360",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-426",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-426",
+              "guid": "{EAF0E13E-243B-4A30-86AB-C8D9F6AAB53C}",
+              "name": "Professional Portfolio",
+              "number": "426",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-430",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-430",
+              "guid": "{EF13FD81-A2E2-40B7-99FD-16132FE4A498}",
+              "name": "Communications Law",
+              "number": "430",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        },
+        {
+          "title": "Strategic Electives (select one from each group): 6 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False"
+        },
+        {
+          "title": "Select one course from: 3 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-323",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-323",
+              "guid": "{ADD1682D-70EA-4AF0-982A-2FDFBD38FDFC}",
+              "name": "Principles of Public Relations",
+              "number": "323",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-329",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-329",
+              "guid": "{BBB433F9-CCD8-48C6-8CBA-996937C289F7}",
+              "name": "Principles of Advertising",
+              "number": "329",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/mkt-marketing/200/mkt-228",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/MKT-Marketing/200/MKT-228",
+              "guid": "{A29532E6-9C99-4A06-BCE8-AFF65EBC857F}",
+              "name": "Principles of Marketing",
+              "number": "228",
+              "subject_name": "Marketing",
+              "subject_code": "MKT",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        },
+        {
+          "title": "Select one course from: 3 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-320",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-320",
+              "guid": "{409EF560-C3E5-45E4-864D-9994BCAB0DEE}",
+              "name": "Organizational Communication",
+              "number": "320",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-325",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-325",
+              "guid": "{435DF88A-67EB-44C4-9412-024A2813BC84}",
+              "name": "Communication Training and Development",
+              "number": "325",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-356",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-356",
+              "guid": "{3BB9A8D0-735D-4261-B5A9-0916DF2E1BA6}",
+              "name": "Social Media Theory and Strategies",
+              "number": "356",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Select an emphasis below:",
+      "content": null,
+      "credits": "0",
+      "credits_min": null,
+      "credits_max": null,
+      "auto_credits": "False",
+      "requirement_list": [
+        {
+          "title": "Photojournalism Emphasis: 18 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-315",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-315",
+              "guid": "{303CE70B-3CF0-48FD-92B0-D0AF3A27F54D}",
+              "name": "Documentary Filmmaking",
+              "number": "315",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-326",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-326",
+              "guid": "{D39C826C-DA8A-41D4-BA6D-5BDE2D5EA850}",
+              "name": "Social Documentary",
+              "number": "326",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-336",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-336",
+              "guid": "{ADA8D571-857A-4440-B3BD-C01013DBE03D}",
+              "name": "Editorial Photography",
+              "number": "336",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-346",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-346",
+              "guid": "{F89AEFF7-AFA9-4B2C-BCB7-4EED24E0F23A}",
+              "name": "Photo Editing",
+              "number": "346",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-210",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-210",
+              "guid": "{BDF8C951-3D69-4363-AAD4-FD0E7899BD07}",
+              "name": "Journalism Practicum",
+              "number": "210",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/or",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Or",
+              "guid": "{1002D167-9303-4865-8E0A-CE2B3E2BFF95}",
+              "name": "Or",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-481",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-481",
+              "guid": "{89324131-921F-4CD0-92D0-A4BD3AE2F72D}",
+              "name": "Internship in Documentary Photography",
+              "number": "481",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/select-one-course-from-another-emphasis-storytelling-or-interactive",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Select-one-course-from-another-emphasis-Storytelling-or-Interactive",
+              "guid": "{A397788A-8996-4ED5-A2C0-BDE6B549FC35}",
+              "name": "Select one course from another emphasis (Storytelling or Interactive)",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            }
+          ]
+        },
+        {
+          "title": "Storytelling Emphasis: 18 hours",
+          "req_narrative": "<p class=\"sc-RequirementNarrative\">Select <strong>4</strong> from:</p>",
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-209",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-209",
+              "guid": "{69BADB33-BCE0-44EC-ABF5-3F50F913DE3D}",
+              "name": "History of Animation",
+              "number": "209",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-230",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-230",
+              "guid": "{A26680CD-2FC3-46BC-AB40-7EF83D83E891}",
+              "name": "Television Production",
+              "number": "230",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-238",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-238",
+              "guid": "{4A82501A-E33B-48BA-A487-F01781782223}",
+              "name": "History of Film",
+              "number": "238",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-306",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-306",
+              "guid": "{EDD2AEE7-EE00-4885-A68C-22F1B3DE9AC9}",
+              "name": "Entertainment Industry",
+              "number": "306",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-315",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-315",
+              "guid": "{303CE70B-3CF0-48FD-92B0-D0AF3A27F54D}",
+              "name": "Documentary Filmmaking",
+              "number": "315",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-321",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-321",
+              "guid": "{D37296C0-2DF7-4432-A7A6-204EB431CC12}",
+              "name": "Introduction to Screenwriting",
+              "number": "321",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-339",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-339",
+              "guid": "{E9DD78D3-E861-4728-99FA-355B2709A9E7}",
+              "name": "Cinematography",
+              "number": "339",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-344",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-344",
+              "guid": "{6CABD9A0-EA86-4116-AF5D-88D0D114CAE5}",
+              "name": "Film and Television Editing",
+              "number": "344",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-410",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-410",
+              "guid": "{AC26C427-951A-46E7-BC90-2E91FC4055EC}",
+              "name": "Directing for the Screen",
+              "number": "410",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-399",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-399",
+              "guid": "{BCCEDF6E-49AD-4190-ACD0-DBB287F2B80C}",
+              "name": "Advanced Communications Practicum",
+              "number": "399",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "1.0-3.0",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/or",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Or",
+              "guid": "{1002D167-9303-4865-8E0A-CE2B3E2BFF95}",
+              "name": "Or",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-483",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-483",
+              "guid": "{ECD0008D-99AF-4E54-ACC1-5304B588D531}",
+              "name": "Internship in Digital Media",
+              "number": "483",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/select-one-course-from-another-emphasis-photojournalism-or-interactive",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Select-one-course-from-another-emphasis-Photojournalism-or-Interactive",
+              "guid": "{46C41AED-36A2-4A12-96E9-6AED6715CBA2}",
+              "name": "Select one course from another emphasis (Photojournalism or Interactive)",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            }
+          ]
+        },
+        {
+          "title": "Interactive Emphasis: 18 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-337",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-337",
+              "guid": "{A04EE595-CB91-4194-B718-A380869FDF5F}",
+              "name": "Interactive Design",
+              "number": "337",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-427",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-427",
+              "guid": "{4FA1A640-31AB-460E-95A9-EB4C2FA35910}",
+              "name": "Interactive Media II",
+              "number": "427",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-360",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-360",
+              "guid": "{9D91CD99-8570-403D-A156-29FFE35814F6}",
+              "name": "Web Building and Site Management",
+              "number": "360",
+              "subject_name": "Computer Science",
+              "subject_code": "CSC",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-361",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-361",
+              "guid": "{5F728357-6B04-401D-9DE9-2B812DDF7F14}",
+              "name": "Web Applications",
+              "number": "361",
+              "subject_name": "Computer Science",
+              "subject_code": "CSC",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-399",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-399",
+              "guid": "{BCCEDF6E-49AD-4190-ACD0-DBB287F2B80C}",
+              "name": "Advanced Communications Practicum",
+              "number": "399",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "1.0-3.0",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/or",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Or",
+              "guid": "{1002D167-9303-4865-8E0A-CE2B3E2BFF95}",
+              "name": "Or",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-483",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-483",
+              "guid": "{ECD0008D-99AF-4E54-ACC1-5304B588D531}",
+              "name": "Internship in Digital Media",
+              "number": "483",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/select-one-course-from-another-emphasis-photojournalism-or-storytelling",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Select-one-course-from-another-emphasis-Photojournalism-or-Storytelling",
+              "guid": "{904DDA33-2677-4821-BA26-059FE295E643}",
+              "name": "Select one course from another emphasis (Photojournalism or Storytelling)",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            }
+          ]
+        },
+        {
+          "title": "General Emphasis: 18 hours",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False"
+        },
+        {
+          "title": "Select 15 hours from at least 2 emphases (Photojournalism, Storytelling, Interactive) above",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False"
+        },
+        {
+          "title": "Select one course from:",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/200/com-210",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/200/COM-210",
+              "guid": "{BDF8C951-3D69-4363-AAD4-FD0E7899BD07}",
+              "name": "Journalism Practicum",
+              "number": "210",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/300/com-399",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/300/COM-399",
+              "guid": "{BCCEDF6E-49AD-4190-ACD0-DBB287F2B80C}",
+              "name": "Advanced Communications Practicum",
+              "number": "399",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "1.0-3.0",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-481",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-481",
+              "guid": "{89324131-921F-4CD0-92D0-A4BD3AE2F72D}",
+              "name": "Internship in Documentary Photography",
+              "number": "481",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/com-communication-arts/400/com-483",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/COM-Communication-Arts/400/COM-483",
+              "guid": "{ECD0008D-99AF-4E54-ACC1-5304B588D531}",
+              "name": "Internship in Digital Media",
+              "number": "483",
+              "subject_name": "Communication Arts",
+              "subject_code": "COM",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

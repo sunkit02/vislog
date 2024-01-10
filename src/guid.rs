@@ -36,7 +36,6 @@ impl TryFrom<&str> for GUID {
 
         for i in 0..16 {
             let mut byte = 0u8;
-
             let mut byte_index = 0;
             while byte_index < 2 {
                 if let Some(c) = chars.next() {

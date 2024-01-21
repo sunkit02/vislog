@@ -55,3 +55,5 @@ Vislog is a project to visualize the Union University Catalog
 - Planning by semesters
 - Real time collaboration between student and advisor
 - Show sessions of courses available? (Depending on the data provided by IT)
+- Search bar for allowing to arbitrarily select courses not already selected in
+  program map to compensate for the parts of the catalog that cannot be parsed

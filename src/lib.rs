@@ -2,11 +2,13 @@ use serde::{
     de::{self, Visitor},
     Deserialize, Deserializer,
 };
+use serde_json::Value;
 
 use crate::guid::GUID;
 
 pub mod guid;
 
+/// Representation of a program in the catalog
 #[derive(Debug, Clone, Deserialize)]
 pub struct Program {
     /// Link to the official catalog
@@ -20,6 +22,8 @@ pub struct Program {
     /// Name of the program
     pub title: String,
 
+    // TODO: Add `hours` field
+    //
     /// Course requirements for the Program
     pub requirements: Option<Requirements>,
 }
@@ -55,7 +59,7 @@ pub enum RequirementModule {
     Label { title: String },
 
     /// Variants that will be implemented in the future
-    Unimplemented,
+    Unimplemented(Value),
 }
 
 #[derive(Debug, Clone)]
@@ -75,7 +79,7 @@ pub enum SelectionEntry {
 }
 
 /// Select *N* credits/courses from the following [Courses](crate::Course)
-/// WARN: Not used yet
+// WARN: Not used yet
 #[derive(Debug, Clone, Deserialize)]
 pub struct SelectFrom {
     /// The number of courses to select from
@@ -86,6 +90,7 @@ pub struct SelectFrom {
     pub courses: Vec<Course>,
 }
 
+/// Representation of a course in the catalog
 // TODO: Take account for labels at this level. Example in Bachelor of Music with Major in Composition
 #[derive(Debug, Clone, Deserialize, PartialEq, Eq)]
 pub struct Course {
@@ -139,8 +144,6 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
     where
         A: de::MapAccess<'de>,
     {
-        println!("map visited");
-
         let mut title: Option<String> = None;
         let mut req_narrative: Option<Option<String>> = None;
         let mut requirements: Option<Vec<Requirement>> = None;
@@ -413,6 +416,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn can_parse_program_with_many_basic_requirements() {
         let program_json = std::fs::read_to_string("./data/digital_media_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())

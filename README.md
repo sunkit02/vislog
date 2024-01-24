@@ -11,6 +11,8 @@ Vislog is a project to visualize the Union University Catalog
 
 #### JSON Processing
 
+![Image of Course Parsing State Machine](./docs/course_parsing_state_machine.svg)
+
 - Manual trigger / API endpoint
 - Gets triggered annually
 - Manual trigger / timer

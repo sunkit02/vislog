@@ -1,0 +1,287 @@
+{
+  "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/College-of-Arts-and-Sciences/Department-of-Computer-Science/Major-in-Cybersecurity-61-hours",
+  "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-computer-science/major-in-cybersecurity-61-hours",
+  "GUID": "{08DD69D3-9F67-4A81-A5AA-5738B6A79D2B}",
+  "title": "Major in Cybersecurity—61 hours",
+  "content": "<p style=\"color: #000000; margin: 0in;\">The Cybersecurity major is based on a foundation of Computer Science with broad coverage of the Cybersecurity disciplines and will provide a world class Cybersecurity education with a Christian foundation. Students will learn the what, when, why, and how of Cybersecurity; and be able to materially contribute on their first day in the workforce. As the major is 61 hours, there is no minor required.</p>",
+  "bottom_content": null,
+  "in_program_list": "True",
+  "credits": "0",
+  "credits_min": null,
+  "credits_max": null,
+  "auto_credits": "False",
+  "requirements": {
+    "title": "Degree Requirements",
+    "content": null,
+    "credits": "0",
+    "credits_min": null,
+    "credits_max": null,
+    "auto_credits": "False",
+    "requirement_list": [
+      {
+        "title": "Prerequisites:",
+        "req_narrative": null,
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": [
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/mat-mathematics/100/mat-114",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/MAT-Mathematics/100/MAT-114",
+            "guid": "{DD349D3F-80B1-4E88-A04F-F80898377C18}",
+            "name": "Introduction to Statistics & Probability",
+            "number": "114",
+            "subject_name": "Mathematics",
+            "subject_code": "MAT",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/mat-mathematics/200/mat-205",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/MAT-Mathematics/200/MAT-205",
+            "guid": "{EE7B699D-E429-4B9C-913C-F7EBB74B8B29}",
+            "name": "Discrete Mathematics",
+            "number": "205",
+            "subject_name": "Mathematics",
+            "subject_code": "MAT",
+            "credits": "3",
+            "is_narrative": "False"
+          }
+        ]
+      },
+      {
+        "title": "Major Courses:",
+        "req_narrative": "<a class=\"sc-courselink\" href=\"/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/100/csc-105\" style=\"color: #990026; background-color: #ffffff; margin: 0px; padding: 0px;\">CSC 105</a><span style=\"background-color: #ffffff; color: #333333;\">&nbsp;and&nbsp;</span><a class=\"sc-courselink\" href=\"/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/100/csc-106\" style=\"color: #990026; background-color: #ffffff; margin: 0px; padding: 0px;\">CSC 106</a><span style=\"background-color: #ffffff; color: #333333;\">&nbsp;may be taken in place of&nbsp;</span><a class=\"sc-courselink\" href=\"/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/100/csc-115\" style=\"color: #990026; background-color: #ffffff; margin: 0px; padding: 0px;\">CSC 115</a><span style=\"background-color: #ffffff; color: #333333;\">.</span>",
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": [
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bad-business-administration/200/bad-224",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BAD-Business-Administration/200/BAD-224",
+            "guid": "{4FA5F856-B2C7-4D19-AF63-D73CBD80B914}",
+            "name": "Introduction to Business Analytics And Decision-Making",
+            "number": "224",
+            "subject_name": "Business Administration",
+            "subject_code": "BAD",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/100/csc-115",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/100/CSC-115",
+            "guid": "{860AF9C9-EAD9-45AC-AA92-BAF352C5288C}",
+            "name": "Computer Science: Introduction and Overview",
+            "number": "115",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/100/csc-117",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/100/CSC-117",
+            "guid": "{A5F29CDB-5030-464B-817D-B9AC716E00B6}",
+            "name": "Human Security and Awareness",
+            "number": "117",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/100/csc-125",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/100/CSC-125",
+            "guid": "{13A1385C-81AC-493D-ACE8-AA8AB37D2C81}",
+            "name": "Computer Science I: Programming in Java",
+            "number": "125",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/200/csc-205",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/200/CSC-205",
+            "guid": "{EC992901-8324-4CBD-ABAE-57A007F52C05}",
+            "name": "Computer Science II: Algorithms and Data Structures",
+            "number": "205",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/200/csc-235",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/200/CSC-235",
+            "guid": "{897BFC12-7790-43C7-8466-9DDAA5B239BD}",
+            "name": "Computer Ethics",
+            "number": "235",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-317",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-317",
+            "guid": "{D7BE53FF-903F-46A7-84CF-59E2E1E0E5EB}",
+            "name": "Identity and Access Management",
+            "number": "317",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-321",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-321",
+            "guid": "{10BC3E4E-CB86-441E-A7D3-D075476A2229}",
+            "name": "Database Management Systems",
+            "number": "321",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-327",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-327",
+            "guid": "{A453E3B4-E1E5-4C92-B931-FC5BE08DB080}",
+            "name": "Operational Security",
+            "number": "327",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-337",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-337",
+            "guid": "{DB60C7CB-82EF-4C3C-AC4B-6AC9A676978B}",
+            "name": "Data Visualizations",
+            "number": "337",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-347",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-347",
+            "guid": "{59C310C6-FA95-4BA6-A282-6491B3D008D3}",
+            "name": "Secure Software Engineering",
+            "number": "347",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-357",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-357",
+            "guid": "{79E3DA96-B420-4EA0-9C08-40DCE3D9F970}",
+            "name": "Security and Risk Management",
+            "number": "357",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-365",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-365",
+            "guid": "{B5FB659A-CE71-4DB0-8E22-B2DA9AAD87AF}",
+            "name": "Data Communications and Networking",
+            "number": "365",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/300/csc-377",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/300/CSC-377",
+            "guid": "{D9364FC3-E0F0-4CDC-87F1-A4D1A45FB09D}",
+            "name": "Secure Architecture and Cloud Computing",
+            "number": "377",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/400/csc-417",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/400/CSC-417",
+            "guid": "{48F1ECE9-87BB-4980-83E9-756E5F8DDA8D}",
+            "name": "Communication and Network Security",
+            "number": "417",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/400/csc-425",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/400/CSC-425",
+            "guid": "{E615C842-81D0-4693-A97B-DEB2C57984D7}",
+            "name": "Operating Systems",
+            "number": "425",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/400/csc-437",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/400/CSC-437",
+            "guid": "{62E507DC-92C7-4037-A9E3-8D8536C41753}",
+            "name": "Data Security and Privacy",
+            "number": "437",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/400/csc-447",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/400/CSC-447",
+            "guid": "{3DB02A1D-D417-499D-862E-D1158E139313}",
+            "name": "Security Assessment and Audit",
+            "number": "447",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/400/csc-455",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/400/CSC-455",
+            "guid": "{D6D105B3-9D75-4A5E-9566-0A48AA3FB18F}",
+            "name": "Programming Languages",
+            "number": "455",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/csc-computer-science/400/csc-498",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CSC-Computer-Science/400/CSC-498",
+            "guid": "{6785EDC2-418C-4C8B-B76A-51DA35724F02}",
+            "name": "Computer Science Seminar",
+            "number": "498",
+            "subject_name": "Computer Science",
+            "subject_code": "CSC",
+            "credits": "2.0-3.0",
+            "is_narrative": "False"
+          }
+        ]
+      }
+    ]
+  }
+}

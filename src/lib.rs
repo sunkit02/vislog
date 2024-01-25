@@ -68,17 +68,22 @@ pub enum RequirementModule {
 
 #[derive(Debug)]
 pub enum Requirement {
-    Courses { title: String, courses: Vec<Course> },
-    Select { n: u8, options: SelectionEntry },
+    Courses {
+        title: String,
+        courses: CourseEntries,
+    },
+    Select {
+        entries: CourseEntries,
+    },
 }
 
-#[derive(Debug, Clone, Deserialize)]
-pub enum SelectionEntry {
-    And {
-        lhs: Box<SelectionEntry>,
-        rhs: Box<SelectionEntry>,
-    },
-    Or(Vec<SelectionEntry>),
+#[derive(Debug)]
+pub struct CourseEntries(Vec<CourseEntry>);
+
+#[derive(Debug)]
+pub enum CourseEntry {
+    And(CourseEntries),
+    Or(CourseEntries),
     Courses(Vec<Course>),
 }
 
@@ -274,6 +279,15 @@ where
     GUID::try_from(s).map_err(|e| serde::de::Error::custom(e))
 }
 
+impl<'de> Deserialize<'de> for Requirement {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_map(RequirementVisitor)
+    }
+}
+
 struct RequirementVisitor;
 
 impl<'de> Visitor<'de> for RequirementVisitor {
@@ -320,12 +334,39 @@ impl<'de> Visitor<'de> for RequirementVisitor {
     }
 }
 
-impl<'de> Deserialize<'de> for Requirement {
+impl<'de> Deserialize<'de> for CourseEntries {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_map(RequirementVisitor)
+        deserializer.deserialize_seq(CourseEntriesVisitor)
+    }
+}
+
+struct CourseEntriesVisitor;
+
+impl<'de> Visitor<'de> for CourseEntriesVisitor {
+    type Value = CourseEntries;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("an array of JSON objects representing a `SelectionEntry`")
+    }
+
+    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::SeqAccess<'de>,
+    {
+        let mut raw_entries = Vec::with_capacity(seq.size_hint().unwrap_or(4) as usize);
+
+        while let Ok(Some(raw_entry)) = seq.next_element::<RawCourseEntry>() {
+            raw_entries.push(raw_entry)
+        }
+
+        let course_entries = CourseParser::new(raw_entries)
+            .parse()
+            .map_err(|e| de::Error::custom(e))?;
+
+        Ok(course_entries)
     }
 }
 
@@ -388,29 +429,10 @@ mod test {
         if let Some(Requirements::Single(req_mod)) = parsed_program.requirements {
             if let RequirementModule::BasicRequirements {
                 title,
-                requirements,
+                requirements: _,
             } = req_mod
             {
                 assert_eq!(title, expected_req_mod_title);
-                // assert_eq!(requirements[0].title, "Prerequisites:");
-                // assert_eq!(
-                //     requirements[0]
-                //         .courses
-                //         .as_ref()
-                //         .expect("Should have courses")
-                //         .len(),
-                //     4
-                // );
-
-                // assert_eq!(requirements[1].title, "Major Requirements:");
-                // assert_eq!(
-                //     requirements[1]
-                //         .courses
-                //         .as_ref()
-                //         .expect("Should have courses")
-                //         .len(),
-                //     16
-                // );
             } else {
                 panic!("Expected requirement_module to be the `BasicRequirements` variant");
             }
@@ -420,7 +442,7 @@ mod test {
     }
 
     #[test]
-    #[ignore]
+    #[ignore = "fix it later"]
     fn can_parse_program_with_many_basic_requirements() {
         let program_json = std::fs::read_to_string("./data/digital_media_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())

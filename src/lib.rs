@@ -4,12 +4,16 @@ use serde::{
 };
 use serde_json::Value;
 
-use crate::guid::GUID;
+use crate::{
+    deserialization::course::{CourseParser, RawCourseEntry},
+    guid::GUID,
+};
 
+mod deserialization;
 pub mod guid;
 
 /// Representation of a program in the catalog
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Program {
     /// Link to the official catalog
     pub url: String,
@@ -28,7 +32,7 @@ pub struct Program {
     pub requirements: Option<Requirements>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Requirements {
     Single(RequirementModule),
     Many(Vec<RequirementModule>),
@@ -36,7 +40,7 @@ pub enum Requirements {
     SelectTrack,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum RequirementModule {
     /// The standard `RequirementModule` containing `Course`s
     BasicRequirements {
@@ -62,7 +66,7 @@ pub enum RequirementModule {
     Unimplemented(Value),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Requirement {
     Courses { title: String, courses: Vec<Course> },
     Select { n: u8, options: SelectionEntry },

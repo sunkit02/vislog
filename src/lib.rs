@@ -88,11 +88,7 @@ pub struct CourseEntries(Vec<CourseEntry>);
 pub enum CourseEntry {
     And(CourseEntries),
     Or(CourseEntries),
-    Label {
-        url: String,
-        guid: GUID,
-        name: String,
-    },
+    Label(Label),
     Course(Course),
 }
 
@@ -116,6 +112,8 @@ pub struct Label {
     url: String,
     guid: GUID,
     name: String,
+    subject_code: Option<String>,
+    credits: u8,
 }
 
 #[derive(Debug, Clone, Deserialize)]

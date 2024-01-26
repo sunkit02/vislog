@@ -424,6 +424,10 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
                         url: entry.url,
                         guid,
                         name: entry.name,
+                        subject_code: entry.subject_code,
+                        credits: entry.credits.parse().map_err(|e| {
+                            anyhow!("{}", e).context("parsing credits for ParsedCourseEntry::Label")
+                        })?,
                     })
                 }
             };
@@ -510,7 +514,6 @@ mod parse_course_credits_test {
 mod parse_courses_test {
     use crate::{Program, Requirement, RequirementModule, Requirements};
 
-    use core::panic;
     use std::fs;
 
     #[test]
@@ -570,6 +573,8 @@ mod parse_courses_test {
     }
 
     #[test]
+    // FIX: Changing the value of "credits" in Course JSON object from string of integers to string of integers with
+    // letters or simply letters will cause this test to fail.
     fn can_parse_program_with_operators_and_without_labels() {
         let program_json =
             fs::read_to_string("./data/computer_information_systems_minor.json").unwrap();

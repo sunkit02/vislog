@@ -61,13 +61,12 @@ pub enum ParseCoursesState {
     ReadCourseWithOp(ParsingState),
     TerminatingBlankRead(ParsingState),
     NestingOperatorRead(ParsingState),
-    NestedBlankRead(ParsingState),
+    NestedInitialBlankRead(ParsingState),
     NestedReadCourseNoOp(ParsingState),
     NestedOperatorRead(ParsingState),
     NestedReadCourseWithOp(ParsingState),
     // TODO: Get better name
-    NestedIntermediate(ParsingState),
-    NestedOperatorSelection(ParsingState),
+    NestedTerminatingBlankRead(ParsingState),
     NestedCourseDetection(ParsingState),
 }
 
@@ -358,11 +357,11 @@ impl ParseCoursesState {
             },
             NestingOperatorRead(_) => todo!(),
             NestedBlankRead(_) => todo!(),
+            NestedInitialBlankRead(_) => todo!(),
             NestedReadCourseNoOp(_) => todo!(),
             NestedOperatorRead(_) => todo!(),
             NestedReadCourseWithOp(_) => todo!(),
-            NestedIntermediate(_) => todo!(),
-            NestedOperatorSelection(_) => todo!(),
+            NestedTerminatingBlankRead(_) => todo!(),
             NestedCourseDetection(_) => todo!(),
         };
 

@@ -84,8 +84,12 @@ impl ParseCoursesState {
             InitialState(mut state) => match entry {
                 ParsedCourseEntry::And | ParsedCourseEntry::Or => Err(InvalidEntry(entry)),
                 ParsedCourseEntry::Blank => Ok(InitialBlankRead(state)),
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
+                ParsedCourseEntry::Label(label) => {
+                    state
+                        .course_buffer
+                        .get_or_insert(vec![])
+                        .push(CourseEntry::Label(label));
+                    Ok(Self::CourseDetection(state))
                 }
                 ParsedCourseEntry::Course(course) => {
                     state
@@ -105,9 +109,16 @@ impl ParseCoursesState {
                     Ok(Self::OperatorRead(mem::take(state)))
                 }
                 ParsedCourseEntry::Blank => Ok(Self::InitialBlankRead(mem::take(state))),
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
-                }
+                ParsedCourseEntry::Label(label) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(CourseEntry::Label(label));
+                        Ok(self)
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
                         buf.push(CourseEntry::Course(course));
@@ -123,9 +134,26 @@ impl ParseCoursesState {
                 ParsedCourseEntry::And | ParsedCourseEntry::Or | ParsedCourseEntry::Blank => {
                     Err(InvalidEntry(entry))
                 }
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
-                }
+                ParsedCourseEntry::Label(label) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        // Swap the memory between the new operator group and the free courses in
+                        // the `state.course_buffer` and assign the free courses originally in the
+                        // `state.course_buffer` to `free_courses`
+                        let free_courses = {
+                            let mut new_operator_group = vec![CourseEntry::Label(label)];
+                            mem::swap(buf, &mut new_operator_group);
+                            new_operator_group
+                        };
+                        // Convert courses currently in the coure_buffer that are not part of an operator
+                        // group into `CourseEntry`(s) and push into `state.entries`
+                        state.entries.extend(free_courses);
+
+                        // Insert the new
+
+                        Ok(Self::ReadCourseNoOp(mem::take(state)))
+                    }
+                    None => Ok(Self::ReadCourseNoOp(mem::take(state))),
+                },
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
                         // Swap the memory between the new operator group and the free courses in
@@ -173,9 +201,16 @@ impl ParseCoursesState {
                     }
                 }
                 ParsedCourseEntry::Blank => Err(InvalidEntry(entry)),
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
-                }
+                ParsedCourseEntry::Label(label) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(CourseEntry::Label(label));
+                        Ok(Self::ReadCourseNoOp(mem::take(state)))
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
                         buf.push(CourseEntry::Course(course));
@@ -191,9 +226,16 @@ impl ParseCoursesState {
                 ParsedCourseEntry::And | ParsedCourseEntry::Or | ParsedCourseEntry::Blank => {
                     Err(InvalidEntry(entry))
                 }
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
-                }
+                ParsedCourseEntry::Label(label) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(CourseEntry::Label(label));
+                        Ok(Self::ReadCourseWithOp(mem::take(state)))
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
                         buf.push(CourseEntry::Course(course));
@@ -208,9 +250,16 @@ impl ParseCoursesState {
             ReadCourseWithOp(ref mut state) => match entry {
                 ParsedCourseEntry::And | ParsedCourseEntry::Or => Err(InvalidEntry(entry)),
                 ParsedCourseEntry::Blank => Ok(Self::TerminatingBlankRead(mem::take(state))),
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
-                }
+                ParsedCourseEntry::Label(label) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(CourseEntry::Label(label));
+                        Ok(self)
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
                         buf.push(CourseEntry::Course(course));
@@ -256,8 +305,30 @@ impl ParseCoursesState {
                     Ok(NestingOperatorRead(mem::take(state)))
                 }
                 ParsedCourseEntry::Blank => Err(InvalidEntry(entry)),
-                ParsedCourseEntry::Label(_) => {
-                    todo!("Not sure how to handle at the moment")
+                ParsedCourseEntry::Label(label) => {
+                    // Append parsed Operator group to `state.entries`
+                    let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        state
+                    )))?;
+                    let courses = CourseEntries(buf);
+                    let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                        "`operator` should not be None at state: {:?}",
+                        state
+                    )))?;
+                    let operator_entry = match operator {
+                        Operator::And => CourseEntry::And(courses),
+                        Operator::Or => CourseEntry::Or(courses),
+                    };
+                    state.entries.push(operator_entry);
+
+                    // Append new course to new `state.course_buffer`
+                    state
+                        .course_buffer
+                        .insert(Vec::new())
+                        .push(CourseEntry::Label(label));
+
+                    Ok(Self::CourseDetection(mem::take(state)))
                 }
                 ParsedCourseEntry::Course(course) => {
                     // Append parsed Operator group to `state.entries`

@@ -42,6 +42,10 @@ pub enum Requirements {
 
 #[derive(Debug)]
 pub enum RequirementModule {
+    SingleBasicRequirement {
+        title: String,
+        requirement: Requirement,
+    },
     /// The standard `RequirementModule` containing `Course`s
     BasicRequirements {
         title: String,
@@ -70,7 +74,7 @@ pub enum RequirementModule {
 pub enum Requirement {
     Courses {
         title: String,
-        courses: CourseEntries,
+        entries: CourseEntries,
     },
     Select {
         entries: CourseEntries,
@@ -105,6 +109,13 @@ pub struct Course {
     pub subject_code: String,
     /// (lower_bound, upper_bound) in other words. lower_bound to upper_bound credits
     pub credits: (u8, Option<u8>),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Label {
+    url: String,
+    guid: GUID,
+    name: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -142,9 +153,16 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
     where
         A: de::MapAccess<'de>,
     {
+        #[derive(Debug, Deserialize)]
+        #[serde(untagged)]
+        enum RawRequirement {
+            Single(Requirement),
+            Many(Vec<Requirement>),
+        }
+
         let mut title: Option<String> = None;
         let mut req_narrative: Option<Option<String>> = None;
-        let mut requirements: Option<Vec<Requirement>> = None;
+        let mut requirements: Option<RawRequirement> = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
             match key.as_str() {
@@ -162,7 +180,7 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
                 }
                 "requirement_list" => {
                     if requirements.is_some() {
-                        return Err(de::Error::duplicate_field("requirements"));
+                        return Err(de::Error::duplicate_field("requirement_list"));
                     }
                     requirements = Some(map.next_value()?);
                 }
@@ -175,9 +193,14 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
         let requirements = requirements.ok_or_else(|| de::Error::missing_field("requirements"))?;
 
-        let requirement_module = RequirementModule::BasicRequirements {
-            title,
-            requirements,
+        let requirement_module = match requirements {
+            RawRequirement::Single(requirement) => {
+                RequirementModule::SingleBasicRequirement { title, requirement }
+            }
+            RawRequirement::Many(requirements) => RequirementModule::BasicRequirements {
+                title,
+                requirements,
+            },
         };
 
         Ok(Requirements::Single(requirement_module))
@@ -273,7 +296,7 @@ impl<'de> Deserialize<'de> for Requirement {
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_map(RequirementVisitor)
+        deserializer.deserialize_any(RequirementVisitor)
     }
 }
 
@@ -319,7 +342,10 @@ impl<'de> Visitor<'de> for RequirementVisitor {
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
         let courses = courses.ok_or_else(|| de::Error::missing_field("course"))?;
 
-        Ok(Requirement::Courses { title, courses })
+        Ok(Requirement::Courses {
+            title,
+            entries: courses,
+        })
     }
 }
 
@@ -364,42 +390,6 @@ mod test {
     use super::*;
 
     #[test]
-    #[ignore = "type change"]
-    fn can_deserialize_guid_with_curly_braces() {
-        // Parsing course that contains the field `guid` being deserialized by
-        // `deserialize_guid_with_curly_braces`
-        let course_json = r#"{
-            "url": "http://foo.com/bar/baz",
-            "path": "/foo/bar",
-            "guid": "{81A2EE85-6A90-49FB-A38A-B63481C8E123}",
-            "name": "Foo",
-            "number": "123",
-            "subject_name": "Testing",
-            "subject_code": "TST",
-            "credits": "2",
-            "is_narrative": "False"
-        }"#;
-
-        // let parsed_course = serde_json::from_str::<Course>(course_json).unwrap();
-        //
-        // let expected = Course {
-        //     url: "http://foo.com/bar/baz".to_owned(),
-        //     path: "/foo/bar".to_owned(),
-        //     guid: GUID::try_from("81A2EE85-6A90-49FB-A38A-B63481C8E123")
-        //         .expect("Failed to parse GUID"),
-        //     name: "Foo".to_owned(),
-        //     number: Some("123".to_owned()),
-        //     subject_name: Some("Testing".to_owned()),
-        //     subject_code: Some("TST".to_owned()),
-        //     credits: Some("2".to_owned()),
-        //     is_narrative: Some("False".to_owned()),
-        // };
-        //
-        // assert_eq!(parsed_course, expected);
-    }
-
-    #[test]
-    #[ignore = "type change"]
     fn can_parse_program_with_a_single_basic_requirement() {
         let program_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())

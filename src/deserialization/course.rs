@@ -5,6 +5,7 @@ use anyhow::Error as AnyhowError;
 use serde::Deserialize;
 use thiserror::Error;
 
+use crate::Label;
 use crate::{guid::GUID, Course, CourseEntries, CourseEntry};
 
 pub struct CourseParser {
@@ -34,7 +35,7 @@ impl CourseParser {
 
     pub fn parse(&mut self) -> Result<CourseEntries, ParseCoursesError> {
         if let Some(raw_entries) = self.raw_entries.take() {
-            let mut inner_parser = ParseCoursesState::CourseDetection(Vec::new());
+            let mut inner_parser = ParseCoursesState::init();
             // process entries
             for entry in raw_entries {
                 let entry = ParsedCourseEntry::try_from(entry)
@@ -52,135 +53,332 @@ impl CourseParser {
 
 #[derive(Debug)]
 pub enum ParseCoursesState {
-    /// Initial state where any combination of inputs are expected
-    CourseDetection(Vec<CourseEntry>),
-    /// State after reading a `Blank`
-    Ready(Vec<CourseEntry>),
-    ReadCourseNoOp(Vec<CourseEntry>),
-    OperatorRead {
-        operator: Operators,
-        courses: Vec<CourseEntry>,
-    },
-    ReadCourseWithOp {
-        operator: Operators,
-        courses: Vec<CourseEntry>,
-    },
+    InitialState(ParsingState),
+    CourseDetection(ParsingState),
+    InitialBlankRead(ParsingState),
+    ReadCourseNoOp(ParsingState),
+    OperatorRead(ParsingState),
+    ReadCourseWithOp(ParsingState),
+    TerminatingBlankRead(ParsingState),
+    NestingOperatorRead(ParsingState),
+    NestedBlankRead(ParsingState),
+    NestedReadCourseNoOp(ParsingState),
+    NestedOperatorRead(ParsingState),
+    NestedReadCourseWithOp(ParsingState),
     // TODO: Get better name
-    Intermediate {
-        operator: Operators,
-        courses: Vec<CourseEntry>,
-    },
-    NestedInitial {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    NestedReady {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    NestedReadCourseNoOp {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    NestedOperatorRead {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    NestedReadCourseWithOp {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    // TODO: Get better name
-    NestedIntermediate {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    NestedOperatorSelection {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    NestedCourseDetection {
-        nest_operator: Operators,
-        nested_courses: Vec<(Operators, Vec<CourseEntries>)>,
-    },
-    ReturnResults(CourseEntries),
+    NestedIntermediate(ParsingState),
+    NestedOperatorSelection(ParsingState),
+    NestedCourseDetection(ParsingState),
 }
 
 impl ParseCoursesState {
-    pub fn new() -> Self {
-        ParseCoursesState::CourseDetection(Vec::new())
+    pub fn init() -> Self {
+        ParseCoursesState::InitialState(ParsingState::initial())
     }
 
     pub fn parse(mut self, entry: ParsedCourseEntry) -> Result<Self, ParseCoursesError> {
+        use ParseCoursesError::*;
         use ParseCoursesState::*;
 
-        match self {
-            CourseDetection(ref mut courses) => match entry {
-                ParsedCourseEntry::And => Err(ParseCoursesError::InvalidEntry(entry)),
-                ParsedCourseEntry::Or => Err(ParseCoursesError::InvalidEntry(entry)),
-                ParsedCourseEntry::Blank => Ok(Self::Ready(mem::take(courses))),
-                ParsedCourseEntry::Label { url, guid, name } => {
-                    courses.push(CourseEntry::Label { url, guid, name });
-                    Ok(self)
+        let res = match self {
+            InitialState(mut state) => match entry {
+                ParsedCourseEntry::And | ParsedCourseEntry::Or => Err(InvalidEntry(entry)),
+                ParsedCourseEntry::Blank => Ok(InitialBlankRead(state)),
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
                 }
                 ParsedCourseEntry::Course(course) => {
-                    courses.push(CourseEntry::Course(course));
-                    Ok(self)
+                    state.course_buffer.get_or_insert(vec![]).push(course);
+                    Ok(Self::CourseDetection(state))
                 }
             },
-            Ready(_) => todo!(),
-            ReadCourseNoOp(_) => todo!(),
-            OperatorRead { operator, courses } => todo!(),
-            ReadCourseWithOp { operator, courses } => todo!(),
-            Intermediate { operator, courses } => todo!(),
-            NestedInitial {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedReady {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedReadCourseNoOp {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedOperatorRead {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedReadCourseWithOp {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedIntermediate {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedOperatorSelection {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            NestedCourseDetection {
-                nest_operator,
-                nested_courses,
-            } => todo!(),
-            ReturnResults(_) => todo!(),
-        }
+            CourseDetection(ref mut state) => match entry {
+                ParsedCourseEntry::And => {
+                    let _ = state.operator.insert(Operator::And);
+                    Ok(Self::OperatorRead(mem::take(state)))
+                }
+                ParsedCourseEntry::Or => {
+                    let _ = state.operator.insert(Operator::Or);
+                    Ok(Self::OperatorRead(mem::take(state)))
+                }
+                ParsedCourseEntry::Blank => Ok(Self::InitialBlankRead(mem::take(state))),
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
+                }
+                ParsedCourseEntry::Course(course) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(course);
+                        Ok(self)
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
+            },
+            InitialBlankRead(ref mut state) => match entry {
+                ParsedCourseEntry::And | ParsedCourseEntry::Or | ParsedCourseEntry::Blank => {
+                    Err(InvalidEntry(entry))
+                }
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
+                }
+                ParsedCourseEntry::Course(course) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        // Swap the memory between the new operator group and the free courses in
+                        // the `state.course_buffer` and assign the free courses originally in the
+                        // `state.course_buffer` to `free_courses`
+                        let free_courses = {
+                            let mut new_operator_group = vec![course];
+                            mem::swap(buf, &mut new_operator_group);
+                            new_operator_group
+                        };
+                        // Convert courses currently in the coure_buffer that are not part of an operator
+                        // group into `CourseEntry`(s) and push into `state.entries`
+                        let free_course_entries = free_courses
+                            .into_iter()
+                            .map(|course| CourseEntry::Course(course));
+
+                        state.entries.extend(free_course_entries);
+
+                        // Insert the new
+
+                        Ok(Self::ReadCourseNoOp(mem::take(state)))
+                    }
+                    None => Ok(Self::ReadCourseNoOp(mem::take(state))),
+                },
+            },
+            ReadCourseNoOp(ref mut state) => match entry {
+                ParsedCourseEntry::And => {
+                    if let Some(operator) = state.operator {
+                        Err(ParsingError(anyhow!(
+                            "`operator` should be None at state: {:?}. Got: {:?}",
+                            self,
+                            operator
+                        )))
+                    } else {
+                        let _ = state.operator.insert(Operator::And);
+                        Ok(Self::OperatorRead(mem::take(state)))
+                    }
+                }
+                ParsedCourseEntry::Or => {
+                    if let Some(operator) = state.operator {
+                        Err(ParsingError(anyhow!(
+                            "`operator` should be None at state: {:?}. Got: {:?}",
+                            self,
+                            operator
+                        )))
+                    } else {
+                        let _ = state.operator.insert(Operator::Or);
+                        Ok(Self::OperatorRead(mem::take(state)))
+                    }
+                }
+                ParsedCourseEntry::Blank => Err(InvalidEntry(entry)),
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
+                }
+                ParsedCourseEntry::Course(course) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(course);
+                        Ok(Self::ReadCourseNoOp(mem::take(state)))
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
+            },
+            OperatorRead(ref mut state) => match entry {
+                ParsedCourseEntry::And | ParsedCourseEntry::Or | ParsedCourseEntry::Blank => {
+                    Err(InvalidEntry(entry))
+                }
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
+                }
+                ParsedCourseEntry::Course(course) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(course);
+                        Ok(Self::ReadCourseWithOp(mem::take(state)))
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
+            },
+            ReadCourseWithOp(ref mut state) => match entry {
+                ParsedCourseEntry::And | ParsedCourseEntry::Or => Err(InvalidEntry(entry)),
+                ParsedCourseEntry::Blank => Ok(Self::TerminatingBlankRead(mem::take(state))),
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
+                }
+                ParsedCourseEntry::Course(course) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        buf.push(course);
+                        Ok(self)
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        self
+                    ))),
+                },
+            },
+            TerminatingBlankRead(ref mut state) => match entry {
+                ParsedCourseEntry::And | ParsedCourseEntry::Or => {
+                    let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        state
+                    )))?;
+
+                    let courses = CourseEntries(
+                        buf.into_iter()
+                            .map(|course| CourseEntry::Course(course))
+                            .collect(),
+                    );
+
+                    let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                        "`operator` should not be None at state: {:?}",
+                        state
+                    )))?;
+
+                    let operator_entry = match operator {
+                        Operator::And => CourseEntry::And(courses),
+                        Operator::Or => CourseEntry::Or(courses),
+                    };
+
+                    let nesting_entry = match entry {
+                        ParsedCourseEntry::And => {
+                            CourseEntry::And(CourseEntries(vec![operator_entry]))
+                        }
+                        ParsedCourseEntry::Or => {
+                            CourseEntry::And(CourseEntries(vec![operator_entry]))
+                        },
+                        invalid_entry => panic!("entry should be either the `ParsedCourseEntry::And` or `ParsedCourseEntry::Or` variants. Got: {:?}", invalid_entry),
+                    };
+
+                    state.entries.push(nesting_entry);
+
+                    Ok(NestingOperatorRead(mem::take(state)))
+                }
+                ParsedCourseEntry::Blank => Err(InvalidEntry(entry)),
+                ParsedCourseEntry::Label(_) => {
+                    todo!("Not sure how to handle at the moment")
+                }
+                ParsedCourseEntry::Course(course) => {
+                    // Append parsed Operator group to `state.entries`
+                    let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        state
+                    )))?;
+                    let courses = CourseEntries(
+                        buf.into_iter()
+                            .map(|course| CourseEntry::Course(course))
+                            .collect(),
+                    );
+                    let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                        "`operator` should not be None at state: {:?}",
+                        state
+                    )))?;
+                    let operator_entry = match operator {
+                        Operator::And => CourseEntry::And(courses),
+                        Operator::Or => CourseEntry::Or(courses),
+                    };
+                    state.entries.push(operator_entry);
+
+                    // Append new course to new `state.course_buffer`
+                    state.course_buffer.insert(Vec::new()).push(course);
+
+                    Ok(Self::CourseDetection(mem::take(state)))
+                }
+            },
+            NestingOperatorRead(_) => todo!(),
+            NestedBlankRead(_) => todo!(),
+            NestedReadCourseNoOp(_) => todo!(),
+            NestedOperatorRead(_) => todo!(),
+            NestedReadCourseWithOp(_) => todo!(),
+            NestedIntermediate(_) => todo!(),
+            NestedOperatorSelection(_) => todo!(),
+            NestedCourseDetection(_) => todo!(),
+        };
+
+        // dbg!(&res);
+
+        res
     }
 
-    pub fn finish(self) -> Result<CourseEntries, ParseCoursesError> {
+    pub fn finish(mut self) -> Result<CourseEntries, ParseCoursesError> {
+        use ParseCoursesError::*;
+
         match self {
-            Self::ReturnResults(entries) => Ok(entries),
-            Self::CourseDetection(entries) => Ok(CourseEntries(entries)),
-            _ => Err(ParseCoursesError::InvalidFinish(self)),
+            Self::CourseDetection(ref mut state) => {
+                let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
+                    "`course_buf` should not be None at state: {:?}",
+                    state
+                )))?;
+
+                let courses_iter = buf.into_iter().map(|course| CourseEntry::Course(course));
+
+                let entries = &mut state.entries;
+                entries.extend(courses_iter);
+
+                Ok(CourseEntries(mem::take(entries)))
+            }
+            Self::ReadCourseWithOp(ref mut state) => {
+                let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                    "`operator` should not e None at state: {:?}",
+                    state
+                )))?;
+
+                let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
+                    "`course_buf` should not be None at state: {:?}",
+                    state
+                )))?;
+
+                let buf = buf
+                    .into_iter()
+                    .map(|course| CourseEntry::Course(course))
+                    .collect();
+
+                let operator_entry = match operator {
+                    Operator::And => CourseEntry::And(CourseEntries(buf)),
+                    Operator::Or => CourseEntry::Or(CourseEntries(buf)),
+                };
+
+                state.entries.push(operator_entry);
+
+                Ok(CourseEntries(mem::take(&mut state.entries)))
+            }
+            Self::TerminatingBlankRead(ref mut state) => {
+                let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                    "`operator` should not e None at state: {:?}",
+                    state
+                )))?;
+
+                match operator {
+                    Operator::And => {
+                        let and_entries =
+                            CourseEntry::And(CourseEntries(mem::take(&mut state.entries)));
+                        Ok(CourseEntries(vec![and_entries]))
+                    }
+                    Operator::Or => {
+                        let or_entries =
+                            CourseEntry::Or(CourseEntries(mem::take(&mut state.entries)));
+                        Ok(CourseEntries(vec![or_entries]))
+                    }
+                }
+            }
+            Self::InitialState(_)
+            | Self::InitialBlankRead(_)
+            | Self::ReadCourseNoOp(_)
+            | Self::OperatorRead(_) => Err(InvalidFinish(self)),
+            _ => todo!("Implement nesting in the futre"),
         }
     }
 }
 
-#[derive(Debug)]
-enum Operators {
-    Add,
+#[derive(Debug, Copy, Clone)]
+pub enum Operator {
+    And,
     Or,
 }
 
@@ -202,12 +400,8 @@ pub enum ParsedCourseEntry {
     And,
     Or,
     Blank,
-    Label {
-        url: String,
-        guid: GUID,
-        name: String,
-    },
-    Course(crate::Course),
+    Label(Label),
+    Course(Course),
 }
 
 impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
@@ -226,11 +420,11 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
 
                         GUID::try_from(guid)?
                     };
-                    Self::Label {
+                    Self::Label(Label {
                         url: entry.url,
                         guid,
                         name: entry.name,
-                    }
+                    })
                 }
             };
 
@@ -261,6 +455,23 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
             subject_code: entry.subject_code.ok_or(anyhow!("missing subject code"))?,
             credits,
         }))
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct ParsingState {
+    pub operator: Option<Operator>,
+    pub course_buffer: Option<Vec<Course>>,
+    pub entries: Vec<CourseEntry>,
+}
+
+impl ParsingState {
+    fn initial() -> Self {
+        Self {
+            operator: None,
+            course_buffer: None,
+            entries: vec![],
+        }
     }
 }
 
@@ -299,10 +510,11 @@ mod parse_course_credits_test {
 mod parse_courses_test {
     use crate::{Program, Requirement, RequirementModule, Requirements};
 
+    use core::panic;
     use std::fs;
 
     #[test]
-    fn can_parse_courses_with_no_operators() {
+    fn can_parse_program_with_no_operators_and_labels() {
         let program_json = fs::read_to_string("./data/cybersecurity_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
@@ -334,18 +546,65 @@ mod parse_courses_test {
             panic!("program should have `BasicRequirements` variant of `RequirementModule`");
         };
 
-        if let Requirement::Courses { title, courses } = &requirements[0] {
+        if let Requirement::Courses {
+            title,
+            entries: courses,
+        } = &requirements[0]
+        {
             assert_eq!(title.as_str(), "Prerequisites:");
             assert_eq!(courses.0.len(), 2);
         } else {
             panic!("program requirements[0] should be `Requirement::Courses`");
         }
 
-        if let Requirement::Courses { title, courses } = &requirements[1] {
+        if let Requirement::Courses {
+            title,
+            entries: courses,
+        } = &requirements[1]
+        {
             assert_eq!(title.as_str(), "Major Courses:");
             assert_eq!(courses.0.len(), 20);
         } else {
             panic!("program requirements[1] should be `Requirement::Courses`");
+        }
+    }
+
+    #[test]
+    fn can_parse_program_with_operators_and_without_labels() {
+        let program_json =
+            fs::read_to_string("./data/computer_information_systems_minor.json").unwrap();
+        let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
+            .expect("Failed to parse `Program`");
+
+        assert!(matches!(
+            parsed_program.requirements,
+            Some(Requirements::Single(_))
+        ));
+
+        let requirement_module = if let Some(requirements) = parsed_program.requirements {
+            if let Requirements::Single(requirement_module) = requirements {
+                requirement_module
+            } else {
+                panic!("program should have `Single` variant of `Requirements`");
+            }
+        } else {
+            panic!("program should have requirements.");
+        };
+
+        let requirement = if let RequirementModule::SingleBasicRequirement { title, requirement } =
+            requirement_module
+        {
+            assert_eq!(title.as_str(), "Degree Requirements");
+            requirement
+        } else {
+            panic!("program should have `SingleBasicRequirement` variant of `RequirementModule`");
+        };
+
+        if let Requirement::Courses { title, entries } = &requirement {
+            assert_eq!(title.as_str(), "Minor Requirements:");
+            assert_eq!(entries.0.len(), 6);
+        } else {
+            panic!("program requirement should be `Requirement::Courses`");
         }
     }
 }

@@ -88,7 +88,10 @@ impl ParseCoursesState {
                     todo!("Not sure how to handle at the moment")
                 }
                 ParsedCourseEntry::Course(course) => {
-                    state.course_buffer.get_or_insert(vec![]).push(course);
+                    state
+                        .course_buffer
+                        .get_or_insert(vec![])
+                        .push(CourseEntry::Course(course));
                     Ok(Self::CourseDetection(state))
                 }
             },
@@ -107,7 +110,7 @@ impl ParseCoursesState {
                 }
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
-                        buf.push(course);
+                        buf.push(CourseEntry::Course(course));
                         Ok(self)
                     }
                     None => Err(ParsingError(anyhow!(
@@ -129,17 +132,13 @@ impl ParseCoursesState {
                         // the `state.course_buffer` and assign the free courses originally in the
                         // `state.course_buffer` to `free_courses`
                         let free_courses = {
-                            let mut new_operator_group = vec![course];
+                            let mut new_operator_group = vec![CourseEntry::Course(course)];
                             mem::swap(buf, &mut new_operator_group);
                             new_operator_group
                         };
                         // Convert courses currently in the coure_buffer that are not part of an operator
                         // group into `CourseEntry`(s) and push into `state.entries`
-                        let free_course_entries = free_courses
-                            .into_iter()
-                            .map(|course| CourseEntry::Course(course));
-
-                        state.entries.extend(free_course_entries);
+                        state.entries.extend(free_courses);
 
                         // Insert the new
 
@@ -179,7 +178,7 @@ impl ParseCoursesState {
                 }
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
-                        buf.push(course);
+                        buf.push(CourseEntry::Course(course));
                         Ok(Self::ReadCourseNoOp(mem::take(state)))
                     }
                     None => Err(ParsingError(anyhow!(
@@ -197,7 +196,7 @@ impl ParseCoursesState {
                 }
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
-                        buf.push(course);
+                        buf.push(CourseEntry::Course(course));
                         Ok(Self::ReadCourseWithOp(mem::take(state)))
                     }
                     None => Err(ParsingError(anyhow!(
@@ -214,7 +213,7 @@ impl ParseCoursesState {
                 }
                 ParsedCourseEntry::Course(course) => match state.course_buffer {
                     Some(ref mut buf) => {
-                        buf.push(course);
+                        buf.push(CourseEntry::Course(course));
                         Ok(self)
                     }
                     None => Err(ParsingError(anyhow!(
@@ -230,11 +229,7 @@ impl ParseCoursesState {
                         state
                     )))?;
 
-                    let courses = CourseEntries(
-                        buf.into_iter()
-                            .map(|course| CourseEntry::Course(course))
-                            .collect(),
-                    );
+                    let courses = CourseEntries(buf);
 
                     let operator = state.operator.take().ok_or(ParsingError(anyhow!(
                         "`operator` should not be None at state: {:?}",
@@ -270,11 +265,7 @@ impl ParseCoursesState {
                         "`course_buf` should not be None at state: {:?}",
                         state
                     )))?;
-                    let courses = CourseEntries(
-                        buf.into_iter()
-                            .map(|course| CourseEntry::Course(course))
-                            .collect(),
-                    );
+                    let courses = CourseEntries(buf);
                     let operator = state.operator.take().ok_or(ParsingError(anyhow!(
                         "`operator` should not be None at state: {:?}",
                         state
@@ -286,7 +277,10 @@ impl ParseCoursesState {
                     state.entries.push(operator_entry);
 
                     // Append new course to new `state.course_buffer`
-                    state.course_buffer.insert(Vec::new()).push(course);
+                    state
+                        .course_buffer
+                        .insert(Vec::new())
+                        .push(CourseEntry::Course(course));
 
                     Ok(Self::CourseDetection(mem::take(state)))
                 }
@@ -316,10 +310,8 @@ impl ParseCoursesState {
                     state
                 )))?;
 
-                let courses_iter = buf.into_iter().map(|course| CourseEntry::Course(course));
-
                 let entries = &mut state.entries;
-                entries.extend(courses_iter);
+                entries.extend(buf);
 
                 Ok(CourseEntries(mem::take(entries)))
             }
@@ -333,11 +325,6 @@ impl ParseCoursesState {
                     "`course_buf` should not be None at state: {:?}",
                     state
                 )))?;
-
-                let buf = buf
-                    .into_iter()
-                    .map(|course| CourseEntry::Course(course))
-                    .collect();
 
                 let operator_entry = match operator {
                     Operator::And => CourseEntry::And(CourseEntries(buf)),
@@ -465,7 +452,7 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
 #[derive(Debug, Default)]
 pub struct ParsingState {
     pub operator: Option<Operator>,
-    pub course_buffer: Option<Vec<Course>>,
+    pub course_buffer: Option<Vec<CourseEntry>>,
     pub entries: Vec<CourseEntry>,
 }
 

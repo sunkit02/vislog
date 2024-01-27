@@ -44,6 +44,7 @@ pub enum Requirements {
 pub enum RequirementModule {
     SingleBasicRequirement {
         title: String,
+        /// Originally `requirement_list` in the JSON payload
         requirement: Requirement,
     },
     /// The standard `RequirementModule` containing `Course`s
@@ -70,17 +71,19 @@ pub enum RequirementModule {
     Unimplemented(Value),
 }
 
+// TODO: Extract all the useful information from the `req_narrative` field for each of the variants
 #[derive(Debug)]
 pub enum Requirement {
     Courses {
-        title: String,
+        title: Option<String>,
+        /// Originally `course` in the JSON payload:w
         entries: CourseEntries,
     },
     Select {
         entries: CourseEntries,
     },
     Label {
-        title: String,
+        title: Option<String>,
         req_narrative: Option<String>,
     },
 }

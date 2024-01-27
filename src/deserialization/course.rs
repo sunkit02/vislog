@@ -453,17 +453,77 @@ impl ParseCoursesState {
                     ))),
                 },
             },
-            NestedTerminatingBlankRead(ref mut state) => {
-                match entry {
-                    ParsedCourseEntry::And | ParsedCourseEntry::Or => {
-                        // Create operator group for courses in the `state.course_buffer` and add it to
-                        // the current nesting operator group
-                        let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
-                            "`course_buf` should not be None at state: {:?}",
-                            state
-                        )))?;
+            NestedTerminatingBlankRead(ref mut state) => match entry {
+                ParsedCourseEntry::And | ParsedCourseEntry::Or => {
+                    // Create operator group for courses in the `state.course_buffer` and add it to
+                    // the current nesting operator group
+                    let buf = state.course_buffer.take().ok_or(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        state
+                    )))?;
 
-                        let courses = CourseEntries(buf);
+                    let courses = CourseEntries(buf);
+
+                    let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                        "`operator` should not be None at state: {:?}",
+                        state
+                    )))?;
+
+                    let operator_entry = match operator {
+                        Operator::And => CourseEntry::And(courses),
+                        Operator::Or => CourseEntry::Or(courses),
+                    };
+
+                    let nesting_operator_group = state.entries.last_mut().ok_or(ParsingError(
+                        anyhow!("there should be at least one entry in `entries`",),
+                    ))?;
+
+                    // Push `operator_entry` into `nesting_operator_group` and get the
+                    // `nesting_operator` at the same time
+                    let nesting_operator = match nesting_operator_group {
+                        CourseEntry::And(group) => {
+                            group.0.push(operator_entry);
+                            Operator::And
+                        }
+                        CourseEntry::Or(group) => {
+                            group.0.push(operator_entry);
+                            Operator::Or
+                        }
+                        invalid_course_entry => {
+                            return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
+                        }
+                    };
+
+                    // Determine whether to continue to add to the current nesting operator group
+                    // or double nesting has occurred (continue if `nesting_operator` ==
+                    // new_operator, double nesting if they differ)
+                    let new_operator = match entry {
+                            ParsedCourseEntry::And => Operator::And,
+                            ParsedCourseEntry::Or => Operator::Or,
+                            _ => panic!("`entry` should always be either `ParsedCourseEntry::And` or `ParsedCourseEntry::Or` "),
+                        };
+
+                    if nesting_operator == new_operator {
+                        Ok(Self::NestingOperatorRead(mem::take(state)))
+                    } else {
+                        Err(DoubleNesting)
+                    }
+                }
+                ParsedCourseEntry::Blank => Err(InvalidEntry(entry)),
+                // TODO: Find a way to eliminate the consistent repeating of parsing logic
+                // between `Label` and `Course`
+                ParsedCourseEntry::Label(label) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        // // Swap the memory between the new buffer and the operator group in
+                        // // the `state.course_buffer` and assign the operator_group originally in the
+                        // // `state.course_buffer` to `operator_group`
+                        let operator_group_courses = {
+                            let mut new_buffer = vec![CourseEntry::Label(label)];
+                            mem::swap(buf, &mut new_buffer);
+                            new_buffer
+                        };
+
+                        let courses = CourseEntries(operator_group_courses);
 
                         let operator = state.operator.take().ok_or(ParsingError(anyhow!(
                             "`operator` should not be None at state: {:?}",
@@ -480,138 +540,75 @@ impl ParseCoursesState {
                                 "there should be at least one entry in `entries`",
                             )))?;
 
-                        // Push `operator_entry` into `nesting_operator_group` and get the
-                        // `nesting_operator` at the same time
-                        let nesting_operator = match nesting_operator_group {
+                        // Push `operator_entry` into `nesting_operator_group`
+                        match nesting_operator_group {
                             CourseEntry::And(group) => {
                                 group.0.push(operator_entry);
-                                Operator::And
                             }
                             CourseEntry::Or(group) => {
                                 group.0.push(operator_entry);
-                                Operator::Or
                             }
                             invalid_course_entry => {
                                 return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
                             }
                         };
 
-                        // Determine whether to continue to add to the current nesting operator group
-                        // or double nesting has occurred (continue if `nesting_operator` ==
-                        // new_operator, double nesting if they differ)
-                        let new_operator = match entry {
-                            ParsedCourseEntry::And => Operator::And,
-                            ParsedCourseEntry::Or => Operator::Or,
-                            _ => panic!("`entry` should always be either `ParsedCourseEntry::And` or `ParsedCourseEntry::Or` "),
+                        Ok(Self::CourseDetection(mem::take(state)))
+                    }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        state
+                    ))),
+                },
+                ParsedCourseEntry::Course(course) => match state.course_buffer {
+                    Some(ref mut buf) => {
+                        // // Swap the memory between the new buffer and the operator group in
+                        // // the `state.course_buffer` and assign the operator_group originally in the
+                        // // `state.course_buffer` to `operator_group`
+                        let operator_group_courses = {
+                            let mut new_buffer = vec![CourseEntry::Course(course)];
+                            mem::swap(buf, &mut new_buffer);
+                            new_buffer
                         };
 
-                        if nesting_operator == new_operator {
-                            Ok(Self::NestingOperatorRead(mem::take(state)))
-                        } else {
-                            Err(DoubleNesting)
-                        }
+                        let courses = CourseEntries(operator_group_courses);
+
+                        let operator = state.operator.take().ok_or(ParsingError(anyhow!(
+                            "`operator` should not be None at state: {:?}",
+                            state
+                        )))?;
+
+                        let operator_entry = match operator {
+                            Operator::And => CourseEntry::And(courses),
+                            Operator::Or => CourseEntry::Or(courses),
+                        };
+
+                        let nesting_operator_group =
+                            state.entries.last_mut().ok_or(ParsingError(anyhow!(
+                                "there should be at least one entry in `entries`",
+                            )))?;
+
+                        // Push `operator_entry` into `nesting_operator_group`
+                        match nesting_operator_group {
+                            CourseEntry::And(group) => {
+                                group.0.push(operator_entry);
+                            }
+                            CourseEntry::Or(group) => {
+                                group.0.push(operator_entry);
+                            }
+                            invalid_course_entry => {
+                                return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
+                            }
+                        };
+
+                        Ok(Self::CourseDetection(mem::take(state)))
                     }
-                    ParsedCourseEntry::Blank => Err(InvalidEntry(entry)),
-                    // TODO: Find a way to eliminate the consistent repeating of parsing logic
-                    // between `Label` and `Course`
-                    ParsedCourseEntry::Label(label) => match state.course_buffer {
-                        Some(ref mut buf) => {
-                            // // Swap the memory between the new buffer and the operator group in
-                            // // the `state.course_buffer` and assign the operator_group originally in the
-                            // // `state.course_buffer` to `operator_group`
-                            let operator_group_courses = {
-                                let mut new_buffer = vec![CourseEntry::Label(label)];
-                                mem::swap(buf, &mut new_buffer);
-                                new_buffer
-                            };
-
-                            let courses = CourseEntries(operator_group_courses);
-
-                            let operator = state.operator.take().ok_or(ParsingError(anyhow!(
-                                "`operator` should not be None at state: {:?}",
-                                state
-                            )))?;
-
-                            let operator_entry = match operator {
-                                Operator::And => CourseEntry::And(courses),
-                                Operator::Or => CourseEntry::Or(courses),
-                            };
-
-                            let nesting_operator_group =
-                                state.entries.last_mut().ok_or(ParsingError(anyhow!(
-                                    "there should be at least one entry in `entries`",
-                                )))?;
-
-                            // Push `operator_entry` into `nesting_operator_group`
-                            match nesting_operator_group {
-                                CourseEntry::And(group) => {
-                                    group.0.push(operator_entry);
-                                }
-                                CourseEntry::Or(group) => {
-                                    group.0.push(operator_entry);
-                                }
-                                invalid_course_entry => {
-                                    return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
-                                }
-                            };
-
-                            Ok(Self::CourseDetection(mem::take(state)))
-                        }
-                        None => Err(ParsingError(anyhow!(
-                            "`course_buf` should not be None at state: {:?}",
-                            state
-                        ))),
-                    },
-                    ParsedCourseEntry::Course(course) => match state.course_buffer {
-                        Some(ref mut buf) => {
-                            // // Swap the memory between the new buffer and the operator group in
-                            // // the `state.course_buffer` and assign the operator_group originally in the
-                            // // `state.course_buffer` to `operator_group`
-                            let operator_group_courses = {
-                                let mut new_buffer = vec![CourseEntry::Course(course)];
-                                mem::swap(buf, &mut new_buffer);
-                                new_buffer
-                            };
-
-                            let courses = CourseEntries(operator_group_courses);
-
-                            let operator = state.operator.take().ok_or(ParsingError(anyhow!(
-                                "`operator` should not be None at state: {:?}",
-                                state
-                            )))?;
-
-                            let operator_entry = match operator {
-                                Operator::And => CourseEntry::And(courses),
-                                Operator::Or => CourseEntry::Or(courses),
-                            };
-
-                            let nesting_operator_group =
-                                state.entries.last_mut().ok_or(ParsingError(anyhow!(
-                                    "there should be at least one entry in `entries`",
-                                )))?;
-
-                            // Push `operator_entry` into `nesting_operator_group`
-                            match nesting_operator_group {
-                                CourseEntry::And(group) => {
-                                    group.0.push(operator_entry);
-                                }
-                                CourseEntry::Or(group) => {
-                                    group.0.push(operator_entry);
-                                }
-                                invalid_course_entry => {
-                                    return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
-                                }
-                            };
-
-                            Ok(Self::CourseDetection(mem::take(state)))
-                        }
-                        None => Err(ParsingError(anyhow!(
-                            "`course_buf` should not be None at state: {:?}",
-                            state
-                        ))),
-                    },
-                }
-            }
+                    None => Err(ParsingError(anyhow!(
+                        "`course_buf` should not be None at state: {:?}",
+                        state
+                    ))),
+                },
+            },
         }
     }
 

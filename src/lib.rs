@@ -79,6 +79,10 @@ pub enum Requirement {
     Select {
         entries: CourseEntries,
     },
+    Label {
+        title: String,
+        req_narrative: Option<String>,
+    },
 }
 
 #[derive(Debug)]
@@ -151,6 +155,7 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
     where
         A: de::MapAccess<'de>,
     {
+        /// Intermediate struct used to determine if `requirement_list` is a JSON object or array.
         #[derive(Debug, Deserialize)]
         #[serde(untagged)]
         enum RawRequirement {
@@ -160,7 +165,7 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
 
         let mut title: Option<String> = None;
         let mut req_narrative: Option<Option<String>> = None;
-        let mut requirements: Option<RawRequirement> = None;
+        let mut requirement_list: Option<RawRequirement> = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
             match key.as_str() {
@@ -177,10 +182,10 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
                     req_narrative = Some(map.next_value()?);
                 }
                 "requirement_list" => {
-                    if requirements.is_some() {
+                    if requirement_list.is_some() {
                         return Err(de::Error::duplicate_field("requirement_list"));
                     }
-                    requirements = Some(map.next_value()?);
+                    requirement_list = Some(map.next_value()?);
                 }
                 _ => {
                     let _ = map.next_value::<de::IgnoredAny>();
@@ -189,7 +194,9 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
         }
 
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
-        let requirements = requirements.ok_or_else(|| de::Error::missing_field("requirements"))?;
+
+        let requirements =
+            requirement_list.ok_or_else(|| de::Error::missing_field("requirements_list"))?;
 
         let requirement_module = match requirements {
             RawRequirement::Single(requirement) => {
@@ -209,11 +216,8 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
     where
         A: de::SeqAccess<'de>,
     {
-        println!("seq visited");
-
         let mut modules = Vec::new();
         while let Ok(Some(module)) = seq.next_element() {
-            println!("Hello");
             modules.push(module);
         }
 
@@ -312,6 +316,7 @@ impl<'de> Visitor<'de> for RequirementVisitor {
         A: de::MapAccess<'de>,
     {
         let mut title = None;
+        let mut req_narrative: Option<Option<String>> = None;
         let mut courses = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
@@ -322,6 +327,13 @@ impl<'de> Visitor<'de> for RequirementVisitor {
                     }
 
                     title = Some(map.next_value()?);
+                }
+                "req_narrative" => {
+                    if req_narrative.is_some() {
+                        return Err(de::Error::duplicate_field("req_narrative"));
+                    }
+
+                    req_narrative = Some(map.next_value()?);
                 }
                 "course" => {
                     if courses.is_some() {
@@ -338,12 +350,21 @@ impl<'de> Visitor<'de> for RequirementVisitor {
 
         // TODO: Implement parsing for `Select` variant
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
-        let courses = courses.ok_or_else(|| de::Error::missing_field("course"))?;
+        let req_narrative =
+            req_narrative.ok_or_else(|| de::Error::missing_field("req_narrative"))?;
 
-        Ok(Requirement::Courses {
-            title,
-            entries: courses,
-        })
+        let requirement = match courses {
+            Some(course_entries) => Requirement::Courses {
+                title,
+                entries: course_entries,
+            },
+            None => Requirement::Label {
+                title,
+                req_narrative,
+            },
+        };
+
+        Ok(requirement)
     }
 }
 
@@ -421,7 +442,6 @@ mod test {
     }
 
     #[test]
-    #[ignore = "fix it later"]
     fn can_parse_program_with_many_basic_requirements() {
         let program_json = std::fs::read_to_string("./data/digital_media_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())

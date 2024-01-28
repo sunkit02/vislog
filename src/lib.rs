@@ -152,11 +152,12 @@ pub struct Course {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Label {
-    url: String,
-    guid: GUID,
-    name: String,
-    subject_code: Option<String>,
-    credits: u8,
+    pub url: String,
+    pub guid: GUID,
+    pub name: String,
+    pub number: Option<String>,
+    pub subject_code: Option<String>,
+    pub credits: (u8, Option<u8>),
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -464,10 +465,11 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         let mut path: Option<String> = None;
         let mut guid: Option<GUID> = None;
         let mut name: Option<Option<String>> = None;
-        let mut number: Option<String> = None;
+        let mut number: Option<Option<String>> = None;
         let mut subject_name: Option<Option<String>> = None;
-        let mut subject_code: Option<String> = None;
+        let mut subject_code: Option<Option<String>> = None;
         let mut credits: Option<(u8, Option<u8>)> = None;
+        let mut is_narrative: Option<bool> = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
             dbg!(&key);
@@ -513,7 +515,7 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
                         return Err(de::Error::duplicate_field("number"));
                     }
 
-                    number = Some(map.next_value::<String>()?);
+                    number = Some(map.next_value()?);
                 }
                 "subject_name" => {
                     if subject_name.is_some() {
@@ -536,6 +538,24 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
 
                     let credits_str = map.next_value::<&str>()?;
                     credits = Some(parse_course_credits(credits_str).map_err(de::Error::custom)?);
+                }
+                "is_narrative" => {
+                    if is_narrative.is_some() {
+                        return Err(de::Error::duplicate_field("is_narrative"));
+                    }
+
+                    let is_narrative_str = map.next_value::<&str>()?;
+
+                    is_narrative = Some(match is_narrative_str {
+                        "True" => true,
+                        "False" => false,
+                        invalid_str => {
+                            return Err(de::Error::custom(format!(
+                                r#"Expected "True" or "False". Got: {}"#,
+                                invalid_str
+                            )))
+                        }
+                    });
                 }
                 _ => {
                     let _ = map.next_value::<de::IgnoredAny>();
@@ -560,17 +580,38 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         let subject_name = subject_name.ok_or_else(|| de::Error::missing_field("subject_name"))?;
         let subject_code = subject_code.ok_or_else(|| de::Error::missing_field("subject_code"))?;
         let credits = credits.ok_or_else(|| de::Error::missing_field("credits"))?;
+        let is_narrative = is_narrative.ok_or_else(|| de::Error::missing_field("is_narrative"))?;
 
-        let entry = CourseEntry::Course(Course {
-            url,
-            path,
-            guid,
-            name,
-            number,
-            subject_name,
-            subject_code,
-            credits,
-        });
+        let entry = if is_narrative {
+            let name = name.ok_or(de::Error::custom(
+                "`name` field for `Label` should not be null",
+            ))?;
+            CourseEntry::Label(Label {
+                url,
+                guid,
+                name,
+                subject_code,
+                credits,
+                number,
+            })
+        } else {
+            let number = number.ok_or(de::Error::custom(
+                "`number` field for `Course` should not be null",
+            ))?;
+            let subject_code = subject_code.ok_or(de::Error::custom(
+                "`subject_code` field for `Course` should not be null",
+            ))?;
+            CourseEntry::Course(Course {
+                url,
+                path,
+                guid,
+                name,
+                number,
+                subject_name,
+                subject_code,
+                credits,
+            })
+        };
 
         Ok(CourseEntries(vec![entry]))
     }

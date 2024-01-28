@@ -849,14 +849,15 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
 
                         GUID::try_from(guid)?
                     };
+
+                    let credits = parse_course_credits(entry.credits.as_str())?;
                     Self::Label(Label {
                         url: entry.url,
                         guid,
                         name: entry.name.unwrap(),
                         subject_code: entry.subject_code,
-                        credits: entry.credits.parse().map_err(|e| {
-                            anyhow!("{}", e).context("parsing credits for ParsedCourseEntry::Label")
-                        })?,
+                        credits,
+                        number: entry.number,
                     })
                 }
             };

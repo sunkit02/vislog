@@ -816,7 +816,7 @@ pub struct RawCourseEntry {
     url: String,
     path: String,
     guid: String,
-    name: String,
+    name: Option<String>,
     number: Option<String>,
     subject_name: Option<String>,
     subject_code: Option<String>,
@@ -837,8 +837,8 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
     type Error = AnyhowError;
 
     fn try_from(entry: RawCourseEntry) -> Result<Self, Self::Error> {
-        if entry.is_narrative == "True" {
-            let parsed_entry = match entry.name.as_str() {
+        if entry.name.is_some() && entry.is_narrative == "True" {
+            let parsed_entry = match entry.name.as_ref().unwrap().as_str() {
                 "And" => Self::And,
                 "Or" => Self::Or,
                 "" => Self::Blank,
@@ -852,7 +852,7 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
                     Self::Label(Label {
                         url: entry.url,
                         guid,
-                        name: entry.name,
+                        name: entry.name.unwrap(),
                         subject_code: entry.subject_code,
                         credits: entry.credits.parse().map_err(|e| {
                             anyhow!("{}", e).context("parsing credits for ParsedCourseEntry::Label")

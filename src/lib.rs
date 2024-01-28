@@ -119,7 +119,26 @@ pub struct Course {
     pub path: String,
     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
     pub guid: GUID,
-    pub name: String,
+
+    /// This field is normally not, but sometimes can be empty for special courses.
+    ///
+    /// ### Examples
+    /// Such examples can be found in the "Applied Studies" `Requirement` for [Bachelor of Music with Major in Worship Leadership](https://iq5prod1.smartcatalogiq.com/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-music/bachelor-of-music-with-major-in-worship-leadership-83-hours-36-hours-47-hour-worship-leadership-core)
+    ///
+    /// #### Ex: Applied Studies-12 hours:
+    /// | Course  |     Name     |     Credits     |
+    /// |---------|--------------|-----------------|
+    /// | MUS 150 | <empty-name> | <empty-credits> |
+    /// | MUS 150 | <empty-name> | <empty-credits> |
+    /// | MUS 250 | <empty-name> | <empty-credits> |
+    /// | MUS 250 | <empty-name> | <empty-credits> |
+    /// | MUS 350 | <empty-name> | <empty-credits> |
+    /// | MUS 350 | <empty-name> | <empty-credits> |
+    /// | MUS 450 | <empty-name> | <empty-credits> |
+    ///
+    // NOTE: In the "Applied Studies" example all the courses had the field `is_narrative` set as
+    // "True" which may be useful in the future
+    pub name: Option<String>,
     pub number: String,
     pub subject_name: Option<String>,
     pub subject_code: String,
@@ -444,7 +463,7 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         let mut url: Option<String> = None;
         let mut path: Option<String> = None;
         let mut guid: Option<GUID> = None;
-        let mut name: Option<String> = None;
+        let mut name: Option<Option<String>> = None;
         let mut number: Option<String> = None;
         let mut subject_name: Option<Option<String>> = None;
         let mut subject_code: Option<String> = None;

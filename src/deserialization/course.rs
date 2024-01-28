@@ -948,6 +948,7 @@ mod parse_course_credits_test {
 #[cfg(test)]
 mod parse_courses_test {
     use crate::{CourseEntry, Program, Requirement, RequirementModule, Requirements};
+    use anyhow::Result;
 
     use core::panic;
     use std::fs;
@@ -1127,5 +1128,50 @@ mod parse_courses_test {
                 requirement
             ),
         }
+    }
+
+    #[test]
+    fn can_parse_program_with_chained_homogenous_operators() -> Result<()> {
+        let program_json =
+            fs::read_to_string("./data/intercultural_strategic_communication.json").unwrap();
+        let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
+            .expect("Failed to parse `Program`");
+
+        let requirements = parsed_program.requirements.unwrap();
+        let req_mod = if let Requirements::Single(req_mod) = requirements {
+            req_mod
+        } else {
+            panic!("Expected `Requirements::Single`. Got: {:?}", requirements);
+        };
+
+        let req_with_chained_operator = if let RequirementModule::BasicRequirements {
+            title,
+            requirements,
+        } = &req_mod
+        {
+            assert_eq!(title.as_str(), "Program Options");
+            assert_eq!(requirements.len(), 2);
+            &requirements[0]
+        } else {
+            panic!(
+                "Expected `RequirementModule::BasicRequirements`. Got: {:?}",
+                req_mod
+            );
+        };
+
+        if let Requirement::Courses { title, entries } = req_with_chained_operator {
+            assert_eq!(
+                title.as_ref().unwrap().as_str(),
+                "Intercultural Studies Major or Minor with Communication Studies Major:"
+            );
+            assert_eq!(entries.0.len(), 13);
+        } else {
+            panic!(
+                "Expected `Requirement::Courses`. Got: {:?}",
+                req_with_chained_operator
+            );
+        }
+
+        Ok(())
     }
 }

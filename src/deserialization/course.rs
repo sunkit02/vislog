@@ -79,6 +79,8 @@ impl ParseCoursesState {
         use ParseCoursesError::*;
         use ParseCoursesState::*;
 
+        let state_name = self.name();
+
         match self {
             InitialState(mut state) => match entry {
                 ParsedCourseEntry::And | ParsedCourseEntry::Or => Err(InvalidEntry(entry)),
@@ -243,7 +245,28 @@ impl ParseCoursesState {
                 },
             },
             ReadCourseWithOp(ref mut state) => match entry {
-                ParsedCourseEntry::And | ParsedCourseEntry::Or => Err(InvalidEntry(entry)),
+                ParsedCourseEntry::And | ParsedCourseEntry::Or => {
+                    let current_operator = state.operator.ok_or(ParsingError(anyhow!(
+                        "`operator` should not be None at state: {:?}",
+                        state_name
+                    )))?;
+
+                    let new_operator = match entry {
+                        ParsedCourseEntry::And => Operator::And,
+                        ParsedCourseEntry::Or => Operator::Or,
+                        _ => panic!("This should not happen because the enclosing match condition gurantees that"),
+                    };
+
+                    if new_operator == current_operator {
+                        Ok(Self::OperatorRead(mem::take(state)))
+                    } else {
+                        Err(ParsingError(anyhow!(
+                            "Expected {:?}, Got {:?}.",
+                            current_operator,
+                            new_operator
+                        )))
+                    }
+                }
                 ParsedCourseEntry::Blank => Ok(Self::TerminatingBlankRead(mem::take(state))),
                 ParsedCourseEntry::Label(label) => match state.course_buffer {
                     Some(ref mut buf) => {

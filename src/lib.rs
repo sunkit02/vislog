@@ -73,6 +73,7 @@ pub enum RequirementModule {
 }
 
 // TODO: Extract all the useful information from the `req_narrative` field for each of the variants
+// NOTE: The field `req_note` may contain useful information that can potentially be parsed
 #[derive(Debug)]
 pub enum Requirement {
     Courses {

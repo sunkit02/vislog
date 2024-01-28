@@ -1,0 +1,340 @@
+{
+  "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/College-of-Arts-and-Sciences/Department-of-Biology/Major-in-Zoology-48-hours",
+  "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-biology/major-in-zoology-48-hours",
+  "GUID": "{95460ECB-DE1E-4887-980B-D893467B9EC3}",
+  "title": "Major in Zoology—48 hours",
+  "content": null,
+  "bottom_content": null,
+  "in_program_list": "True",
+  "credits": "0",
+  "credits_min": null,
+  "credits_max": null,
+  "auto_credits": "False",
+  "requirements": {
+    "title": "Degree Requirements",
+    "content": null,
+    "credits": "0",
+    "credits_min": null,
+    "credits_max": null,
+    "auto_credits": "False",
+    "requirement_list": [
+      {
+        "title": "Prerequisite/Corequisite:",
+        "req_narrative": null,
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": {
+          "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/che-chemistry/100/che-112",
+          "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CHE-Chemistry/100/CHE-112",
+          "guid": "{97239341-F792-4235-8C1C-53FB2AD3B468}",
+          "name": "Chemical Equilibrium",
+          "number": "112",
+          "subject_name": "Chemistry",
+          "subject_code": "CHE",
+          "credits": "4",
+          "is_narrative": "False"
+        }
+      },
+      {
+        "title": "Major Requirements:",
+        "req_narrative": null,
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": [
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/100/bio-112",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/100/BIO-112",
+            "guid": "{FE15721B-B229-49A4-8185-398A3B08F2F4}",
+            "name": "Principles of Biology",
+            "number": "112",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/200/bio-200",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/200/BIO-200",
+            "guid": "{6B063565-A943-41F6-AE3A-AA95BA3C6B01}",
+            "name": "Introduction to Conservation Biology",
+            "number": "200",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/200/bio-210",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/200/BIO-210",
+            "guid": "{4A83ADBE-5266-450F-B82D-8AE185B4EE28}",
+            "name": "Zoology",
+            "number": "210",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/200/bio-211",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/200/BIO-211",
+            "guid": "{FE5C0535-C7F7-49E9-A392-44CC54EE2A0D}",
+            "name": "Microbiology",
+            "number": "211",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-301",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-301",
+            "guid": "{98B72BC0-24EB-4A02-9D02-D0B8957C28CC}",
+            "name": "Invertebrate Zoology",
+            "number": "301",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-312",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-312",
+            "guid": "{3C8B7278-5E4B-4E80-B4E5-26BF090556B5}",
+            "name": "Comparative Vertebrate Anatomy",
+            "number": "312",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-316",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-316",
+            "guid": "{9637AC87-F362-4103-B432-72A36B23A591}",
+            "name": "Physiology",
+            "number": "316",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-336",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-336",
+            "guid": "{8346A895-FF75-4758-9AF8-CAA51E782F5B}",
+            "name": "Ecology & Conservation of Vertebrates",
+            "number": "336",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/400/bio-425",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/400/BIO-425",
+            "guid": "{A2DC35D2-5B99-461C-AF90-C96F6AA86F7C}",
+            "name": "Introduction to Research",
+            "number": "425",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "1",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/400/bio-426",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/400/BIO-426",
+            "guid": "{18C19724-2249-4D48-965F-D56F182A60AC}",
+            "name": "Research Experience I",
+            "number": "426",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "1",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/400/bio-437",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/400/BIO-437",
+            "guid": "{F5573963-E33E-415A-B765-4E1D2EE715CE}",
+            "name": "Research Presentation",
+            "number": "437",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "1",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/400/bio-498",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/400/BIO-498",
+            "guid": "{89A48B67-72B6-4515-A7C0-66030ACAE532}",
+            "name": "Biology Seminar",
+            "number": "498",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "1",
+            "is_narrative": "False"
+          }
+        ]
+      },
+      {
+        "title": "Select one course from the following: 4 hours",
+        "req_narrative": null,
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": [
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-304",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-304",
+            "guid": "{3D53DD90-D2B6-49CB-872C-1C73DE7F818D}",
+            "name": "Experimental Design & Biostatistics",
+            "number": "304",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-310",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-310",
+            "guid": "{68C5DF98-0537-40E2-8D60-419CF2C978FE}",
+            "name": "Histology",
+            "number": "310",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-315",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-315",
+            "guid": "{B3B48A21-78BB-4E01-8A18-3FB19C29890B}",
+            "name": "Genetics",
+            "number": "315",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-317",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-317",
+            "guid": "{9B99D22F-1249-4EA9-A563-B9BA6C5156FF}",
+            "name": "Developmental Biology",
+            "number": "317",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-323",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-323",
+            "guid": "{3E9E4F2D-2734-4608-B48F-1A712283D7BC}",
+            "name": "Cell Biology",
+            "number": "323",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-325",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-325",
+            "guid": "{3A663F40-13FB-40F2-A3B8-06AB9CF6588E}",
+            "name": "Molecular Biology",
+            "number": "325",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-326",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-326",
+            "guid": "{8B54A8CC-9828-4AAF-9D68-17A1390ED34A}",
+            "name": "Neurobiology",
+            "number": "326",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          }
+        ]
+      },
+      {
+        "title": "Select one course from the following: 4 hours",
+        "req_narrative": null,
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": [
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-318",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-318",
+            "guid": "{C6977549-EE21-47D3-9CED-5FFCFB67B5F1}",
+            "name": "Ecology",
+            "number": "318",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-328",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-328",
+            "guid": "{BC349109-F0DB-435D-A9CA-7BC03F67B82A}",
+            "name": "Tropical Ecology",
+            "number": "328",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "0",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-329",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-329",
+            "guid": "{9B70BE52-D30A-41D6-912F-C006B3A26B7A}",
+            "name": "Environmental GIS",
+            "number": "329",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "4",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-356",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-356",
+            "guid": "{B8CE654F-7C3E-4603-9332-260F80A7890F}",
+            "name": "Marine Biology",
+            "number": "356",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/bio-biology/300/bio-357",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/BIO-Biology/300/BIO-357",
+            "guid": "{927A6590-AC9A-4683-9F38-4678AF48FC51}",
+            "name": "Ornithology",
+            "number": "357",
+            "subject_name": "Biology",
+            "subject_code": "BIO",
+            "credits": "3",
+            "is_narrative": "False"
+          }
+        ]
+      }
+    ]
+  }
+}

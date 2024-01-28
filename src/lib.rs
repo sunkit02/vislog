@@ -573,6 +573,8 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
 
 #[cfg(test)]
 mod test {
+    use core::panic;
+
     use super::*;
 
     #[test]
@@ -629,6 +631,44 @@ mod test {
             assert_eq!(req_mods.len(), 2);
         } else {
             panic!("Expected requirements to be the `Many` variant")
+        }
+    }
+
+    #[test]
+    fn can_parse_program_with_requirement_having_a_single_course() {
+        let program_json = std::fs::read_to_string("./data/zoology_major.json").unwrap();
+        let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
+            .expect("Failed to parse `Program`");
+
+        let req_mod = if let Some(Requirements::Single(req_mod)) = parsed_program.requirements {
+            req_mod
+        } else {
+            panic!("Expected requirements to be the `Many` variant")
+        };
+
+        let requirements = if let RequirementModule::BasicRequirements {
+            title,
+            requirements,
+        } = req_mod
+        {
+            assert_eq!(title.as_str(), "Degree Requirements");
+            assert_eq!(requirements.len(), 4);
+            requirements
+        } else {
+            panic!("Expected `RequirementModule` to be the `BasicRequirements` variant");
+        };
+
+        if let Requirement::Courses { title, entries } = &requirements[0] {
+            assert_eq!(
+                title.as_ref().unwrap().as_str(),
+                "Prerequisite/Corequisite:"
+            );
+            assert_eq!(entries.0.len(), 1);
+        } else {
+            panic!(
+                "Expected `Requirement` to be the `Courses` variant. Got: {:?}",
+                requirements[0]
+            );
         }
     }
 }

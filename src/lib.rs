@@ -1,3 +1,4 @@
+use deserialization::course::parse_course_credits;
 use serde::{
     de::{self, Visitor},
     Deserialize, Deserializer,
@@ -100,17 +101,32 @@ pub enum CourseEntry {
 }
 
 /// Representation of a course in the catalog
+//
+// NOTE: `Course` structs are normally deseriazed in a custom way through the `CourseEntries` struct to
+// handle the potential operator entries (And, Or, etc) mixed within the array in the `course`
+// field in JSON objects representing the `Requirement` struct. However, in special cases where the
+// `course` field holds a JSON object representing a single `Course` struct, a different code path
+// where the `Course` is separately deserialized into an intermediate struct, the private enum
+// struct `RawRequirement` in the Deserialization implementation of the `Requirements` struct. The
+// actual implementation of the special deserialization is in `CourseEntries` struct's
+// `Deserialization` implementation where a sepcial `visit_map` is implemented for this used case
+//
 // TODO: Take account for labels at this level. Example in Bachelor of Music with Major in Composition
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Course {
     pub url: String,
     pub path: String,
+    #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
     pub guid: GUID,
     pub name: String,
     pub number: u16,
     pub subject_name: String,
     pub subject_code: String,
-    /// (lower_bound, upper_bound) in other words. lower_bound to upper_bound credits
+
+    /// The representation of possible credits earned by completing the course. The lower bound is
+    /// the minimum that you can earn while the upper bound is the max. If there is a max, then the
+    /// tuple should be interpreted as an inclusive range from the lower bound to the upper bound,
+    /// which can be think of as (lower bound..=upper bound).
     pub credits: (u8, Option<u8>),
 }
 
@@ -162,8 +178,17 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
         #[derive(Debug, Deserialize)]
         #[serde(untagged)]
         enum RawRequirement {
+            /// Case where the `RequirementModule` only has a single `Course` JSON object in field
+            /// `course`
+            SingleCourseRequirement(SingleCourseRequirement),
             Single(Requirement),
             Many(Vec<Requirement>),
+        }
+
+        #[derive(Debug, Deserialize)]
+        struct SingleCourseRequirement {
+            title: Option<String>,
+            course: Course,
         }
 
         let mut title: Option<String> = None;
@@ -209,6 +234,16 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
                 title,
                 requirements,
             },
+            RawRequirement::SingleCourseRequirement(SingleCourseRequirement {
+                title: req_title,
+                course,
+            }) => {
+                let requirement = Requirement::Courses {
+                    title: req_title,
+                    entries: CourseEntries(vec![CourseEntry::Course(course)]),
+                };
+                RequirementModule::SingleBasicRequirement { title, requirement }
+            }
         };
 
         Ok(Requirements::Single(requirement_module))
@@ -318,6 +353,8 @@ impl<'de> Visitor<'de> for RequirementVisitor {
     where
         A: de::MapAccess<'de>,
     {
+        println!("visit_map in RequirementVisitor");
+
         let mut title = None;
         let mut req_narrative: Option<Option<String>> = None;
         let mut courses = None;
@@ -351,6 +388,10 @@ impl<'de> Visitor<'de> for RequirementVisitor {
             }
         }
 
+        // dbg!(&title);
+        // dbg!(&req_narrative);
+        // dbg!(&courses);
+
         // TODO: Implement parsing for `Select` variant
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
         let req_narrative =
@@ -376,7 +417,8 @@ impl<'de> Deserialize<'de> for CourseEntries {
     where
         D: Deserializer<'de>,
     {
-        deserializer.deserialize_seq(CourseEntriesVisitor)
+        println!("hello from CourseEntriesVisitor");
+        deserializer.deserialize_any(CourseEntriesVisitor)
     }
 }
 
@@ -387,6 +429,128 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         formatter.write_str("an array of JSON objects representing a `SelectionEntry`")
+    }
+
+    fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::MapAccess<'de>,
+    {
+        println!("visit_map in CourseEntriesVisitor");
+
+        let mut url: Option<String> = None;
+        let mut path: Option<String> = None;
+        let mut guid: Option<GUID> = None;
+        let mut name: Option<String> = None;
+        let mut number: Option<u16> = None;
+        let mut subject_name: Option<String> = None;
+        let mut subject_code: Option<String> = None;
+        let mut credits: Option<(u8, Option<u8>)> = None;
+
+        while let Ok(Some(key)) = map.next_key::<String>() {
+            // dbg!(&key);
+
+            match key.as_str() {
+                "url" => {
+                    if url.is_some() {
+                        return Err(de::Error::duplicate_field("url"));
+                    }
+
+                    url = Some(map.next_value()?);
+                }
+                "path" => {
+                    if path.is_some() {
+                        return Err(de::Error::duplicate_field("path"));
+                    }
+
+                    path = Some(map.next_value()?);
+                }
+                "guid" => {
+                    if guid.is_some() {
+                        return Err(de::Error::duplicate_field("guid"));
+                    }
+
+                    let guid_str_with_braces = map.next_value::<&str>()?;
+
+                    let guid_str_trimmed = &guid_str_with_braces[1..guid_str_with_braces.len() - 1];
+
+                    guid =
+                        Some(GUID::try_from(guid_str_trimmed).map_err(|e| {
+                            de::Error::custom(format!("error parsing guid: {}", e))
+                        })?);
+                }
+                "name" => {
+                    if name.is_some() {
+                        return Err(de::Error::duplicate_field("name"));
+                    }
+
+                    name = Some(map.next_value()?);
+                }
+                "number" => {
+                    if number.is_some() {
+                        return Err(de::Error::duplicate_field("number"));
+                    }
+
+                    let number_str = map.next_value::<&str>()?;
+                    number = Some(number_str.parse().map_err(de::Error::custom)?);
+                }
+                "subject_name" => {
+                    if subject_name.is_some() {
+                        return Err(de::Error::duplicate_field("subject_name"));
+                    }
+
+                    subject_name = Some(map.next_value()?);
+                }
+                "subject_code" => {
+                    if subject_code.is_some() {
+                        return Err(de::Error::duplicate_field("subject_code"));
+                    }
+
+                    subject_code = Some(map.next_value()?);
+                }
+                "credits" => {
+                    if credits.is_some() {
+                        return Err(de::Error::duplicate_field("credits"));
+                    }
+
+                    let credits_str = map.next_value::<&str>()?;
+                    credits = Some(parse_course_credits(credits_str).map_err(de::Error::custom)?);
+                }
+                _ => {
+                    let _ = map.next_value::<de::IgnoredAny>();
+                }
+            }
+        }
+
+        // dbg!(&url);
+        // dbg!(&path);
+        // dbg!(&guid);
+        // dbg!(&name);
+        // dbg!(&number);
+        // dbg!(&subject_name);
+        // dbg!(&subject_code);
+        // dbg!(&credits);
+
+        let url = url.ok_or_else(|| de::Error::missing_field("url"))?;
+        let path = path.ok_or_else(|| de::Error::missing_field("path"))?;
+        let guid = guid.ok_or_else(|| de::Error::missing_field("guid"))?;
+        let name = name.ok_or_else(|| de::Error::missing_field("name"))?;
+        let number = number.ok_or_else(|| de::Error::missing_field("number"))?;
+        let subject_name = subject_name.ok_or_else(|| de::Error::missing_field("subject_name"))?;
+        let subject_code = subject_code.ok_or_else(|| de::Error::missing_field("subject_code"))?;
+        let credits = credits.ok_or_else(|| de::Error::missing_field("credits"))?;
+
+        let entry = CourseEntry::Course(Course {
+            url,
+            path,
+            guid,
+            name,
+            number,
+            subject_name,
+            subject_code,
+            credits,
+        });
+
+        Ok(CourseEntries(vec![entry]))
     }
 
     fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>

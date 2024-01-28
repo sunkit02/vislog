@@ -885,7 +885,13 @@ impl ParsingState {
     }
 }
 
-fn parse_course_credits(credits_str: &str) -> Result<(u8, Option<u8>), AnyhowError> {
+/// Parse `credits` field for `Course` struct from a `&str` containing a valid representation of
+/// numbers of credits.
+///
+/// ### Examples:
+/// - "1"
+/// - "1.0-3.0"
+pub(crate) fn parse_course_credits(credits_str: &str) -> Result<(u8, Option<u8>), AnyhowError> {
     let splits = credits_str.split_once('-');
 
     if let Some((lower, upper)) = splits {
@@ -961,7 +967,7 @@ mod parse_courses_test {
             entries: courses,
         } = &requirements[0]
         {
-            assert_eq!(title.as_str(), "Prerequisites:");
+            assert_eq!(title.as_ref().unwrap().as_str(), "Prerequisites:");
             assert_eq!(courses.0.len(), 2);
         } else {
             panic!("program requirements[0] should be `Requirement::Courses`");
@@ -972,7 +978,7 @@ mod parse_courses_test {
             entries: courses,
         } = &requirements[1]
         {
-            assert_eq!(title.as_str(), "Major Courses:");
+            assert_eq!(title.as_ref().unwrap().as_str(), "Major Courses:");
             assert_eq!(courses.0.len(), 20);
         } else {
             panic!("program requirements[1] should be `Requirement::Courses`");
@@ -1013,7 +1019,7 @@ mod parse_courses_test {
         };
 
         if let Requirement::Courses { title, entries } = &requirement {
-            assert_eq!(title.as_str(), "Minor Requirements:");
+            assert_eq!(title.as_ref().unwrap().as_str(), "Minor Requirements:");
             assert_eq!(entries.0.len(), 6);
         } else {
             panic!("program requirement should be `Requirement::Courses`");
@@ -1054,7 +1060,7 @@ mod parse_courses_test {
 
         match &requirements[0] {
             Requirement::Courses { title, entries } => {
-                assert_eq!(title.as_str(), "Minor Requirements:");
+                assert_eq!(title.as_ref().unwrap().as_str(), "Minor Requirements:");
                 assert_eq!(entries.0.len(), 4);
             }
             invalid_requirement => panic!(
@@ -1068,7 +1074,10 @@ mod parse_courses_test {
                 title,
                 req_narrative,
             } => {
-                assert_eq!(title.as_str(), "Select CSC Upper-level Elective: 3 hours");
+                assert_eq!(
+                    title.as_ref().unwrap().as_str(),
+                    "Select CSC Upper-level Elective: 3 hours"
+                );
                 assert_eq!(req_narrative, &None);
             }
             invalid_requirement => panic!(
@@ -1079,7 +1088,7 @@ mod parse_courses_test {
 
         match &requirements[2] {
             Requirement::Courses { title, entries } => {
-                assert_eq!(title.as_str(), "Select one track:");
+                assert_eq!(title.as_ref().unwrap().as_str(), "Select one track:");
                 assert_eq!(entries.0.len(), 1);
                 match &entries.0[0] {
                     CourseEntry::Or(and_course_entries) => {

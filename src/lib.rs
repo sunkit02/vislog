@@ -44,13 +44,13 @@ pub enum Requirements {
 #[derive(Debug)]
 pub enum RequirementModule {
     SingleBasicRequirement {
-        title: String,
+        title: Option<String>,
         /// Originally `requirement_list` in the JSON payload
         requirement: Requirement,
     },
     /// The standard `RequirementModule` containing `Course`s
     BasicRequirements {
-        title: String,
+        title: Option<String>,
         requirements: Vec<Requirement>,
     },
 
@@ -120,8 +120,8 @@ pub struct Course {
     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
     pub guid: GUID,
     pub name: String,
-    pub number: u16,
-    pub subject_name: String,
+    pub number: String,
+    pub subject_name: Option<String>,
     pub subject_code: String,
 
     /// The representation of possible credits earned by completing the course. The lower bound is
@@ -192,7 +192,7 @@ impl<'de> Visitor<'de> for RequirementsVisitor {
             course: Course,
         }
 
-        let mut title: Option<String> = None;
+        let mut title: Option<Option<String>> = None;
         let mut req_narrative: Option<Option<String>> = None;
         let mut requirement_list: Option<RawRequirement> = None;
 
@@ -287,7 +287,7 @@ impl<'de> Visitor<'de> for RequirementModuleVisitor {
     where
         A: serde::de::MapAccess<'de>,
     {
-        let mut title: Option<String> = None;
+        let mut title: Option<Option<String>> = None;
         let mut requirements: Option<Vec<Requirement>> = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
@@ -361,6 +361,7 @@ impl<'de> Visitor<'de> for RequirementVisitor {
         let mut courses = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
+            dbg!(&key);
             match key.as_str() {
                 "title" => {
                     if title.is_some() {
@@ -389,9 +390,9 @@ impl<'de> Visitor<'de> for RequirementVisitor {
             }
         }
 
-        // dbg!(&title);
-        // dbg!(&req_narrative);
-        // dbg!(&courses);
+        dbg!(&title);
+        dbg!(&req_narrative);
+        dbg!(&courses);
 
         // TODO: Implement parsing for `Select` variant
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
@@ -408,6 +409,8 @@ impl<'de> Visitor<'de> for RequirementVisitor {
                 req_narrative,
             },
         };
+
+        dbg!(&requirement);
 
         Ok(requirement)
     }
@@ -442,13 +445,13 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         let mut path: Option<String> = None;
         let mut guid: Option<GUID> = None;
         let mut name: Option<String> = None;
-        let mut number: Option<u16> = None;
-        let mut subject_name: Option<String> = None;
+        let mut number: Option<String> = None;
+        let mut subject_name: Option<Option<String>> = None;
         let mut subject_code: Option<String> = None;
         let mut credits: Option<(u8, Option<u8>)> = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
-            // dbg!(&key);
+            dbg!(&key);
 
             match key.as_str() {
                 "url" => {
@@ -491,8 +494,7 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
                         return Err(de::Error::duplicate_field("number"));
                     }
 
-                    let number_str = map.next_value::<&str>()?;
-                    number = Some(number_str.parse().map_err(de::Error::custom)?);
+                    number = Some(map.next_value::<String>()?);
                 }
                 "subject_name" => {
                     if subject_name.is_some() {
@@ -522,14 +524,14 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
             }
         }
 
-        // dbg!(&url);
-        // dbg!(&path);
-        // dbg!(&guid);
-        // dbg!(&name);
-        // dbg!(&number);
-        // dbg!(&subject_name);
-        // dbg!(&subject_code);
-        // dbg!(&credits);
+        dbg!(&url);
+        dbg!(&path);
+        dbg!(&guid);
+        dbg!(&name);
+        dbg!(&number);
+        dbg!(&subject_name);
+        dbg!(&subject_code);
+        dbg!(&credits);
 
         let url = url.ok_or_else(|| de::Error::missing_field("url"))?;
         let path = path.ok_or_else(|| de::Error::missing_field("path"))?;
@@ -602,7 +604,7 @@ mod test {
                 requirements: _,
             } = req_mod
             {
-                assert_eq!(title, expected_req_mod_title);
+                assert_eq!(title.unwrap().as_str(), expected_req_mod_title);
             } else {
                 panic!("Expected requirement_module to be the `BasicRequirements` variant");
             }
@@ -652,7 +654,7 @@ mod test {
             requirements,
         } = req_mod
         {
-            assert_eq!(title.as_str(), "Degree Requirements");
+            assert_eq!(title.unwrap().as_str(), "Degree Requirements");
             assert_eq!(requirements.len(), 4);
             requirements
         } else {

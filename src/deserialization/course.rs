@@ -884,7 +884,7 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
             guid,
             name: entry.name,
             number,
-            subject_name: entry.subject_name.ok_or(anyhow!("missing subject name"))?,
+            subject_name: entry.subject_name,
             subject_code: entry.subject_code.ok_or(anyhow!("missing subject code"))?,
             credits,
         }))
@@ -979,7 +979,7 @@ mod parse_courses_test {
             requirements,
         } = requirement_module
         {
-            assert_eq!(title.as_str(), "Degree Requirements");
+            assert_eq!(title.unwrap().as_str(), "Degree Requirements");
             assert_eq!(requirements.len(), 2);
             requirements
         } else {
@@ -1036,7 +1036,7 @@ mod parse_courses_test {
         let requirement = if let RequirementModule::SingleBasicRequirement { title, requirement } =
             requirement_module
         {
-            assert_eq!(title.as_str(), "Degree Requirements");
+            assert_eq!(title.unwrap().as_str(), "Degree Requirements");
             requirement
         } else {
             panic!("program should have `SingleBasicRequirement` variant of `RequirementModule`");
@@ -1072,7 +1072,7 @@ mod parse_courses_test {
 
         let requirements = match req_module {
             RequirementModule::BasicRequirements { title, requirements } => {
-                assert_eq!(title.as_str(), "Degree Requirements");
+                assert_eq!(title.unwrap().as_str(), "Degree Requirements");
                 assert_eq!(requirements.len(), 3);
                 requirements
             }
@@ -1149,7 +1149,7 @@ mod parse_courses_test {
             requirements,
         } = &req_mod
         {
-            assert_eq!(title.as_str(), "Program Options");
+            assert_eq!(title.as_ref().unwrap().as_str(), "Program Options");
             assert_eq!(requirements.len(), 2);
             &requirements[0]
         } else {

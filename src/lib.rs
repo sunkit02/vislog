@@ -374,14 +374,11 @@ impl<'de> Visitor<'de> for RequirementVisitor {
     where
         A: de::MapAccess<'de>,
     {
-        println!("visit_map in RequirementVisitor");
-
         let mut title = None;
         let mut req_narrative: Option<Option<String>> = None;
         let mut courses = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
-            dbg!(&key);
             match key.as_str() {
                 "title" => {
                     if title.is_some() {
@@ -410,10 +407,6 @@ impl<'de> Visitor<'de> for RequirementVisitor {
             }
         }
 
-        dbg!(&title);
-        dbg!(&req_narrative);
-        dbg!(&courses);
-
         // TODO: Implement parsing for `Select` variant
         let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
         let req_narrative =
@@ -430,8 +423,6 @@ impl<'de> Visitor<'de> for RequirementVisitor {
             },
         };
 
-        dbg!(&requirement);
-
         Ok(requirement)
     }
 }
@@ -441,7 +432,6 @@ impl<'de> Deserialize<'de> for CourseEntries {
     where
         D: Deserializer<'de>,
     {
-        println!("hello from CourseEntriesVisitor");
         deserializer.deserialize_any(CourseEntriesVisitor)
     }
 }
@@ -455,12 +445,29 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         formatter.write_str("an array of JSON objects representing a `SelectionEntry`")
     }
 
+    // Normal code path for `Requirement`s with a JSON array of `Course` objects in `course` field
+    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+    where
+        A: de::SeqAccess<'de>,
+    {
+        let mut raw_entries = Vec::with_capacity(seq.size_hint().unwrap_or(4) as usize);
+
+        while let Ok(Some(raw_entry)) = seq.next_element::<RawCourseEntry>() {
+            raw_entries.push(raw_entry)
+        }
+
+        let course_entries = CourseParser::new(raw_entries)
+            .parse()
+            .map_err(|e| de::Error::custom(e))?;
+
+        Ok(course_entries)
+    }
+
+    // Code path for `Requirement`s that have a single JSON object in `course` field
     fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
     where
         A: de::MapAccess<'de>,
     {
-        println!("visit_map in CourseEntriesVisitor");
-
         let mut url: Option<String> = None;
         let mut path: Option<String> = None;
         let mut guid: Option<GUID> = None;
@@ -472,8 +479,6 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         let mut is_narrative: Option<bool> = None;
 
         while let Ok(Some(key)) = map.next_key::<String>() {
-            dbg!(&key);
-
             match key.as_str() {
                 "url" => {
                     if url.is_some() {
@@ -563,15 +568,6 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
             }
         }
 
-        dbg!(&url);
-        dbg!(&path);
-        dbg!(&guid);
-        dbg!(&name);
-        dbg!(&number);
-        dbg!(&subject_name);
-        dbg!(&subject_code);
-        dbg!(&credits);
-
         let url = url.ok_or_else(|| de::Error::missing_field("url"))?;
         let path = path.ok_or_else(|| de::Error::missing_field("path"))?;
         let guid = guid.ok_or_else(|| de::Error::missing_field("guid"))?;
@@ -614,23 +610,6 @@ impl<'de> Visitor<'de> for CourseEntriesVisitor {
         };
 
         Ok(CourseEntries(vec![entry]))
-    }
-
-    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-    where
-        A: de::SeqAccess<'de>,
-    {
-        let mut raw_entries = Vec::with_capacity(seq.size_hint().unwrap_or(4) as usize);
-
-        while let Ok(Some(raw_entry)) = seq.next_element::<RawCourseEntry>() {
-            raw_entries.push(raw_entry)
-        }
-
-        let course_entries = CourseParser::new(raw_entries)
-            .parse()
-            .map_err(|e| de::Error::custom(e))?;
-
-        Ok(course_entries)
     }
 }
 

@@ -67,7 +67,6 @@ pub enum ParseCoursesState {
     NestedReadCourseNoOp(ParsingState),
     NestedOperatorRead(ParsingState),
     NestedReadCourseWithOp(ParsingState),
-    // TODO: Get better name
     NestedTerminatingBlankRead(ParsingState),
 }
 

@@ -10,7 +10,9 @@ use crate::parsing::guid::GUID;
 use crate::Label;
 use crate::{Course, CourseEntries, CourseEntry};
 
-/// Important differentiation between `ParseCourseState` and `ParsingState` is that the first one
+/// Represents the current state of the course parsing state machine
+///
+/// NOTE: Important differentiation between `ParseCourseState` and `ParsingState` is that the first one
 /// represents the current state of the state machine while the latter stores the data being parsed
 /// (`CourseEntries` already parsed, `CourseEntries` currently being worked on, and the `Operator`)
 #[derive(Debug)]
@@ -36,6 +38,28 @@ pub struct CoursesParser {
     parsing_state: ParsingState,
 }
 
+/// Stores the `CourseEntry`s and other information currently/already parsed by the `CourseParser`
+#[derive(Debug, Default)]
+struct ParsingState {
+    /// The operatora relevant to the current Operator Group
+    operator: Option<Operator>,
+    /// The `CourseEntry`s that are relevant to the current Operator Group
+    course_buffer: Option<Vec<CourseEntry>>,
+    /// The `CourseEntry`s that have already been parsed (if the last entry is a nesting Operator Group,
+    /// it may still be accessed during parsing to append more nested `CourseEntry`s to it)
+    entries: Vec<CourseEntry>,
+}
+
+impl ParsingState {
+    fn initial() -> Self {
+        Self {
+            operator: None,
+            course_buffer: None,
+            entries: vec![],
+        }
+    }
+}
+
 impl CoursesParser {
     pub fn new(raw_entries: Vec<RawCourseEntry>) -> Self {
         Self {
@@ -45,6 +69,11 @@ impl CoursesParser {
         }
     }
 
+    /// Consumes the `CoursesParser` struct and parses through all the `RawCourseEntry`s passed in
+    /// when initializing the parser.
+    ///
+    /// NOTE: The `parse` method consumes the `CoursesParser` to avoid having inconsistent statese being
+    /// represented and `parse` or `finish` being called in those states
     pub fn parse(mut self) -> Result<CourseEntries, ParseCoursesError> {
         // process entries
         for raw_entry in mem::take(&mut self.raw_entries) {
@@ -688,6 +717,7 @@ impl CoursesParser {
         }
     }
 
+    /// Call this method when there are no more `RawCourseEntry`s to be processed
     fn finish(mut self) -> Result<CourseEntries, ParseCoursesError> {
         use ParseCoursesError::*;
         use ParseCoursesState::*;
@@ -981,23 +1011,6 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
             subject_code: entry.subject_code.ok_or(anyhow!("missing subject code"))?,
             credits,
         }))
-    }
-}
-
-#[derive(Debug, Default)]
-pub struct ParsingState {
-    pub operator: Option<Operator>,
-    pub course_buffer: Option<Vec<CourseEntry>>,
-    pub entries: Vec<CourseEntry>,
-}
-
-impl ParsingState {
-    fn initial() -> Self {
-        Self {
-            operator: None,
-            course_buffer: None,
-            entries: vec![],
-        }
     }
 }
 

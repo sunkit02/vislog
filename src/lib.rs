@@ -47,16 +47,10 @@ pub enum RequirementModule {
     },
 
     /// When told to "Select an emphasis below:". Ex: Major in Digital Media Communications
+    //
+    // TODO: Finish this
     SelectOneEmphasis { emphases: Vec<Requirement> },
 
-    // SelectFromCourses {
-    //     title: String,
-    //     /// Number of courses or credits to select from the listed coureses
-    //     /// TODO: Give a better name
-    //     select_n: SelectN,
-    //     req_narrative: Option<String>,
-    //     selection: SelectionEntry,
-    // },
     /// `RequirementModule`s where there is no `course` field in API JSON response
     Label { title: String },
 

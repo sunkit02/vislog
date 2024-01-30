@@ -279,7 +279,7 @@ impl<'de> Deserialize<'de> for CourseEntries {
             where
                 A: de::SeqAccess<'de>,
             {
-                let mut raw_entries = Vec::with_capacity(seq.size_hint().unwrap_or(4) as usize);
+                let mut raw_entries = Vec::with_capacity(seq.size_hint().unwrap_or(4));
 
                 while let Ok(Some(raw_entry)) = seq.next_element::<RawCourseEntry>() {
                     raw_entries.push(raw_entry)
@@ -287,7 +287,7 @@ impl<'de> Deserialize<'de> for CourseEntries {
 
                 let course_entries = CoursesParser::new(raw_entries)
                     .parse()
-                    .map_err(|e| de::Error::custom(e))?;
+                    .map_err(de::Error::custom)?;
 
                 Ok(course_entries)
             }

@@ -20,7 +20,7 @@ pub enum ParseCoursesError {
     InvalidFinish(ParseCoursesState),
     #[error("double nesting detected and is not supported")]
     DoubleNesting,
-    #[error("invalid entry found: {0:?}")]
+    #[error("invalid entry found: {}", ParsedCourseEntry::name(.0))]
     InvalidEntry(ParsedCourseEntry),
     #[error("parser has exhausted all input")]
     ExhaustedParser,
@@ -40,8 +40,8 @@ impl CoursesParser {
             let mut inner_parser = ParseCoursesState::init();
             // process entries
             for entry in raw_entries {
-                let entry = ParsedCourseEntry::try_from(entry)
-                    .map_err(|e| ParseCoursesError::ParsingError(e))?;
+                let entry =
+                    ParsedCourseEntry::try_from(entry).map_err(ParseCoursesError::ParsingError)?;
 
                 inner_parser = inner_parser.parse(entry)?;
             }
@@ -831,6 +831,18 @@ pub enum ParsedCourseEntry {
     Blank,
     Label(Label),
     Course(Course),
+}
+
+impl ParsedCourseEntry {
+    pub fn name(&self) -> &'static str {
+        match self {
+            ParsedCourseEntry::And => "And",
+            ParsedCourseEntry::Or => "Or",
+            ParsedCourseEntry::Blank => "Blank",
+            ParsedCourseEntry::Label(_) => "Label",
+            ParsedCourseEntry::Course(_) => "Course",
+        }
+    }
 }
 
 impl TryFrom<RawCourseEntry> for ParsedCourseEntry {

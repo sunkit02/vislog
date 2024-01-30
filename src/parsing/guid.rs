@@ -48,7 +48,7 @@ impl TryFrom<&str> for GUID {
                                 // whether the current `n` gets shifted 4 bits to the left.
                                 // `byte_index` should be 1 when `byte_index` == 0 and 0 when
                                 // `byte_index` == 1
-                                byte |= n << 4 * (byte_index ^ 1);
+                                byte |= n << (4 * (byte_index ^ 1));
                                 byte_index += 1;
                             } else {
                                 return Err(GUIDParsingError::InvalidCharacter);
@@ -95,7 +95,7 @@ where
     // Ommit the curly braces in the source when parsing
     s = &s[1..s.len() - 1];
 
-    GUID::try_from(s).map_err(|e| serde::de::Error::custom(e))
+    GUID::try_from(s).map_err(serde::de::Error::custom)
 }
 
 #[cfg(test)]

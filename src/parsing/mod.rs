@@ -8,13 +8,13 @@ use crate::{
 };
 
 use self::{
-    course::{parse_course_credits, CourseParser, RawCourseEntry},
+    courses::{parse_course_credits, CoursesParser, RawCourseEntry},
     guid::GUID,
 };
 
-pub mod course;
+pub mod courses;
 pub mod guid;
-pub mod select;
+pub mod select_courses;
 
 impl<'de> Deserialize<'de> for Requirements {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -285,7 +285,7 @@ impl<'de> Deserialize<'de> for CourseEntries {
                     raw_entries.push(raw_entry)
                 }
 
-                let course_entries = CourseParser::new(raw_entries)
+                let course_entries = CoursesParser::new(raw_entries)
                     .parse()
                     .map_err(|e| de::Error::custom(e))?;
 

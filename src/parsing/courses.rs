@@ -10,7 +10,7 @@ use crate::parsing::guid::GUID;
 use crate::Label;
 use crate::{Course, CourseEntries, CourseEntry};
 
-pub struct CourseParser {
+pub struct CoursesParser {
     raw_entries: Option<Vec<RawCourseEntry>>,
 }
 
@@ -28,7 +28,7 @@ pub enum ParseCoursesError {
     ParsingError(AnyhowError),
 }
 
-impl CourseParser {
+impl CoursesParser {
     pub fn new(raw_entries: Vec<RawCourseEntry>) -> Self {
         Self {
             raw_entries: Some(raw_entries),

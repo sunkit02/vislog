@@ -1,3 +1,4 @@
+use serde::{Deserialize, Deserializer};
 use thiserror::Error;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -83,6 +84,18 @@ fn hex_to_num(c: char) -> Option<u8> {
     };
 
     Some(n as u8)
+}
+
+pub(crate) fn deserialize_guid_with_curly_braces<'de, D>(deserializer: D) -> Result<GUID, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let mut s: &str = Deserialize::deserialize(deserializer)?;
+
+    // Ommit the curly braces in the source when parsing
+    s = &s[1..s.len() - 1];
+
+    GUID::try_from(s).map_err(|e| serde::de::Error::custom(e))
 }
 
 #[cfg(test)]

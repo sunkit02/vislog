@@ -1,0 +1,396 @@
+{
+  "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/College-of-Arts-and-Sciences/Department-of-Sociology-and-Family-Studies/Major-in-Family-Studies-36-hours",
+  "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-sociology-and-family-studies/major-in-family-studies-36-hours",
+  "GUID": "{43F1F288-5A9E-4347-81D7-55723ECD6C54}",
+  "title": "Major in Family Studies—36 hours",
+  "content": "<p class='sc-BodyText'>The family, as a basic building block of society, is critical to the functioning of society as a whole. The contribution of the Christian community to the development of leaders in family relations is crucial. The Family Studies major focuses on the development of the individual in the context of family and society. The program is designed to prepare students for (a) professional careers in a variety of human service areas; (b) leadership roles in church, school, and community; (c) personal roles in family living; and (d) graduate education. Graduates who do not pursue graduate study typically find employment as parent educators, child life specialists and program directors in public and private agencies.</p>",
+  "bottom_content": null,
+  "in_program_list": "True",
+  "credits": "0",
+  "credits_min": null,
+  "credits_max": null,
+  "auto_credits": "False",
+  "requirements": [
+    {
+      "title": "Degree Requirements",
+      "content": null,
+      "credits": "0",
+      "credits_min": null,
+      "credits_max": null,
+      "auto_credits": "False",
+      "requirement_list": {
+        "title": "Major Requirements:",
+        "req_narrative": null,
+        "req_note": null,
+        "credits": "0",
+        "credits_min": null,
+        "credits_max": null,
+        "auto_credits": "False",
+        "course": [
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/200/soc-214",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/200/SOC-214",
+            "guid": "{61ED4FCD-A58A-4672-8465-FB3988E43C44}",
+            "name": "Social Research I",
+            "number": "214",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/200/soc-225",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/200/SOC-225",
+            "guid": "{40D4E743-D5D9-4BF1-AAB6-1EB285DA5386}",
+            "name": "Relationshps, Marriage and Families",
+            "number": "225",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/300/soc-325",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/300/SOC-325",
+            "guid": "{6F154DA0-8618-46A8-94BD-617CE050237E}",
+            "name": "Families Across Cultures",
+            "number": "325",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/300/soc-356",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/300/SOC-356",
+            "guid": "{8EFCBFE5-287D-402A-810B-B2A103090EEA}",
+            "name": "Food, Culture and Society",
+            "number": "356",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/300/soc-370",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/300/SOC-370",
+            "guid": "{CD7E4102-3ABA-45EC-A9E6-050CA3F5AB08}",
+            "name": "Gender and Sexuality",
+            "number": "370",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/400/soc-417",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/400/SOC-417",
+            "guid": "{8AED1320-FD10-433D-85BD-C501B1C44F67}",
+            "name": "Social Theory",
+            "number": "417",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+            "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+            "name": "",
+            "number": null,
+            "subject_name": null,
+            "subject_code": null,
+            "credits": "0",
+            "is_narrative": "True"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/400/soc-411",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/400/SOC-411",
+            "guid": "{DA4EAF11-EE3E-4FC7-9249-38FE67638DF5}",
+            "name": "Internship",
+            "number": "411",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/or",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Or",
+            "guid": "{1002D167-9303-4865-8E0A-CE2B3E2BFF95}",
+            "name": "Or",
+            "number": null,
+            "subject_name": null,
+            "subject_code": null,
+            "credits": "0",
+            "is_narrative": "True"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/400/soc-498",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/400/SOC-498",
+            "guid": "{8F7C9AD2-5569-4495-9E15-8F9A8B276526}",
+            "name": "Senior Capstone Seminar",
+            "number": "498",
+            "subject_name": "Sociology",
+            "subject_code": "SOC",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+            "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+            "name": "",
+            "number": null,
+            "subject_name": null,
+            "subject_code": null,
+            "credits": "0",
+            "is_narrative": "True"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/sw-social-work/300/sw-338",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SW-Social-Work/300/SW-338",
+            "guid": "{076B67B2-AC41-4E33-A77F-791EBCD8B6A4}",
+            "name": "Children and Families At Risk",
+            "number": "338",
+            "subject_name": "Social Work",
+            "subject_code": "SW",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+            "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+            "name": "",
+            "number": null,
+            "subject_name": null,
+            "subject_code": null,
+            "credits": "0",
+            "is_narrative": "True"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/psy-psychology/200/psy-219",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/PSY-Psychology/200/PSY-219",
+            "guid": "{791361E1-01DC-4EF7-9DE1-9D9EC85B43F6}",
+            "name": "Developmental Psychology",
+            "number": "219",
+            "subject_name": "Psychology",
+            "subject_code": "PSY",
+            "credits": "3",
+            "is_narrative": "False"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/or",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Or",
+            "guid": "{1002D167-9303-4865-8E0A-CE2B3E2BFF95}",
+            "name": "Or",
+            "number": null,
+            "subject_name": null,
+            "subject_code": null,
+            "credits": "0",
+            "is_narrative": "True"
+          },
+          {
+            "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/psy-psychology/300/psy-324",
+            "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/PSY-Psychology/300/PSY-324",
+            "guid": "{40FA4721-2585-4DF8-BDF1-C3D03177825F}",
+            "name": "Child Growth and Development",
+            "number": "324",
+            "subject_name": "Psychology",
+            "subject_code": "PSY",
+            "credits": "3",
+            "is_narrative": "False"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Select 9 hours from Chosen Concentration:",
+      "content": null,
+      "credits": "0",
+      "credits_min": null,
+      "credits_max": null,
+      "auto_credits": "False",
+      "requirement_list": [
+        {
+          "title": "Pre-Child Life Concentration:",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/300/soc-322",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/300/SOC-322",
+              "guid": "{50E7E2CD-B66D-400A-BE16-23DD644D2EA3}",
+              "name": "Sociology of Health and Medicine",
+              "number": "322",
+              "subject_name": "Sociology",
+              "subject_code": "SOC",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/400/soc-420",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/400/SOC-420",
+              "guid": "{737ED8D6-658F-421F-A15E-5EE46F08FBED}",
+              "name": "Death and Dying",
+              "number": "420",
+              "subject_name": "Sociology",
+              "subject_code": "SOC",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/psy-psychology/300/psy-313",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/PSY-Psychology/300/PSY-313",
+              "guid": "{83221E62-F601-4BBB-AA27-F7A913039B07}",
+              "name": "Adolescent Psychology",
+              "number": "313",
+              "subject_name": "Psychology",
+              "subject_code": "PSY",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        },
+        {
+          "title": "Family Ministry Concentration:",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/300/soc-319",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/300/SOC-319",
+              "guid": "{EA132BAB-104B-4D66-98A6-189330B376D0}",
+              "name": "Sociology of Religion",
+              "number": "319",
+              "subject_name": "Sociology",
+              "subject_code": "SOC",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/300/soc-321",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/300/SOC-321",
+              "guid": "{78FFECBE-B58C-454A-8DE8-F66D85C3287C}",
+              "name": "Social Gerontology",
+              "number": "321",
+              "subject_name": "Sociology",
+              "subject_code": "SOC",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/or",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/Or",
+              "guid": "{1002D167-9303-4865-8E0A-CE2B3E2BFF95}",
+              "name": "Or",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/chr-christian-studies/200/chr-271",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/CHR-Christian-Studies/200/CHR-271",
+              "guid": "{D63F5B1F-22EA-42B3-AC7C-C83BC8A68D2E}",
+              "name": "Youth Ministry Strategies",
+              "number": "271",
+              "subject_name": "Christian Studies",
+              "subject_code": "CHR",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/narrative-courses/space",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/Narrative-Courses/SPACE",
+              "guid": "{CDBD8A70-EEF6-4A35-958C-CBB04575EFC4}",
+              "name": "",
+              "number": null,
+              "subject_name": null,
+              "subject_code": null,
+              "credits": "0",
+              "is_narrative": "True"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/sw-social-work/300/sw-307",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SW-Social-Work/300/SW-307",
+              "guid": "{8E06DC59-E67F-487B-ABF3-FA7595C8DAD8}",
+              "name": "Faith-Based Social Serivces",
+              "number": "307",
+              "subject_name": "Social Work",
+              "subject_code": "SW",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        },
+        {
+          "title": "Pre-Counseling:",
+          "req_narrative": null,
+          "req_note": null,
+          "credits": "0",
+          "credits_min": null,
+          "credits_max": null,
+          "auto_credits": "False",
+          "course": [
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/sw-social-work/300/sw-305",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SW-Social-Work/300/SW-305",
+              "guid": "{652923F3-8DE5-4886-9186-22FC775481AC}",
+              "name": "Psychopathology",
+              "number": "305",
+              "subject_name": "Social Work",
+              "subject_code": "SW",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/psy-psychology/400/psy-425",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/PSY-Psychology/400/PSY-425",
+              "guid": "{88A1C443-BC0E-49EE-9B8C-2C6361B0B2E4}",
+              "name": "Introduction to Counseling",
+              "number": "425",
+              "subject_name": "Psychology",
+              "subject_code": "PSY",
+              "credits": "3",
+              "is_narrative": "False"
+            },
+            {
+              "url": "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/courses/soc-sociology/400/soc-419",
+              "path": "/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue/Courses/SOC-Sociology/400/SOC-419",
+              "guid": "{7DB24067-17B7-4C18-BE7E-69C70E46D5FF}",
+              "name": "Social Diversity and Inequality",
+              "number": "419",
+              "subject_name": "Sociology",
+              "subject_code": "SOC",
+              "credits": "3",
+              "is_narrative": "False"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

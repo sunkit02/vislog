@@ -6,8 +6,9 @@ use anyhow::Error as AnyhowError;
 use serde::Deserialize;
 use thiserror::Error;
 
+use crate::parsing::guid::GUID;
 use crate::Label;
-use crate::{guid::GUID, Course, CourseEntries, CourseEntry};
+use crate::{Course, CourseEntries, CourseEntry};
 
 pub struct CourseParser {
     raw_entries: Option<Vec<RawCourseEntry>>,

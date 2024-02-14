@@ -1200,15 +1200,9 @@ mod parse_courses_test {
         }
 
         match &requirements[1] {
-            Requirement::Label {
-                title,
-                req_narrative,
-            } => {
-                assert_eq!(
-                    title.as_ref().unwrap().as_str(),
-                    "Select CSC Upper-level Elective: 3 hours"
-                );
-                assert_eq!(req_narrative, &None);
+            Requirement::SelectFromCourses { title, courses } => {
+                assert_eq!(title.as_str(), "Select CSC Upper-level Elective: 3 hours");
+                assert_eq!(courses, &None);
             }
             invalid_requirement => panic!(
                 "`requirement` should have `Requirement::Label`. Got: {:?}",
@@ -1217,10 +1211,10 @@ mod parse_courses_test {
         }
 
         match &requirements[2] {
-            Requirement::Courses { title, entries } => {
-                assert_eq!(title.as_ref().unwrap().as_str(), "Select one track:");
-                assert_eq!(entries.0.len(), 1);
-                match &entries.0[0] {
+            Requirement::SelectFromCourses { title, courses } => {
+                assert_eq!(title.as_str(), "Select one track:");
+                assert_eq!(courses.as_ref().unwrap().0.len(), 1);
+                match &courses.as_ref().unwrap().0[0] {
                     CourseEntry::Or(and_course_entries) => {
                         for entry in &and_course_entries.0 {
                             assert!(matches!(entry, CourseEntry::And(_)));

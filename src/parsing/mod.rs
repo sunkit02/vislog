@@ -14,7 +14,6 @@ use self::{
 
 pub mod courses;
 pub mod guid;
-pub mod select_courses;
 
 impl<'de> Deserialize<'de> for Requirements {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -203,7 +202,7 @@ impl<'de> Deserialize<'de> for Requirement {
             where
                 A: de::MapAccess<'de>,
             {
-                let mut title = None;
+                let mut title: Option<Option<String>> = None;
                 let mut req_narrative: Option<Option<String>> = None;
                 let mut courses = None;
 
@@ -236,17 +235,19 @@ impl<'de> Deserialize<'de> for Requirement {
                     }
                 }
 
-                // TODO: Implement parsing for `Select` variant
                 let title = title.ok_or_else(|| de::Error::missing_field("title"))?;
                 let req_narrative =
                     req_narrative.ok_or_else(|| de::Error::missing_field("req_narrative"))?;
 
-                let requirement = match courses {
-                    Some(course_entries) => Requirement::Courses {
+                let requirement = match (title, courses) {
+                    (Some(title), courses) if title.contains("Select") => {
+                        Requirement::SelectFromCourses { title, courses }
+                    }
+                    (title, Some(course_entries)) => Requirement::Courses {
                         title,
                         entries: course_entries,
                     },
-                    None => Requirement::Label {
+                    (title, None) => Requirement::Label {
                         title,
                         req_narrative,
                     },

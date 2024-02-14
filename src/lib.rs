@@ -67,8 +67,12 @@ pub enum Requirement {
         /// Originally `course` in the JSON payload:w
         entries: CourseEntries,
     },
-    Select {
-        entries: CourseEntries,
+    SelectFromCourses {
+        title: String,
+        // TODO: Add the `num_to_select` and `selection_unit` fields
+        // num_to_select: u8,
+        // selection_unit: CourseUnit,
+        courses: Option<CourseEntries>,
     },
     Label {
         title: Option<String>,
@@ -77,9 +81,15 @@ pub enum Requirement {
 }
 
 #[derive(Debug)]
+pub enum CourseUnit {
+    Course,
+    Hours,
+}
+
+#[derive(Debug, PartialEq, Eq)]
 pub struct CourseEntries(Vec<CourseEntry>);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum CourseEntry {
     And(CourseEntries),
     Or(CourseEntries),
@@ -97,8 +107,6 @@ pub enum CourseEntry {
 // struct `RawRequirement` in the Deserialization implementation of the `Requirements` struct. The
 // actual implementation of the special deserialization is in `CourseEntries` struct's
 // `Deserialization` implementation where a sepcial `visit_map` is implemented for this used case
-//
-// TODO: Take account for labels at this level. Example in Bachelor of Music with Major in Composition
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Course {
     pub url: String,
@@ -144,18 +152,6 @@ pub struct Label {
     pub number: Option<String>,
     pub subject_code: Option<String>,
     pub credits: (u8, Option<u8>),
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub struct SelectN {
-    pub n: u8,
-    pub unit: CourseSelectionUnit,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-pub enum CourseSelectionUnit {
-    Credits,
-    Courses,
 }
 
 #[cfg(test)]

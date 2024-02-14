@@ -8,7 +8,7 @@ use crate::parsing::guid::{deserialize_guid_with_curly_braces, GUID};
 pub mod parsing;
 
 /// Representation of a program in the catalog
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq, Eq)]
 pub struct Program {
     /// Link to the official catalog
     pub url: String,
@@ -27,7 +27,7 @@ pub struct Program {
     pub requirements: Option<Requirements>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Requirements {
     Single(RequirementModule),
     Many(Vec<RequirementModule>),
@@ -35,7 +35,7 @@ pub enum Requirements {
     SelectTrack,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum RequirementModule {
     SingleBasicRequirement {
         title: Option<String>,
@@ -62,7 +62,7 @@ pub enum RequirementModule {
 
 // TODO: Extract all the useful information from the `req_narrative` field for each of the variants
 // NOTE: The field `req_note` may contain useful information that can potentially be parsed
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Requirement {
     Courses {
         title: Option<String>,

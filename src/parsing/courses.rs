@@ -575,11 +575,11 @@ impl CoursesParser {
                         // `nesting_operator` at the same time
                         let nesting_operator = match nesting_operator_group {
                             CourseEntry::And(group) => {
-                                group.0.push(operator_entry);
+                                group.push(operator_entry);
                                 Operator::And
                             }
                             CourseEntry::Or(group) => {
-                                group.0.push(operator_entry);
+                                group.push(operator_entry);
                                 Operator::Or
                             }
                             invalid_course_entry => {
@@ -640,10 +640,10 @@ impl CoursesParser {
                                 // Push `operator_entry` into `nesting_operator_group`
                                 match nesting_operator_group {
                                     CourseEntry::And(group) => {
-                                        group.0.push(operator_entry);
+                                        group.push(operator_entry);
                                     }
                                     CourseEntry::Or(group) => {
-                                        group.0.push(operator_entry);
+                                        group.push(operator_entry);
                                     }
                                     invalid_course_entry => {
                                         return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
@@ -693,10 +693,10 @@ impl CoursesParser {
                                 // Push `operator_entry` into `nesting_operator_group`
                                 match nesting_operator_group {
                                     CourseEntry::And(group) => {
-                                        group.0.push(operator_entry);
+                                        group.push(operator_entry);
                                     }
                                     CourseEntry::Or(group) => {
-                                        group.0.push(operator_entry);
+                                        group.push(operator_entry);
                                     }
                                     invalid_course_entry => {
                                         return Err(ParsingError(anyhow!("Got invalid `CourseEntry` when getting nesting operator group: {:?}", invalid_course_entry)));
@@ -839,11 +839,11 @@ impl CoursesParser {
 
                 match nesting_operator_group {
                     CourseEntry::And(group) => {
-                        group.0.push(operator_entry);
+                        group.push(operator_entry);
                         Operator::And
                     }
                     CourseEntry::Or(group) => {
-                        group.0.push(operator_entry);
+                        group.push(operator_entry);
                         Operator::Or
                     }
                     invalid_course_entry => {
@@ -892,11 +892,11 @@ impl CoursesParser {
 
                 match nesting_operator_group {
                     CourseEntry::And(group) => {
-                        group.0.push(operator_entry);
+                        group.push(operator_entry);
                         Operator::And
                     }
                     CourseEntry::Or(group) => {
-                        group.0.push(operator_entry);
+                        group.push(operator_entry);
                         Operator::Or
                     }
                     invalid_course_entry => {
@@ -1150,7 +1150,7 @@ mod parse_courses_test {
 
         if let Requirement::Courses { title, entries } = &requirement {
             assert_eq!(title.as_ref().unwrap().as_str(), "Minor Requirements:");
-            assert_eq!(entries.0.len(), 6);
+            assert_eq!(entries.len(), 6);
         } else {
             panic!("program requirement should be `Requirement::Courses`");
         }
@@ -1191,7 +1191,7 @@ mod parse_courses_test {
         match &requirements[0] {
             Requirement::Courses { title, entries } => {
                 assert_eq!(title.as_ref().unwrap().as_str(), "Minor Requirements:");
-                assert_eq!(entries.0.len(), 4);
+                assert_eq!(entries.len(), 4);
             }
             invalid_requirement => panic!(
                 "`requirement` should have `Requirement::Courses`. Got: {:?}",
@@ -1213,10 +1213,10 @@ mod parse_courses_test {
         match &requirements[2] {
             Requirement::SelectFromCourses { title, courses } => {
                 assert_eq!(title.as_str(), "Select one track:");
-                assert_eq!(courses.as_ref().unwrap().0.len(), 1);
-                match &courses.as_ref().unwrap().0[0] {
+                assert_eq!(courses.as_ref().unwrap().len(), 1);
+                match &courses.as_ref().unwrap()[0] {
                     CourseEntry::Or(and_course_entries) => {
-                        for entry in &and_course_entries.0 {
+                        for entry in and_course_entries.iter() {
                             assert!(matches!(entry, CourseEntry::And(_)));
                         }
                     }
@@ -1264,7 +1264,7 @@ mod parse_courses_test {
                 title.as_ref().unwrap().as_str(),
                 "Intercultural Studies Major or Minor with Communication Studies Major:"
             );
-            assert_eq!(entries.0.len(), 13);
+            assert_eq!(entries.len(), 13);
         } else {
             panic!(
                 "Expected `Requirement::Courses`. Got: {:?}",

@@ -1,9 +1,46 @@
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize};
 use thiserror::Error;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct GUID {
     inner: [u8; 16],
+}
+
+impl Serialize for GUID {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_str())
+    }
+}
+
+impl std::fmt::Debug for GUID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut n: u128 = 0;
+        for (i, byte) in self.inner.iter().enumerate() {
+            let byte = *byte as u128;
+            n |= byte << (8 * (15 - i as u128))
+        }
+
+        let hex_chars = format!("{:X}", n);
+
+        write!(
+            f,
+            "{}-{}-{}-{}-{}",
+            &hex_chars[..8],
+            &hex_chars[8..12],
+            &hex_chars[12..16],
+            &hex_chars[16..20],
+            &hex_chars[20..]
+        )
+    }
+}
+
+impl std::fmt::Display for GUID {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
 }
 
 #[derive(Debug, Error, PartialEq, Eq)]
@@ -185,5 +222,13 @@ mod test {
         let s = "+7AD875E-1344-4D9B-A883-32E748890908";
 
         assert_eq!(GUID::try_from(s), Err(GUIDParsingError::InvalidCharacter));
+    }
+
+    #[test]
+    fn parse_guid_then_back_to_str() {
+        let s = "C7AD875E-1344-4D9B-A883-32E748890908";
+        let guid = GUID::try_from(s).expect("Failed to parse GUID");
+
+        assert_eq!(guid.to_string(), s);
     }
 }

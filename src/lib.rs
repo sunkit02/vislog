@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::parsing::guid::{deserialize_guid_with_curly_braces, GUID};
@@ -8,7 +8,7 @@ use crate::parsing::guid::{deserialize_guid_with_curly_braces, GUID};
 pub mod parsing;
 
 /// Representation of a program in the catalog
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, PartialEq, Eq, Serialize)]
 pub struct Program {
     /// Link to the official catalog
     pub url: String,
@@ -27,7 +27,8 @@ pub struct Program {
     pub requirements: Option<Requirements>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "type", content = "data")]
 pub enum Requirements {
     Single(RequirementModule),
     Many(Vec<RequirementModule>),
@@ -35,7 +36,8 @@ pub enum Requirements {
     SelectTrack,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "type", content = "data")]
 pub enum RequirementModule {
     SingleBasicRequirement {
         title: Option<String>,
@@ -62,7 +64,8 @@ pub enum RequirementModule {
 
 // TODO: Extract all the useful information from the `req_narrative` field for each of the variants
 // NOTE: The field `req_note` may contain useful information that can potentially be parsed
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "type", content = "data")]
 pub enum Requirement {
     Courses {
         title: Option<String>,
@@ -88,7 +91,7 @@ pub enum CourseUnit {
     Hours,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize)]
 pub struct CourseEntries(Vec<CourseEntry>);
 
 impl Deref for CourseEntries {
@@ -105,7 +108,8 @@ impl DerefMut for CourseEntries {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "type", content = "data")]
 pub enum CourseEntry {
     And(CourseEntries),
     Or(CourseEntries),
@@ -123,7 +127,7 @@ pub enum CourseEntry {
 // struct `RawRequirement` in the Deserialization implementation of the `Requirements` struct. The
 // actual implementation of the special deserialization is in `CourseEntries` struct's
 // `Deserialization` implementation where a sepcial `visit_map` is implemented for this used case
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Course {
     pub url: String,
     pub path: String,
@@ -160,7 +164,7 @@ pub struct Course {
     pub credits: (u8, Option<u8>),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Label {
     pub url: String,
     pub guid: GUID,

@@ -15,7 +15,7 @@ pub struct Program {
 
     /// GUID given by the system
     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
-    #[serde(rename = "GUID")]
+    #[serde(alias = "GUID")]
     pub guid: GUID,
 
     /// Name of the program

@@ -70,7 +70,7 @@ pub enum Requirement {
     Courses {
         title: Option<String>,
         /// Originally `course` in the JSON payload:w
-        entries: CourseEntries,
+        courses: CourseEntries,
     },
     SelectFromCourses {
         title: String,
@@ -261,12 +261,12 @@ mod test {
             panic!("Expected `RequirementModule` to be the `BasicRequirements` variant");
         };
 
-        if let Requirement::Courses { title, entries } = &requirements[0] {
+        if let Requirement::Courses { title, courses } = &requirements[0] {
             assert_eq!(
                 title.as_ref().unwrap().as_str(),
                 "Prerequisite/Corequisite:"
             );
-            assert_eq!(entries.len(), 1);
+            assert_eq!(courses.len(), 1);
         } else {
             panic!(
                 "Expected `Requirement` to be the `Courses` variant. Got: {:?}",

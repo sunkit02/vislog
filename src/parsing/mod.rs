@@ -100,7 +100,7 @@ impl<'de> Deserialize<'de> for Requirements {
                     }) => {
                         let requirement = Requirement::Courses {
                             title: req_title,
-                            entries: CourseEntries(vec![CourseEntry::Course(course)]),
+                            courses: CourseEntries(vec![CourseEntry::Course(course)]),
                         };
                         RequirementModule::SingleBasicRequirement { title, requirement }
                     }
@@ -245,7 +245,7 @@ impl<'de> Deserialize<'de> for Requirement {
                     }
                     (title, Some(course_entries)) => Requirement::Courses {
                         title,
-                        entries: course_entries,
+                        courses: course_entries,
                     },
                     (title, None) => Requirement::Label {
                         title,

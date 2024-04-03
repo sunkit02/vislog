@@ -103,7 +103,7 @@ fn get_req_courses_titles(req: &Requirement) -> Vec<&str> {
     }
 
     match req {
-        Requirement::Courses { entries, .. } => extract_course_titles(entries),
+        Requirement::Courses { courses, .. } => extract_course_titles(courses),
         Requirement::SelectFromCourses { courses, .. } => courses
             .as_ref()
             .map(extract_course_titles)

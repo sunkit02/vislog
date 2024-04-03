@@ -1092,22 +1092,14 @@ mod parse_courses_test {
             panic!("program should have `BasicRequirements` variant of `RequirementModule`");
         };
 
-        if let Requirement::Courses {
-            title,
-            entries: courses,
-        } = &requirements[0]
-        {
+        if let Requirement::Courses { title, courses } = &requirements[0] {
             assert_eq!(title.as_ref().unwrap().as_str(), "Prerequisites:");
             assert_eq!(courses.0.len(), 2);
         } else {
             panic!("program requirements[0] should be `Requirement::Courses`");
         }
 
-        if let Requirement::Courses {
-            title,
-            entries: courses,
-        } = &requirements[1]
-        {
+        if let Requirement::Courses { title, courses } = &requirements[1] {
             assert_eq!(title.as_ref().unwrap().as_str(), "Major Courses:");
             assert_eq!(courses.0.len(), 20);
         } else {
@@ -1148,9 +1140,9 @@ mod parse_courses_test {
             panic!("program should have `SingleBasicRequirement` variant of `RequirementModule`");
         };
 
-        if let Requirement::Courses { title, entries } = &requirement {
+        if let Requirement::Courses { title, courses } = &requirement {
             assert_eq!(title.as_ref().unwrap().as_str(), "Minor Requirements:");
-            assert_eq!(entries.len(), 6);
+            assert_eq!(courses.len(), 6);
         } else {
             panic!("program requirement should be `Requirement::Courses`");
         }
@@ -1189,9 +1181,9 @@ mod parse_courses_test {
         };
 
         match &requirements[0] {
-            Requirement::Courses { title, entries } => {
+            Requirement::Courses { title, courses } => {
                 assert_eq!(title.as_ref().unwrap().as_str(), "Minor Requirements:");
-                assert_eq!(entries.len(), 4);
+                assert_eq!(courses.len(), 4);
             }
             invalid_requirement => panic!(
                 "`requirement` should have `Requirement::Courses`. Got: {:?}",
@@ -1259,12 +1251,12 @@ mod parse_courses_test {
             );
         };
 
-        if let Requirement::Courses { title, entries } = req_with_chained_operator {
+        if let Requirement::Courses { title, courses } = req_with_chained_operator {
             assert_eq!(
                 title.as_ref().unwrap().as_str(),
                 "Intercultural Studies Major or Minor with Communication Studies Major:"
             );
-            assert_eq!(entries.len(), 13);
+            assert_eq!(courses.len(), 13);
         } else {
             panic!(
                 "Expected `Requirement::Courses`. Got: {:?}",

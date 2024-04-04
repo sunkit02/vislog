@@ -8,6 +8,10 @@ use crate::parsing::guid::{deserialize_guid_with_curly_braces, GUID};
 pub mod parsing;
 
 /// Representation of a program in the catalog
+///
+// TODO: Make Program and all of its sub-components interoperable between
+// pre-parsed JSON string, post-parsed JSON string, and the respective
+// serde_json::Value representations of each
 #[derive(Debug, Deserialize, PartialEq, Eq, Serialize)]
 pub struct Program {
     /// Link to the official catalog
@@ -174,6 +178,52 @@ pub struct Label {
     pub credits: (u8, Option<u8>),
 }
 
+/// Representation of a course along with additional details
+/// NOTE: Unknown type are represented with `Option<()>` since all examples where `null`
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct CourseDetails {
+    pub url: String,
+    pub guid: GUID,
+    pub path: String,
+    pub subject_code: String,
+    pub subject_name: String,
+    pub number: String,
+    pub name: String,
+    pub credits_min: u8,
+    pub credits_max: Option<u8>,
+    pub description: String,
+    pub prerequisite_narrative: Option<String>,
+    pub prerequisite: Option<GUID>,
+    pub corequisite_narrative: Option<String>,
+    pub corequisite: Option<GUID>,
+}
+
+// /// Representation of a course along with additional details
+// /// NOTE: Unknown type are represented with `Option<()>` since all examples where `null`
+// #[derive(Debug, Clone, PartialEq, Serialize)]
+// pub struct CourseDetails {
+//     pub url: String,
+//     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
+//     #[serde(alias = "GUID")]
+//     pub guid: GUID,
+//     pub path: String,
+//     pub subject_code: String,
+//     pub subject_name: String,
+//     pub number: String,
+//     pub name: String,
+//     #[serde(deserialize_with = "parsing::deserialize_and_floor_u8_from_float_str")]
+//     pub credits_min: u8,
+//     #[serde(deserialize_with = "parsing::deserialize_and_floor_u8_from_float_str")]
+//     pub credits_max: u8,
+//     pub description: String,
+//     pub prerequisite_narrative: Option<String>,
+//     #[serde(deserialize_with = "parsing::deserialize_extract_guid_only")]
+//     pub prerequisite: Option<GUID>,
+//     pub corequisite_narrative: Option<String>,
+//     #[serde(deserialize_with = "parsing::deserialize_extract_guid_only")]
+//     pub corequisite: Option<GUID>,
+// }
+
 #[cfg(test)]
 mod test {
     use core::panic;
@@ -276,10 +326,56 @@ mod test {
     }
 
     #[test]
+    #[ignore = "figure out the string issue later"]
+    fn can_parse_program_from_value() {
+        let program_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
+        let program_json_value: Value = serde_json::from_str(&program_json).unwrap();
+        let program_parsed_from_json_value: Program =
+            serde_json::from_value(program_json_value).unwrap();
+
+        let program_parsed_from_str: Program = serde_json::from_str(&program_json).unwrap();
+
+        assert_eq!(program_parsed_from_str, program_parsed_from_json_value);
+    }
+
+    #[test]
     #[ignore = "fix this mystery later"]
     fn can_parse_program_claiming_to_have_trailing_characters() {
         let program_json = std::fs::read_to_string("./data/family_studies_major.json").unwrap();
         let _parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
+    }
+
+    #[test]
+    fn can_parse_all_course_details() {
+        let courses_json = std::fs::read_to_string("./data/courses.json").unwrap();
+        let courses_json: Value = serde_json::from_str(&courses_json).unwrap();
+
+        let course_array_json = {
+            if let Value::Object(obj) = courses_json {
+                if let Some(Value::Object(inner_obj)) = obj.get("courses") {
+                    if let Some(Value::Array(courses_array)) = inner_obj.get("course") {
+                        courses_array.clone()
+                    } else {
+                        panic!("Expected an array. Got: {inner_obj:?}");
+                    }
+                } else {
+                    panic!("Expected an object with key: 'courses'. Got: {obj:?}");
+                }
+            } else {
+                panic!("Expected an object. Got: {courses_json:?}");
+            }
+        };
+
+        dbg!(serde_json::from_value::<CourseDetails>(course_array_json[0].clone()).unwrap());
+
+        panic!();
+        // let parsed_courses: Vec<CourseDetails> = course_array_json
+        //     .into_iter()
+        //     .map(serde_json::from_value)
+        //     .flatten()
+        //     .collect();
+
+        // assert_eq!(parsed_courses.len(), 1870);
     }
 }

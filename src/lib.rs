@@ -121,16 +121,17 @@ pub enum CourseEntry {
     Course(Course),
 }
 
-/// Representation of a course in the catalog
+/// Representation of a the bare minimum of course in the catalog more details
+/// are contained in (CourseDetails)[crate::CourseDetails]
 //
-// NOTE: `Course` structs are normally deseriazed in a custom way through the `CourseEntries` struct to
+// NOTE: `Course` structs are normally deserialized in a custom way through the `CourseEntries` struct to
 // handle the potential operator entries (And, Or, etc) mixed within the array in the `course`
 // field in JSON objects representing the `Requirement` struct. However, in special cases where the
 // `course` field holds a JSON object representing a single `Course` struct, a different code path
 // where the `Course` is separately deserialized into an intermediate struct, the private enum
 // struct `RawRequirement` in the Deserialization implementation of the `Requirements` struct. The
 // actual implementation of the special deserialization is in `CourseEntries` struct's
-// `Deserialization` implementation where a sepcial `visit_map` is implemented for this used case
+// `Deserialization` implementation where a sepcial `visit_map` is implemented for this use case
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Course {
     pub url: String,
@@ -179,7 +180,6 @@ pub struct Label {
 }
 
 /// Representation of a course along with additional details
-/// NOTE: Unknown type are represented with `Option<()>` since all examples where `null`
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct CourseDetails {
     pub url: String,

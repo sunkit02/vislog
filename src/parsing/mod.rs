@@ -477,10 +477,10 @@ impl<'de> Deserialize<'de> for CourseDetails {
                 let mut guid: Option<String> = None;
                 let mut path: Option<String> = None;
                 let mut subject_code: Option<String> = None;
-                let mut subject_name: Option<String> = None;
+                let mut subject_name: Option<Option<String>> = None;
                 let mut number: Option<String> = None;
                 let mut name: Option<String> = None;
-                let mut credits_min: Option<String> = None;
+                let mut credits_min: Option<Option<String>> = None;
                 let mut credits_max: Option<Option<String>> = None;
                 let mut description: Option<String> = None;
                 let mut prerequisite_narrative: Option<Option<String>> = None;
@@ -595,13 +595,19 @@ impl<'de> Deserialize<'de> for CourseDetails {
                 // Transform into integers
                 let credits_min = {
                     let float_str = credits_min.ok_or(de::Error::missing_field("credits_min"))?;
-                    let float: f32 = float_str.parse().map_err(|e| de::Error::custom(e))?;
-                    if float > u8::MAX as f32 {
-                        return Err(de::Error::custom(format!(
-                            "value of credits_max exceeded `u8::MAX` (255)"
-                        )));
+
+                    // NOTE: Assume credits equal zero when `credits_min` is `null` in JSON format
+                    if let Some(float_str) = float_str {
+                        let float: f32 = float_str.parse().map_err(|e| de::Error::custom(e))?;
+                        if float > u8::MAX as f32 {
+                            return Err(de::Error::custom(format!(
+                                "value of credits_max exceeded `u8::MAX` (255)"
+                            )));
+                        }
+                        float.trunc() as u8
+                    } else {
+                        0
                     }
-                    float.trunc() as u8
                 };
 
                 let credits_max = {

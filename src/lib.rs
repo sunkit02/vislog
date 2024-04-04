@@ -180,13 +180,15 @@ pub struct Label {
 }
 
 /// Representation of a course along with additional details
+// TODO: Deduplicate information between (CourseDetails)[crate::CourseDetails] and
+// (Course)[crate::Course]
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct CourseDetails {
     pub url: String,
     pub guid: GUID,
     pub path: String,
     pub subject_code: String,
-    pub subject_name: String,
+    pub subject_name: Option<String>,
     pub number: String,
     pub name: String,
     pub credits_min: u8,
@@ -197,32 +199,6 @@ pub struct CourseDetails {
     pub corequisite_narrative: Option<String>,
     pub corequisite: Option<GUID>,
 }
-
-// /// Representation of a course along with additional details
-// /// NOTE: Unknown type are represented with `Option<()>` since all examples where `null`
-// #[derive(Debug, Clone, PartialEq, Serialize)]
-// pub struct CourseDetails {
-//     pub url: String,
-//     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
-//     #[serde(alias = "GUID")]
-//     pub guid: GUID,
-//     pub path: String,
-//     pub subject_code: String,
-//     pub subject_name: String,
-//     pub number: String,
-//     pub name: String,
-//     #[serde(deserialize_with = "parsing::deserialize_and_floor_u8_from_float_str")]
-//     pub credits_min: u8,
-//     #[serde(deserialize_with = "parsing::deserialize_and_floor_u8_from_float_str")]
-//     pub credits_max: u8,
-//     pub description: String,
-//     pub prerequisite_narrative: Option<String>,
-//     #[serde(deserialize_with = "parsing::deserialize_extract_guid_only")]
-//     pub prerequisite: Option<GUID>,
-//     pub corequisite_narrative: Option<String>,
-//     #[serde(deserialize_with = "parsing::deserialize_extract_guid_only")]
-//     pub corequisite: Option<GUID>,
-// }
 
 #[cfg(test)]
 mod test {
@@ -367,15 +343,19 @@ mod test {
             }
         };
 
-        dbg!(serde_json::from_value::<CourseDetails>(course_array_json[0].clone()).unwrap());
+        let parsed_course_details: Vec<CourseDetails> = course_array_json
+            .iter()
+            .filter_map(|v| serde_json::to_string_pretty(v).ok())
+            .filter_map(|s| match serde_json::from_str(&s) {
+                Ok(res) => Some(res),
+                Err(e) => {
+                    println!("Error: {e}");
+                    println!("{s}");
+                    None
+                }
+            })
+            .collect();
 
-        panic!();
-        // let parsed_courses: Vec<CourseDetails> = course_array_json
-        //     .into_iter()
-        //     .map(serde_json::from_value)
-        //     .flatten()
-        //     .collect();
-
-        // assert_eq!(parsed_courses.len(), 1870);
+        assert_eq!(parsed_course_details.len(), 1870);
     }
 }

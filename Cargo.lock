@@ -119,6 +119,10 @@ dependencies = [
 [[package]]
 name = "vislog-parser"
 version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "vislog-core",
+]
 
 [[package]]
 name = "vislog-server"

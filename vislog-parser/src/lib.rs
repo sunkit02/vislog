@@ -1,21 +1,20 @@
 use serde_json::{self, Value};
+use thiserror::Error;
 use vislog_core::Program;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Error)]
 pub enum ProgramParsingError {
-    GenericError {
+    #[error("failed to convert {:?} from value to string because {}", .program_title, .err_msg)]
+    Serialization {
         program_title: Option<String>,
-        error: Box<dyn std::error::Error>,
+        err_msg: String,
+    },
+    #[error("failed to convert {:?} from value to string because {}", .program_title, .err_msg)]
+    Deserialization {
+        program_title: Option<String>,
+        err_msg: String,
     },
 }
-
-impl std::fmt::Display for ProgramParsingError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self:?}")
-    }
-}
-
-impl std::error::Error for ProgramParsingError {}
 
 pub fn parse_programs<I>(program_jsons: I) -> (Vec<Program>, Vec<ProgramParsingError>)
 where
@@ -33,9 +32,9 @@ where
             match serde_json::to_string_pretty(&value) {
                 Ok(json_str) => json_str,
                 Err(err) => {
-                    errors.push(ProgramParsingError::GenericError {
+                    errors.push(ProgramParsingError::Serialization {
                         program_title,
-                        error: Box::new(err),
+                        err_msg: err.to_string(),
                     });
                     // Skip to next program JSON
                     continue;
@@ -44,9 +43,9 @@ where
         };
         match serde_json::from_str::<Program>(&json_str) {
             Ok(program) => programs.push(program),
-            Err(err) => errors.push(ProgramParsingError::GenericError {
+            Err(err) => errors.push(ProgramParsingError::Deserialization {
                 program_title,
-                error: Box::new(err),
+                err_msg: err.to_string(),
             }),
         }
     }

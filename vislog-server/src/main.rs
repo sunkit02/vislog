@@ -1,23 +1,20 @@
-use data::parsing::json_providers::{FileJsonProvider, JsonProvider};
-use vislog_core::Program;
+use data::parsing::{json_providers::FileJsonProvider, ProgramsProvider};
+use tokio::net::TcpListener;
 
-use crate::data::parsing::ProgramsProvider;
+use web::init_server;
 
 mod data;
 mod web;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let json_provider = FileJsonProvider::init("../data".into(), "programs.json".into());
-    let program_provider = ProgramsProvider::with(Box::new(json_provider.clone()));
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let json_provider = FileJsonProvider::init("../data", "programs.json");
+    let programs_provider = ProgramsProvider::with(Box::new(json_provider));
 
-    let (programs, errors) = program_provider.get_all_programs()?;
-    dbg!((programs.len(), errors.len()));
+    let listener = TcpListener::bind("127.0.0.1:8080").await?;
+    let server = init_server(programs_provider);
 
-    dbg!(errors);
-
-    let cs_major_json = json_provider.get_program_json("cs_major.json")?;
-    let cs_major: Program = serde_json::from_str(&(serde_json::to_string(&cs_major_json)?))?;
-    dbg!(cs_major.title);
+    axum::serve(listener, server).await?;
 
     Ok(())
 }

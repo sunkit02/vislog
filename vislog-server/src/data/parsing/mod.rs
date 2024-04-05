@@ -1,7 +1,9 @@
+use std::{fmt::Display, sync::Arc};
+
+use thiserror::Error;
+use tokio::sync::RwLock;
 use vislog_core::{parsing::guid::GUID, Program};
 use vislog_parser::{parse_programs, ProgramParsingError};
-
-use self::json_providers::JsonProviderError;
 
 pub mod json_providers;
 
@@ -42,21 +44,34 @@ pub mod json_providers;
 /// let cs_major: Program = serde_json::from_str(&(serde_json::to_string(&cs_major_json)?))?;
 /// dbg!(cs_major.title);
 /// ```
-pub struct ProgramsProvider(Box<dyn json_providers::JsonProvider>);
+#[derive(Clone)]
+pub struct ProgramsProvider(Arc<RwLock<Box<dyn json_providers::JsonProvider>>>);
 
 impl ProgramsProvider {
     pub fn with(json_provider: Box<dyn json_providers::JsonProvider>) -> Self {
-        Self(json_provider)
+        let provider = Arc::new(RwLock::new(json_provider));
+        Self(provider)
     }
 
-    pub fn get_all_programs(
-        &self,
-    ) -> Result<(Vec<Program>, Vec<ProgramParsingError>), JsonProviderError> {
-        let program_jsons = self.0.get_all_program_jsons()?;
+    pub async fn get_all_programs(&self) -> Result<(Vec<Program>, Vec<ProgramParsingError>)> {
+        let program_jsons = self.0.read().await.get_all_program_jsons()?;
         Ok(parse_programs(program_jsons))
     }
 
-    pub fn get_program(&self, guid: GUID) -> Result<Program, JsonProviderError> {
+    pub async fn get_program(&self, _guid: GUID) -> Result<Program> {
         todo!()
+    }
+}
+
+#[derive(Debug, Error)]
+pub enum Error {
+    JsonProvider(#[from] json_providers::Error),
+}
+
+pub type Result<T> = std::result::Result<T, Error>;
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
     }
 }

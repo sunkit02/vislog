@@ -3,13 +3,13 @@ use std::path::PathBuf;
 use serde_json::Value;
 use thiserror::{self, Error};
 
-pub trait JsonProvider {
-    fn get_all_program_jsons(&self) -> Result<Vec<Value>, JsonProviderError>;
-    fn get_program_json(&self, url: &str) -> Result<Value, JsonProviderError>;
+pub trait JsonProvider: Send + Sync {
+    fn get_all_program_jsons(&self) -> Result<Vec<Value>, Error>;
+    fn get_program_json(&self, url: &str) -> Result<Value, Error>;
 }
 
 #[derive(Debug, Error)]
-pub enum JsonProviderError {
+pub enum Error {
     /// Error happened when reading from the file specified by the `path` when
     /// initializing the (FileJsonProvider)[FileJsonProvider]
     Io(#[from] std::io::Error),
@@ -19,7 +19,7 @@ pub enum JsonProviderError {
     Format(&'static str),
 }
 
-impl std::fmt::Display for JsonProviderError {
+impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{self:?}")
     }
@@ -29,11 +29,11 @@ impl std::fmt::Display for JsonProviderError {
 pub struct WebJsonProvider;
 
 impl JsonProvider for WebJsonProvider {
-    fn get_all_program_jsons(&self) -> Result<Vec<Value>, JsonProviderError> {
+    fn get_all_program_jsons(&self) -> Result<Vec<Value>, Error> {
         todo!()
     }
 
-    fn get_program_json(&self, _url: &str) -> Result<Value, JsonProviderError> {
+    fn get_program_json(&self, _url: &str) -> Result<Value, Error> {
         todo!()
     }
 }
@@ -45,16 +45,16 @@ pub struct FileJsonProvider {
 }
 
 impl FileJsonProvider {
-    pub fn init(data_root: PathBuf, all_programs_file: PathBuf) -> Self {
+    pub fn init<P: Into<PathBuf>>(data_root: P, all_programs_file: P) -> Self {
         Self {
-            data_root,
-            all_programs_file,
+            data_root: data_root.into(),
+            all_programs_file: all_programs_file.into(),
         }
     }
 }
 
 impl JsonProvider for FileJsonProvider {
-    fn get_all_program_jsons(&self) -> Result<Vec<Value>, JsonProviderError> {
+    fn get_all_program_jsons(&self) -> Result<Vec<Value>, Error> {
         let mut path = self.data_root.clone();
         path.push(&self.all_programs_file);
 
@@ -66,17 +66,17 @@ impl JsonProvider for FileJsonProvider {
         // Program Objects which is nested in the format: `obj.programs.program`
         let program_jsons = {
             let Value::Object(json) = json else {
-                return Err(JsonProviderError::Format("expected a JSON object"));
+                return Err(Error::Format("expected a JSON object"));
             };
 
             let (_, programs_json) = json
                 .into_iter()
                 .filter(|(k, _)| k == "programs")
                 .next()
-                .ok_or(JsonProviderError::Format("missing field `programs`"))?;
+                .ok_or(Error::Format("missing field `programs`"))?;
 
             let Value::Object(program_json) = programs_json else {
-                return Err(JsonProviderError::Format(
+                return Err(Error::Format(
                     "expected field `programs` to be a JSON object",
                 ));
             };
@@ -85,12 +85,10 @@ impl JsonProvider for FileJsonProvider {
                 .into_iter()
                 .filter(|(k, _)| k == "program")
                 .next()
-                .ok_or(JsonProviderError::Format("missing field `program`"))?;
+                .ok_or(Error::Format("missing field `program`"))?;
 
             let Value::Array(program_jsons) = programs_json else {
-                return Err(JsonProviderError::Format(
-                    "expected field `program` to be a JSON array",
-                ));
+                return Err(Error::Format("expected field `program` to be a JSON array"));
             };
 
             program_jsons
@@ -99,7 +97,7 @@ impl JsonProvider for FileJsonProvider {
         Ok(program_jsons)
     }
 
-    fn get_program_json(&self, url: &str) -> Result<Value, JsonProviderError> {
+    fn get_program_json(&self, url: &str) -> Result<Value, Error> {
         let mut path = self.data_root.clone();
         path.push(url);
 

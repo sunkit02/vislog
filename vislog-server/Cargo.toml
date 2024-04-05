@@ -11,3 +11,6 @@ vislog-core = { path = "../vislog-core" }
 
 serde_json = "1.0.108"
 thiserror = "1.0.52"
+axum = "0.7.5"
+tokio = { version = "1.37.0", features = ["full"] }
+serde = { version = "1.0.197", features = ["derive"] }

@@ -1,20 +1,14 @@
 use axum::{http::StatusCode, response::IntoResponse};
-use serde::Serialize;
 use thiserror::Error;
 
-use crate::data::parsing;
+use crate::data::{fetching, parsing};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Debug, Serialize, Error)]
+#[derive(Debug, Error)]
 pub enum Error {
-    Parsing(String),
-}
-
-impl From<parsing::Error> for Error {
-    fn from(value: parsing::Error) -> Self {
-        Self::Parsing(value.to_string())
-    }
+    Parsing(#[from] parsing::Error),
+    Fetching(#[from] fetching::error::Error),
 }
 
 impl std::fmt::Display for Error {

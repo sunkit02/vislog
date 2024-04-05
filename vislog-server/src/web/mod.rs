@@ -1,14 +1,20 @@
+use std::net::SocketAddr;
+
 use axum::{
     body::Body,
+    extract::ConnectInfo,
     http::{Response, StatusCode},
     response::IntoResponse,
     routing::get,
     Router,
 };
+use tracing::{info, instrument, Level};
 
 use crate::data::parsing::ProgramsProvider;
 
-async fn check_health_handler() -> Response<Body> {
+#[instrument(target = "my_target", skip(addr), ret(level = Level::DEBUG))]
+async fn check_health_handler(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Response<Body> {
+    info!("Check health ping from {:?}", addr);
     StatusCode::OK.into_response()
 }
 

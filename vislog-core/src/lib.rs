@@ -12,7 +12,7 @@ pub mod parsing;
 // TODO: Make Program and all of its sub-components interoperable between
 // pre-parsed JSON string, post-parsed JSON string, and the respective
 // serde_json::Value representations of each
-#[derive(Debug, Deserialize, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq, Serialize)]
 pub struct Program {
     /// Link to the official catalog
     pub url: String,
@@ -31,7 +31,7 @@ pub struct Program {
     pub requirements: Option<Requirements>,
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(tag = "type", content = "data")]
 pub enum Requirements {
     Single(RequirementModule),
@@ -40,7 +40,7 @@ pub enum Requirements {
     SelectTrack,
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(tag = "type", content = "data")]
 pub enum RequirementModule {
     SingleBasicRequirement {
@@ -68,7 +68,7 @@ pub enum RequirementModule {
 
 // TODO: Extract all the useful information from the `req_narrative` field for each of the variants
 // NOTE: The field `req_note` may contain useful information that can potentially be parsed
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(tag = "type", content = "data")]
 pub enum Requirement {
     Courses {
@@ -95,7 +95,7 @@ pub enum CourseUnit {
     Hours,
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CourseEntries(Vec<CourseEntry>);
 
 impl Deref for CourseEntries {
@@ -112,7 +112,7 @@ impl DerefMut for CourseEntries {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(tag = "type", content = "data")]
 pub enum CourseEntry {
     And(CourseEntries),
@@ -198,6 +198,18 @@ pub struct CourseDetails {
     pub prerequisite: Option<GUID>,
     pub corequisite_narrative: Option<String>,
     pub corequisite: Option<GUID>,
+}
+
+impl PartialOrd for Program {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.title.partial_cmp(&other.title)
+    }
+}
+
+impl Ord for Program {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.title.cmp(&other.title)
+    }
 }
 
 #[cfg(test)]

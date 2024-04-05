@@ -208,7 +208,7 @@ mod test {
 
     #[test]
     fn can_parse_program_with_a_single_basic_requirement() {
-        let program_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
+        let program_json = std::fs::read_to_string("../data/cs_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 
@@ -241,7 +241,7 @@ mod test {
 
     #[test]
     fn can_parse_program_with_many_basic_requirements() {
-        let program_json = std::fs::read_to_string("./data/digital_media_major.json").unwrap();
+        let program_json = std::fs::read_to_string("../data/digital_media_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 
@@ -265,7 +265,7 @@ mod test {
 
     #[test]
     fn can_parse_program_with_requirement_having_a_single_course() {
-        let program_json = std::fs::read_to_string("./data/zoology_major.json").unwrap();
+        let program_json = std::fs::read_to_string("../data/zoology_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 
@@ -304,7 +304,7 @@ mod test {
     #[test]
     #[ignore = "figure out the string issue later"]
     fn can_parse_program_from_value() {
-        let program_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
+        let program_json = std::fs::read_to_string("../data/cs_major.json").unwrap();
         let program_json_value: Value = serde_json::from_str(&program_json).unwrap();
         let program_parsed_from_json_value: Program =
             serde_json::from_value(program_json_value).unwrap();
@@ -317,14 +317,14 @@ mod test {
     #[test]
     #[ignore = "fix this mystery later"]
     fn can_parse_program_claiming_to_have_trailing_characters() {
-        let program_json = std::fs::read_to_string("./data/family_studies_major.json").unwrap();
+        let program_json = std::fs::read_to_string("../data/family_studies_major.json").unwrap();
         let _parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
     }
 
     #[test]
     fn can_parse_all_course_details() {
-        let courses_json = std::fs::read_to_string("./data/courses.json").unwrap();
+        let courses_json = std::fs::read_to_string("../data/courses.json").unwrap();
         let courses_json: Value = serde_json::from_str(&courses_json).unwrap();
 
         let course_array_json = {

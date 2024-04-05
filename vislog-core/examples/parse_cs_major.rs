@@ -1,5 +1,5 @@
 use serde_json;
-use vislog::{Course, CourseEntries, Label, Program, Requirement};
+use vislog_core::{Course, CourseEntries, Label, Program, Requirement};
 
 fn main() {
     let program_json = std::fs::read_to_string("./data/cs_major.json").unwrap();
@@ -14,9 +14,9 @@ fn main() {
         .map(|reqs| {
             let mut req_mods = Vec::new();
             match reqs {
-                vislog::Requirements::Single(module) => req_mods.push(module),
-                vislog::Requirements::Many(mods) => req_mods.extend(mods),
-                vislog::Requirements::SelectTrack => todo!(),
+                vislog_core::Requirements::Single(module) => req_mods.push(module),
+                vislog_core::Requirements::Many(mods) => req_mods.extend(mods),
+                vislog_core::Requirements::SelectTrack => todo!(),
             }
             req_mods
         })
@@ -24,15 +24,17 @@ fn main() {
             req_mods
                 .iter()
                 .map(|m| match m {
-                    vislog::RequirementModule::SingleBasicRequirement { requirement, .. } => {
+                    vislog_core::RequirementModule::SingleBasicRequirement {
+                        requirement, ..
+                    } => {
                         vec![get_req_title(&requirement)]
                     }
-                    vislog::RequirementModule::BasicRequirements { requirements, .. } => {
+                    vislog_core::RequirementModule::BasicRequirements { requirements, .. } => {
                         requirements.iter().map(get_req_title).collect()
                     }
-                    vislog::RequirementModule::SelectOneEmphasis { .. } => todo!(),
-                    vislog::RequirementModule::Label { title } => vec![Some(title.as_str())],
-                    vislog::RequirementModule::Unimplemented(_) => todo!(),
+                    vislog_core::RequirementModule::SelectOneEmphasis { .. } => todo!(),
+                    vislog_core::RequirementModule::Label { title } => vec![Some(title.as_str())],
+                    vislog_core::RequirementModule::Unimplemented(_) => todo!(),
                 })
                 .flatten()
                 .flatten()
@@ -46,9 +48,9 @@ fn main() {
         .map(|reqs| {
             let mut req_mods = Vec::new();
             match reqs {
-                vislog::Requirements::Single(module) => req_mods.push(module),
-                vislog::Requirements::Many(mods) => req_mods.extend(mods),
-                vislog::Requirements::SelectTrack => todo!(),
+                vislog_core::Requirements::Single(module) => req_mods.push(module),
+                vislog_core::Requirements::Many(mods) => req_mods.extend(mods),
+                vislog_core::Requirements::SelectTrack => todo!(),
             }
             req_mods
         })
@@ -56,19 +58,19 @@ fn main() {
             req_mods
                 .iter()
                 .map(|m| match m {
-                    vislog::RequirementModule::SingleBasicRequirement { requirement, .. } => {
-                        get_req_courses_titles(&requirement)
-                    }
-                    vislog::RequirementModule::BasicRequirements { requirements, .. } => {
+                    vislog_core::RequirementModule::SingleBasicRequirement {
+                        requirement, ..
+                    } => get_req_courses_titles(&requirement),
+                    vislog_core::RequirementModule::BasicRequirements { requirements, .. } => {
                         requirements
                             .iter()
                             .map(get_req_courses_titles)
                             .flatten()
                             .collect()
                     }
-                    vislog::RequirementModule::SelectOneEmphasis { .. } => todo!(),
-                    vislog::RequirementModule::Label { title } => vec![title.as_str()],
-                    vislog::RequirementModule::Unimplemented(_) => todo!(),
+                    vislog_core::RequirementModule::SelectOneEmphasis { .. } => todo!(),
+                    vislog_core::RequirementModule::Label { title } => vec![title.as_str()],
+                    vislog_core::RequirementModule::Unimplemented(_) => todo!(),
                 })
                 .collect::<Vec<_>>()
         });
@@ -91,10 +93,10 @@ fn get_req_courses_titles(req: &Requirement) -> Vec<&str> {
         entries
             .iter()
             .filter_map(|entry| match entry {
-                vislog::CourseEntry::And(entries) => Some(extract_course_titles(entries)),
-                vislog::CourseEntry::Or(entries) => Some(extract_course_titles(entries)),
-                vislog::CourseEntry::Label(Label { name, .. }) => Some(vec![name.as_str()]),
-                vislog::CourseEntry::Course(Course { name, .. }) => {
+                vislog_core::CourseEntry::And(entries) => Some(extract_course_titles(entries)),
+                vislog_core::CourseEntry::Or(entries) => Some(extract_course_titles(entries)),
+                vislog_core::CourseEntry::Label(Label { name, .. }) => Some(vec![name.as_str()]),
+                vislog_core::CourseEntry::Course(Course { name, .. }) => {
                     name.as_ref().map(|n| vec![n.as_str()])
                 }
             })

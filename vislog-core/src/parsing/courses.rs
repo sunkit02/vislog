@@ -1061,7 +1061,7 @@ mod parse_courses_test {
 
     #[test]
     fn can_parse_program_with_no_operators_and_labels() {
-        let program_json = fs::read_to_string("./data/cybersecurity_major.json").unwrap();
+        let program_json = fs::read_to_string("../data/cybersecurity_major.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 
@@ -1112,7 +1112,7 @@ mod parse_courses_test {
     // letters or simply letters will cause this test to fail.
     fn can_parse_program_with_operators_and_without_labels() {
         let program_json =
-            fs::read_to_string("./data/computer_information_systems_minor.json").unwrap();
+            fs::read_to_string("../data/computer_information_systems_minor.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 
@@ -1150,7 +1150,7 @@ mod parse_courses_test {
 
     #[test]
     fn can_parse_program_with_nested_operators() {
-        let program_json = fs::read_to_string("./data/cs_minor.json").unwrap();
+        let program_json = fs::read_to_string("../data/cs_minor.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 
@@ -1225,7 +1225,7 @@ mod parse_courses_test {
     #[test]
     fn can_parse_program_with_chained_homogenous_operators() -> Result<()> {
         let program_json =
-            fs::read_to_string("./data/intercultural_strategic_communication.json").unwrap();
+            fs::read_to_string("../data/intercultural_strategic_communication.json").unwrap();
         let parsed_program = serde_json::from_str::<Program>(program_json.as_str())
             .expect("Failed to parse `Program`");
 

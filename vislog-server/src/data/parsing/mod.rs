@@ -1,8 +1,9 @@
-use std::{collections::HashMap, fmt::Display, ptr::read, sync::Arc};
+use std::{collections::HashMap, fmt::Display, sync::Arc};
 
 use thiserror::Error;
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
-use vislog_core::{parsing::guid::GUID, Program};
+use tracing::{field::debug, instrument, Level};
+use vislog_core::{parsing::guid::Guid, Program};
 use vislog_parser::{parse_programs, ProgramParsingError};
 
 pub mod json_providers;
@@ -46,7 +47,7 @@ pub mod json_providers;
 /// ```
 
 struct ProviderCache {
-    programs: HashMap<GUID, Program>,
+    programs: HashMap<Guid, Program>,
     errors: Vec<ProgramParsingError>,
 }
 
@@ -70,11 +71,13 @@ impl ProgramsProvider {
         }
     }
 
+    #[instrument(skip(self))]
     pub async fn get_all_programs(&self) -> Result<(Vec<Program>, Vec<ProgramParsingError>)> {
         let cache = {
             let read_cache_guard = self.cache.read().await;
 
             if read_cache_guard.programs.is_empty() && read_cache_guard.errors.is_empty() {
+                debug("cache empty");
                 drop(read_cache_guard);
                 let json_provider_read_guard = self.json_provider.read().await;
                 let write_cache_guard = self.cache.write().await;
@@ -83,6 +86,7 @@ impl ProgramsProvider {
                 // Reacquire read lock
                 self.cache.read().await
             } else {
+                debug("cache populated");
                 read_cache_guard
             }
         };
@@ -94,8 +98,28 @@ impl ProgramsProvider {
         Ok((programs, errors))
     }
 
-    pub async fn get_program(&self, _guid: GUID) -> Result<Option<Program>> {
-        todo!()
+    #[instrument(level = Level::DEBUG, skip(self))]
+    pub async fn get_program(&self, guid: &Guid) -> Result<Option<Program>> {
+        let cache = {
+            let read_cache_guard = self.cache.read().await;
+
+            if read_cache_guard.programs.is_empty() && read_cache_guard.errors.is_empty() {
+                debug("cache empty");
+
+                drop(read_cache_guard);
+                let json_provider_read_guard = self.json_provider.read().await;
+                let write_cache_guard = self.cache.write().await;
+                Self::refresh_cache(json_provider_read_guard, write_cache_guard).await?;
+
+                // Reacquire read lock
+                self.cache.read().await
+            } else {
+                debug("cache populated");
+                read_cache_guard
+            }
+        };
+
+        Ok(cache.programs.get(guid).map(|p| p.clone()))
     }
 
     /// SAFETY: There must not be a another read guard for `RwLockReadGuard<'a, ProviderCache>` in
@@ -110,7 +134,7 @@ impl ProgramsProvider {
         let programs = programs
             .into_iter()
             .map(|p| (p.guid.clone(), p))
-            .collect::<Vec<(GUID, Program)>>();
+            .collect::<Vec<(Guid, Program)>>();
 
         cache_write_guard.programs.clear();
         cache_write_guard.errors.clear();

@@ -8,11 +8,11 @@ use axum::{
     routing::get,
     Router,
 };
-use tracing::{info, instrument, Level};
+use tracing::{info, instrument};
 
 use crate::data::parsing::ProgramsProvider;
 
-#[instrument(target = "my_target", skip(addr), ret(level = Level::DEBUG))]
+#[instrument(skip(addr))]
 async fn check_health_handler(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Response<Body> {
     info!("Check health ping from {:?}", addr);
     StatusCode::OK.into_response()

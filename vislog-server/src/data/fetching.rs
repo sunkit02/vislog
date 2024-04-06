@@ -29,6 +29,7 @@ pub mod error {
     }
 }
 
+// TODO: Write to a proper storage file
 pub async fn request_all_programs() -> Result<Vec<Program>> {
     let url = "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json";
     let body: Value = reqwest::get(url).await?.json().await?;

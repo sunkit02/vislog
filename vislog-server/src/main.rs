@@ -2,8 +2,9 @@ use std::net::SocketAddr;
 
 use data::parsing::{json_providers::FileJsonProvider, ProgramsProvider};
 use tokio::net::TcpListener;
-use tracing::level_filters::LevelFilter;
-use tracing_subscriber;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::{self, util::SubscriberInitExt};
+use tracing_subscriber::{fmt, EnvFilter};
 
 use web::init_server;
 
@@ -12,11 +13,13 @@ mod web;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let subscriber = tracing_subscriber::fmt()
-        .with_max_level(LevelFilter::TRACE)
-        .finish();
+    let fmt_layer = fmt::layer().with_target(false);
+    let filter_layer = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
 
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    tracing_subscriber::registry()
+        .with(filter_layer)
+        .with(fmt_layer)
+        .init();
 
     let json_provider = FileJsonProvider::init("../data", "programs.json");
     let programs_provider = ProgramsProvider::with(Box::new(json_provider));

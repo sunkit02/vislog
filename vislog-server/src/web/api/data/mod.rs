@@ -5,7 +5,7 @@ use axum::{
     routing::get,
     Json, Router,
 };
-use tracing::{debug, info, instrument, Level};
+use tracing::{debug, info, instrument};
 use vislog_core::parsing::guid::Guid;
 use vislog_core::Program;
 
@@ -27,7 +27,7 @@ pub fn routes(program_provider: ProgramsProvider) -> Router {
 async fn get_all_programs_handler(
     State(programs_provider): State<ProgramsProvider>,
 ) -> Result<Json<Vec<Program>>> {
-    info!("getting all programs");
+    info!("Getting all programs");
 
     let (programs, errors) = programs_provider.get_all_programs().await?;
 
@@ -41,7 +41,7 @@ async fn get_program_handler(
     State(programs_provider): State<ProgramsProvider>,
     Path(guid): Path<Guid>,
 ) -> Result<Json<Program>> {
-    info!("getting program with guid: {}", guid);
+    info!("Getting program with guid: {}", guid);
 
     let program = programs_provider
         .get_program(&guid)
@@ -54,7 +54,7 @@ async fn get_program_handler(
 // TODO: Update state of ProgramsProvider after fetching the lastest data
 #[instrument(err)]
 async fn refresh_all_programs_handler() -> Result<Json<Vec<Program>>> {
-    info!("");
+    info!("Refreshing all programs");
     let programs = fetching::request_all_programs().await?;
 
     debug!("Number of programs after refresh: {}", programs.len());

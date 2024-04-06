@@ -3,7 +3,7 @@ use serde_json::Value;
 use tokio::{fs::File, io::AsyncWriteExt};
 use vislog_core::Program;
 
-use crate::data::parsing::{json_providers::FileJsonProvider, ProgramsProvider};
+use crate::data::providers::{json_providers::FileJsonProvider, programs::ProgramsProvider};
 
 use self::error::Result;
 
@@ -17,7 +17,7 @@ pub mod error {
     #[derive(Debug, Error)]
     pub enum Error {
         Io(#[from] std::io::Error),
-        Parsing(#[from] crate::data::parsing::Error),
+        Parsing(#[from] crate::data::providers::programs::Error),
         Reqwest(#[from] reqwest::Error),
         SerdeJson(#[from] serde_json::Error),
     }

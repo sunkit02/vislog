@@ -11,7 +11,7 @@ use vislog_core::Program;
 
 use error::Result;
 
-use crate::data::{fetching, parsing::ProgramsProvider};
+use crate::data::{fetching, providers::programs::ProgramsProvider};
 
 use self::error::Error;
 

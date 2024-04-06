@@ -6,7 +6,10 @@ use tracing::{field::debug, instrument, Level};
 use vislog_core::{parsing::guid::Guid, Program};
 use vislog_parser::{parse_programs, ProgramParsingError};
 
-pub mod json_providers;
+use super::{
+    json_providers::{self, JsonProvider},
+    ProviderCache,
+};
 
 /// Provides program struct parsing
 ///
@@ -45,20 +48,14 @@ pub mod json_providers;
 /// let cs_major: Program = serde_json::from_str(&(serde_json::to_string(&cs_major_json)?))?;
 /// dbg!(cs_major.title);
 /// ```
-
-struct ProviderCache {
-    programs: HashMap<Guid, Program>,
-    errors: Vec<ProgramParsingError>,
-}
-
 #[derive(Clone)]
 pub struct ProgramsProvider {
-    json_provider: Arc<RwLock<Box<dyn json_providers::JsonProvider>>>,
-    cache: Arc<RwLock<ProviderCache>>,
+    json_provider: Arc<RwLock<Box<dyn JsonProvider>>>,
+    cache: Arc<RwLock<ProviderCache<Guid, Program, ProgramParsingError>>>,
 }
 
 impl ProgramsProvider {
-    pub fn with(json_provider: Box<dyn json_providers::JsonProvider>) -> Self {
+    pub fn with(json_provider: Box<dyn JsonProvider>) -> Self {
         let json_provider = Arc::new(RwLock::new(json_provider));
         let cache = ProviderCache {
             programs: HashMap::new(),
@@ -125,8 +122,11 @@ impl ProgramsProvider {
     /// SAFETY: There must not be a another read guard for `RwLockReadGuard<'a, ProviderCache>` in
     /// the same execution "thread" to avoid deadlocks
     async fn refresh_cache<'a>(
-        json_provider_read_guard: RwLockReadGuard<'a, Box<dyn json_providers::JsonProvider>>,
-        mut cache_write_guard: RwLockWriteGuard<'a, ProviderCache>,
+        json_provider_read_guard: RwLockReadGuard<'a, Box<dyn JsonProvider>>,
+        mut cache_write_guard: RwLockWriteGuard<
+            'a,
+            ProviderCache<Guid, Program, ProgramParsingError>,
+        >,
     ) -> Result<()> {
         let program_jsons = json_provider_read_guard.get_all_program_jsons()?;
         let (programs, errors) = parse_programs(program_jsons);

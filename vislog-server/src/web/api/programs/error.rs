@@ -2,13 +2,13 @@ use axum::{http::StatusCode, response::IntoResponse};
 use thiserror::Error;
 use vislog_core::parsing::guid::Guid;
 
-use crate::data::{fetching, parsing};
+use crate::data::{fetching, providers};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug, Error)]
 pub enum Error {
-    Parsing(#[from] parsing::Error),
+    ProgramsParsing(#[from] providers::programs::Error),
     Fetching(#[from] fetching::error::Error),
     ProgramNotFound(Guid),
 }
@@ -23,7 +23,7 @@ impl std::fmt::Display for Error {
 impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {
         match self {
-            Error::Parsing(_) | Error::Fetching(_) => {
+            Error::ProgramsParsing(_) | Error::Fetching(_) => {
                 StatusCode::INTERNAL_SERVER_ERROR.into_response()
             }
             Error::ProgramNotFound(_) => StatusCode::NOT_FOUND.into_response(),

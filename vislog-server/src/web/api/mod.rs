@@ -1,6 +1,6 @@
 use axum::Router;
 
-use crate::data::parsing::ProgramsProvider;
+use crate::data::providers::programs::ProgramsProvider;
 
 pub mod error;
 

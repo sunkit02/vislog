@@ -1,6 +1,6 @@
 use std::net::SocketAddr;
 
-use data::parsing::{json_providers::FileJsonProvider, ProgramsProvider};
+use data::providers::json_providers::FileJsonProvider;
 use lazy_static::lazy_static;
 use tokio::net::TcpListener;
 use tracing::{error, info};
@@ -11,6 +11,7 @@ use tracing_subscriber::{fmt, EnvFilter};
 use web::init_server;
 
 use crate::config::ServerConfig;
+use crate::data::providers::programs::ProgramsProvider;
 
 mod config;
 mod data;

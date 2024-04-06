@@ -10,7 +10,7 @@ use axum::{
 };
 use tracing::{info, instrument};
 
-use crate::data::parsing::ProgramsProvider;
+use crate::data::providers::programs::ProgramsProvider;
 
 #[instrument(skip(addr))]
 async fn check_health_handler(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Response<Body> {

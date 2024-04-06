@@ -49,6 +49,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with(fmt_layer)
         .init();
 
+    // TODO: Figure out why logs in this code block doesn't work
     let programs_provider = {
         let (json_provider, need_refetch) = {
             match FileJsonProvider::init(&CONFIGS.data.storage, &CONFIGS.data.all_programs_file) {
@@ -82,11 +83,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         if need_refetch {
             info!("Fetching data from {}", CONFIGS.fetching.url);
+            fetching::fetch_all_programs(&programs_provider)
+                .await
+                .expect("Failed to fetch all programs");
         }
-
-        fetching::fetch_all_programs(&programs_provider)
-            .await
-            .expect("Failed to fetch all programs");
 
         programs_provider
     };

@@ -1,23 +1,61 @@
-use axum::{extract::Path, routing::get, Json, Router};
+use axum::{
+    extract::{Path, State},
+    routing::get,
+    Json, Router,
+};
 
-use error::Result;
-use tracing::instrument;
-use vislog_core::parsing::guid::Guid;
+use tracing::{debug, info, instrument};
+use vislog_core::{parsing::guid::Guid, CourseDetails};
+
+use crate::data::{fetching, providers::courses::CoursesProvider};
+use crate::web::error::{Error, Result};
 
 mod error;
 
-pub fn routes() -> Router {
+pub fn routes(courses_provider: CoursesProvider) -> Router {
     Router::new()
-        .route("/", get(get_all_courses))
-        .route("/:guid", get(get_course))
+        .route("/", get(get_all_courses_handler))
+        .route("/:guid", get(get_course_handler))
+        .route("/refresh", get(refresh_courses_handler))
+        .with_state(courses_provider)
 }
 
-#[instrument]
-async fn get_all_courses() -> Result<Json<Vec<()>>> {
-    todo!()
+#[instrument(skip(courses_provider))]
+async fn get_all_courses_handler(
+    State(courses_provider): State<CoursesProvider>,
+) -> Result<Json<Vec<CourseDetails>>> {
+    info!("Getting all courses");
+
+    let (courses, errors) = courses_provider.get_all_courses().await?;
+
+    debug!("courses: {}, errors: {}", courses.len(), errors.len());
+
+    Ok(Json(courses))
 }
 
-#[instrument]
-async fn get_course(Path(guid): Path<Guid>) -> Result<Json<Vec<()>>> {
-    todo!()
+#[instrument(skip(courses_provider))]
+async fn get_course_handler(
+    Path(guid): Path<Guid>,
+    State(courses_provider): State<CoursesProvider>,
+) -> Result<Json<CourseDetails>> {
+    info!("Getting course with guid: {}", guid);
+
+    let course = courses_provider
+        .get_course(&guid)
+        .await?
+        .ok_or(Error::CourseNotFound(guid))?;
+
+    Ok(Json(course))
+}
+
+#[instrument(skip(courses_provider))]
+async fn refresh_courses_handler(
+    State(courses_provider): State<CoursesProvider>,
+) -> Result<Json<Vec<CourseDetails>>> {
+    info!("Refreshing all courses");
+    let courses = fetching::fetch_all_courses(&courses_provider).await?;
+
+    debug!("Number of courses after refresh: {}", courses.len());
+
+    Ok(Json(courses))
 }

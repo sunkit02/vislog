@@ -6,6 +6,8 @@ use thiserror::{self, Error};
 pub trait JsonProvider: Send + Sync {
     fn get_all_program_jsons(&self) -> Result<Vec<Value>, Error>;
     fn get_program_json(&self, url: &str) -> Result<Value, Error>;
+    fn get_all_course_jsons(&self) -> Result<Vec<Value>, Error>;
+    fn get_course_json(&self, url: &str) -> Result<Value, Error>;
 }
 
 #[derive(Debug, Error)]
@@ -36,6 +38,14 @@ impl JsonProvider for WebJsonProvider {
     }
 
     fn get_program_json(&self, _url: &str) -> Result<Value, Error> {
+        todo!()
+    }
+
+    fn get_all_course_jsons(&self) -> Result<Vec<Value>, Error> {
+        todo!()
+    }
+
+    fn get_course_json(&self, _url: &str) -> Result<Value, Error> {
         todo!()
     }
 }
@@ -84,7 +94,7 @@ impl JsonProvider for FileJsonProvider {
 
             let (_, programs_json) = json
                 .into_iter()
-                .filter(|(k, _)| k == "programs")
+                .filter(|(key, _)| key == "programs")
                 .next()
                 .ok_or(Error::Format("missing field `programs`"))?;
 
@@ -96,7 +106,7 @@ impl JsonProvider for FileJsonProvider {
 
             let (_, programs_json) = program_json
                 .into_iter()
-                .filter(|(k, _)| k == "program")
+                .filter(|(key, _)| key == "program")
                 .next()
                 .ok_or(Error::Format("missing field `program`"))?;
 
@@ -119,5 +129,52 @@ impl JsonProvider for FileJsonProvider {
         let program_json: Value = serde_json::from_str(&json_str)?;
 
         Ok(program_json)
+    }
+
+    fn get_all_course_jsons(&self) -> Result<Vec<Value>, Error> {
+        let mut path = self.data_root.clone();
+        path.push(&self.all_programs_file);
+
+        let json_str = std::fs::read_to_string(path)?;
+
+        let json: Value = serde_json::from_str(&json_str)?;
+
+        // Index into API response to grab the actual JSON array containing the
+        // Program Objects which is nested in the format: `obj.programs.program`
+        let course_jsons = {
+            let Value::Object(json) = json else {
+                return Err(Error::Format("expected a JSON object"));
+            };
+
+            let (_, courses_json) = json
+                .into_iter()
+                .filter(|(key, _)| key == "courses")
+                .next()
+                .ok_or(Error::Format("missing field `courses`"))?;
+
+            let Value::Object(course_json) = courses_json else {
+                return Err(Error::Format(
+                    "expected field `courses` to be a JSON object",
+                ));
+            };
+
+            let (_, courses_json) = course_json
+                .into_iter()
+                .filter(|(key, _)| key == "course")
+                .next()
+                .ok_or(Error::Format("missing field `course`"))?;
+
+            let Value::Array(course_jsons) = courses_json else {
+                return Err(Error::Format("expected field `course` to be a JSON array"));
+            };
+
+            course_jsons
+        };
+
+        Ok(course_jsons)
+    }
+
+    fn get_course_json(&self, _url: &str) -> Result<Value, Error> {
+        todo!()
     }
 }

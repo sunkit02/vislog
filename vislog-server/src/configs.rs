@@ -41,7 +41,10 @@ impl Default for ServerConfig {
             with_target: Some(true),
         };
 
-        let fetching = Fetching { url: "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json".to_owned() };
+        let fetching = Fetching { 
+            programs_url: "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json".to_owned() ,
+            courses_url: "https://iq5prod1.smartcatalogiq.com/APIs/courseAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json".to_owned(),
+        };
 
         Self {
             server,
@@ -92,5 +95,6 @@ impl AsRef<str> for LogLevel {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Fetching {
-    pub url: String,
+    pub programs_url: String,
+    pub courses_url: String,
 }

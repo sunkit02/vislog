@@ -9,11 +9,9 @@ use tracing::{debug, info, instrument};
 use vislog_core::parsing::guid::Guid;
 use vislog_core::Program;
 
-use error::Result;
+use crate::web::error::{Error, Result};
 
 use crate::data::{fetching, providers::programs::ProgramsProvider};
-
-use self::error::Error;
 
 pub fn routes(program_provider: ProgramsProvider) -> Router {
     Router::new()

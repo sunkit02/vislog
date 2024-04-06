@@ -9,6 +9,6 @@ where
     K: Hash,
     E: std::error::Error,
 {
-    programs: HashMap<K, T>,
+    items: HashMap<K, T>,
     errors: Vec<E>,
 }

@@ -10,7 +10,7 @@ use axum::{
 };
 use tracing::{info, instrument};
 
-use crate::data::providers::programs::ProgramsProvider;
+use crate::data::providers::{courses::CoursesProvider, programs::ProgramsProvider};
 
 #[instrument(skip(addr))]
 async fn check_health_handler(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Response<Body> {
@@ -21,8 +21,11 @@ async fn check_health_handler(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Res
 mod api;
 mod error;
 
-pub fn init_server(programs_provider: ProgramsProvider) -> Router {
+pub fn init_server(
+    programs_provider: ProgramsProvider,
+    courses_provider: CoursesProvider,
+) -> Router {
     Router::new()
         .route("/check_health", get(check_health_handler))
-        .nest("/api", api::routes(programs_provider))
+        .nest("/api", api::routes(programs_provider, courses_provider))
 }

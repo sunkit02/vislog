@@ -10,8 +10,6 @@ use vislog_core::{parsing::guid::Guid, CourseDetails};
 use crate::data::{fetching, providers::courses::CoursesProvider};
 use crate::web::error::{Error, Result};
 
-mod error;
-
 pub fn routes(courses_provider: CoursesProvider) -> Router {
     Router::new()
         .route("/", get(get_all_courses_handler))

@@ -1,9 +1,10 @@
 use std::net::SocketAddr;
 
+use data::fetching;
 use data::providers::json_providers::FileJsonProvider;
 use lazy_static::lazy_static;
 use tokio::net::TcpListener;
-use tracing::info;
+use tracing::{error, info};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::{self, util::SubscriberInitExt};
 use tracing_subscriber::{fmt, EnvFilter};
@@ -11,6 +12,7 @@ use tracing_subscriber::{fmt, EnvFilter};
 use web::init_server;
 
 use crate::configs::ServerConfig;
+use crate::data::providers::json_providers;
 use crate::data::providers::programs::ProgramsProvider;
 
 mod configs;
@@ -47,9 +49,47 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with(fmt_layer)
         .init();
 
-    let json_provider =
-        FileJsonProvider::init(&CONFIGS.data.storage, &CONFIGS.data.all_programs_file);
-    let programs_provider = ProgramsProvider::with(Box::new(json_provider));
+    let programs_provider = {
+        let (json_provider, need_refetch) = {
+            match FileJsonProvider::init(&CONFIGS.data.storage, &CONFIGS.data.all_programs_file) {
+                Ok(provider) => (provider, false),
+                Err(json_providers::Error::FileNotFound(path)) => {
+                    error!("Given data file '{path:?}' doesn't exist");
+                    info!("Creating data file at '{path:?}'");
+
+                    tokio::fs::File::create(&path)
+                        .await
+                        .expect(&format!("Should be able to create file at {path:?}"));
+
+                    // Try to initialize file provider again. Hard fail if creating data file doesn't
+                    // fix the issue
+                    let provider = FileJsonProvider::init(
+                        &CONFIGS.data.storage,
+                        &CONFIGS.data.all_programs_file,
+                    )
+                    .expect("JsonProvider initialization should succeed after file creation");
+
+                    (provider, true)
+                }
+                Err(err) => {
+                    error!("Failed to initialize JsonProvider: {err}");
+                    return Err(err)?;
+                }
+            }
+        };
+
+        let programs_provider = ProgramsProvider::with(Box::new(json_provider));
+
+        if need_refetch {
+            info!("Fetching data from {}", CONFIGS.fetching.url);
+        }
+
+        fetching::fetch_all_programs(&programs_provider)
+            .await
+            .expect("Failed to fetch all programs");
+
+        programs_provider
+    };
 
     let addr = format!("{}:{}", CONFIGS.server.host, CONFIGS.server.port);
     let listener = TcpListener::bind(&addr).await?;

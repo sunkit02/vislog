@@ -78,7 +78,7 @@ impl ProgramsProvider {
                 drop(read_cache_guard);
                 let json_provider_read_guard = self.json_provider.read().await;
                 let write_cache_guard = self.cache.write().await;
-                Self::refresh_cache(json_provider_read_guard, write_cache_guard).await?;
+                Self::_refresh_cache(json_provider_read_guard, write_cache_guard).await?;
 
                 // Reacquire read lock
                 self.cache.read().await
@@ -106,7 +106,7 @@ impl ProgramsProvider {
                 drop(read_cache_guard);
                 let json_provider_read_guard = self.json_provider.read().await;
                 let write_cache_guard = self.cache.write().await;
-                Self::refresh_cache(json_provider_read_guard, write_cache_guard).await?;
+                Self::_refresh_cache(json_provider_read_guard, write_cache_guard).await?;
 
                 // Reacquire read lock
                 self.cache.read().await
@@ -119,9 +119,16 @@ impl ProgramsProvider {
         Ok(cache.programs.get(guid).map(|p| p.clone()))
     }
 
+    pub async fn refresh_cache(&self) -> Result<()> {
+        let json_provider_read_guard = self.json_provider.read().await;
+        let cache_write_guard = self.cache.write().await;
+
+        Self::_refresh_cache(json_provider_read_guard, cache_write_guard).await
+    }
+
     /// SAFETY: There must not be a another read guard for `RwLockReadGuard<'a, ProviderCache>` in
     /// the same execution "thread" to avoid deadlocks
-    async fn refresh_cache<'a>(
+    async fn _refresh_cache<'a>(
         json_provider_read_guard: RwLockReadGuard<'a, Box<dyn JsonProvider>>,
         mut cache_write_guard: RwLockWriteGuard<
             'a,

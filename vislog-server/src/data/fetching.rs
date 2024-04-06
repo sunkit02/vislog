@@ -3,7 +3,7 @@ use serde_json::Value;
 use tokio::{fs::File, io::AsyncWriteExt};
 use vislog_core::Program;
 
-use crate::data::providers::{json_providers::FileJsonProvider, programs::ProgramsProvider};
+use crate::{data::providers::programs::ProgramsProvider, CONFIGS};
 
 use self::error::Result;
 
@@ -29,19 +29,22 @@ pub mod error {
     }
 }
 
-// TODO: Write to a proper storage file
-pub async fn request_all_programs() -> Result<Vec<Program>> {
-    let url = "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json";
-    let body: Value = reqwest::get(url).await?.json().await?;
+// TODO: Remove programs_provider dependency and refresh it's cache elsewhere
+pub async fn fetch_all_programs(programs_provider: &ProgramsProvider) -> Result<Vec<Program>> {
+    // Fetch data from api
+    let data_url = &CONFIGS.fetching.url;
+    let body: Value = reqwest::get(data_url).await?.json().await?;
 
-    let mut f = File::create("/tmp/programs.json").await.unwrap();
+    // Write fetched data to storage
+    let mut storage_path = CONFIGS.data.storage.clone();
+    storage_path.push(&CONFIGS.data.all_programs_file);
+    let mut f = File::create(storage_path).await.unwrap();
     f.write_all(serde_json::to_string_pretty(&body)?.as_bytes())
         .await?;
 
-    let provider = FileJsonProvider::init("/tmp", "programs.json");
-    let provider = ProgramsProvider::with(Box::new(provider));
-
-    let (programs, _errors) = provider.get_all_programs().await?;
+    // Refresh cache and fetch new results from cache
+    programs_provider.refresh_cache().await?;
+    let (programs, _errors) = programs_provider.get_all_programs().await?;
 
     Ok(programs)
 }

@@ -17,6 +17,8 @@ pub enum Error {
     DeserializeFromStr(#[from] serde_json::Error),
     /// Error happened because the format of given JSON didn't fit the expected layout
     Format(&'static str),
+    /// File given doesn't exist
+    FileNotFound(PathBuf),
 }
 
 impl std::fmt::Display for Error {
@@ -45,11 +47,22 @@ pub struct FileJsonProvider {
 }
 
 impl FileJsonProvider {
-    pub fn init<P: Into<PathBuf>>(data_root: P, all_programs_file: P) -> Self {
-        Self {
-            data_root: data_root.into(),
-            all_programs_file: all_programs_file.into(),
+    pub fn init<P: Into<PathBuf>>(data_root: P, all_programs_file: P) -> Result<Self, Error> {
+        let data_root: PathBuf = data_root.into();
+        let all_programs_file: PathBuf = all_programs_file.into();
+
+        let mut path = data_root.clone();
+        path.push(&all_programs_file);
+
+        // Check if the file exists
+        if path.try_exists()? == false {
+            return Err(Error::FileNotFound(path));
         }
+
+        Ok(Self {
+            data_root,
+            all_programs_file,
+        })
     }
 }
 

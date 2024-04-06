@@ -52,10 +52,12 @@ async fn get_program_handler(
 }
 
 // TODO: Update state of ProgramsProvider after fetching the lastest data
-#[instrument(err)]
-async fn refresh_all_programs_handler() -> Result<Json<Vec<Program>>> {
+#[instrument(skip(programs_provider), err)]
+async fn refresh_all_programs_handler(
+    State(programs_provider): State<ProgramsProvider>,
+) -> Result<Json<Vec<Program>>> {
     info!("Refreshing all programs");
-    let programs = fetching::request_all_programs().await?;
+    let programs = fetching::fetch_all_programs(&programs_provider).await?;
 
     debug!("Number of programs after refresh: {}", programs.len());
 

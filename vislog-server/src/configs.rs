@@ -77,8 +77,9 @@ pub struct Log {
 #[derive(Debug, Deserialize, Clone)]
 pub enum LogLevel {
     Trace,
-    Warn,
+    Debug,
     Info,
+    Warn,
     Error,
 }
 
@@ -86,7 +87,7 @@ impl AsRef<str> for LogLevel {
     fn as_ref(&self) -> &str {
         match self {
             LogLevel::Trace => "trace",
-            LogLevel::Warn => "warn",
+            LogLevel::Debug => "debug",
             LogLevel::Info => "info",
             LogLevel::Error => "error",
         }

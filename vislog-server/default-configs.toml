@@ -3,8 +3,9 @@ host = "127.0.0.1"
 port = 8080
 
 [data]
-storage = "../data"
+storage = "./"
 all_programs_file = "programs.json"
+all_courses_file = "courses.json"
 
 [log]
 level = "info"

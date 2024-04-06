@@ -1,3 +1,5 @@
+use std::{net::Ipv4Addr, path::PathBuf, str::FromStr};
+
 use config::{Config, ConfigError, File, FileFormat};
 use serde::Deserialize;
 
@@ -24,13 +26,14 @@ impl ServerConfig {
 impl Default for ServerConfig {
     fn default() -> Self {
         let server = Server {
-            host: "127.0.0.1".to_owned(),
+            host: Ipv4Addr::new(127, 0, 0, 1),
             port: 8080,
         };
 
         let data = Data {
-            storage: "../data".to_owned(),
-            all_programs_file: "programs.json".to_owned(),
+            storage: PathBuf::from_str("./").expect("should be valid"),
+            all_programs_file: PathBuf::from_str("programs.json").expect("should be valid"),
+            all_courses_file: PathBuf::from_str("courses.json").expect("should be valid"),
         };
 
         let log = Log {
@@ -51,14 +54,15 @@ impl Default for ServerConfig {
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Server {
-    pub host: String,
+    pub host: Ipv4Addr,
     pub port: u16,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Data {
-    pub storage: String,
-    pub all_programs_file: String,
+    pub storage: PathBuf,
+    pub all_programs_file: PathBuf,
+    pub all_courses_file: PathBuf,
 }
 
 #[derive(Debug, Deserialize, Clone)]

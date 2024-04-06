@@ -4,8 +4,11 @@ use crate::data::parsing::ProgramsProvider;
 
 pub mod error;
 
-mod data;
+mod courses;
+mod programs;
 
 pub fn routes(pp: ProgramsProvider) -> Router {
-    Router::new().nest("/data", data::routes(pp))
+    Router::new()
+        .nest("/programs", programs::routes(pp))
+        .nest("/courses", courses::routes())
 }

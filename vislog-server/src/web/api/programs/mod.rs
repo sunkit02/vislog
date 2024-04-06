@@ -17,9 +17,9 @@ use self::error::Error;
 
 pub fn routes(program_provider: ProgramsProvider) -> Router {
     Router::new()
-        .route("/programs", get(get_all_programs_handler))
-        .route("/programs/:guid", get(get_program_handler))
-        .route("/programs/refresh", get(refresh_all_programs_handler))
+        .route("/", get(get_all_programs_handler))
+        .route("/:guid", get(get_program_handler))
+        .route("/refresh", get(refresh_all_programs_handler))
         .with_state(program_provider)
 }
 

@@ -1,8 +1,9 @@
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     routing::get,
     Json, Router,
 };
+use serde::{Deserialize, Serialize};
 use tracing::{debug, info, instrument};
 use vislog_core::parsing::guid::Guid;
 use vislog_core::Program;
@@ -28,7 +29,11 @@ async fn get_all_programs_handler(
 
     let (programs, errors) = programs_provider.get_all_programs().await?;
 
-    debug!("programs: {}, errors: {}", programs.len(), errors.len());
+    debug!(
+        "Program count: {}, Error count: {}",
+        programs.len(),
+        errors.len()
+    );
 
     Ok(Json(programs))
 }
@@ -48,19 +53,45 @@ async fn get_program_handler(
     Ok(Json(program))
 }
 
+#[derive(Debug, Deserialize)]
+struct ProgramTitlesParam {
+    with_guid: Option<bool>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(untagged)]
+enum ProgramTitlesResponse {
+    WithGuid { guid: Guid, title: String },
+    WithoutGuid(String),
+}
+
 #[instrument(skip(programs_provider), err)]
 async fn get_all_program_titles_handler(
+    Query(with_guid): Query<ProgramTitlesParam>,
     State(programs_provider): State<ProgramsProvider>,
-) -> Result<Json<Vec<String>>> {
+) -> Result<Json<Vec<ProgramTitlesResponse>>> {
     info!("Getting all program titles");
 
     let (programs, _errors) = programs_provider.get_all_programs().await?;
+    let with_guid = with_guid.with_guid.unwrap_or(false);
 
-    let titles: Vec<String> = programs.into_iter().map(|p| p.title).collect();
+    let responses: Vec<ProgramTitlesResponse> = programs
+        .into_iter()
+        .map(|p| {
+            if with_guid {
+                ProgramTitlesResponse::WithGuid {
+                    guid: p.guid,
+                    title: p.title,
+                }
+            } else {
+                ProgramTitlesResponse::WithoutGuid(p.title)
+            }
+        })
+        .collect();
 
-    debug!("program titles: {}", titles.len());
+    debug!("Title count: {}", responses.len());
 
-    Ok(Json(titles))
+    Ok(Json(responses))
 }
 
 // TODO: Update state of ProgramsProvider after fetching the lastest data
@@ -71,7 +102,7 @@ async fn refresh_all_programs_handler(
     info!("Refreshing all programs");
     let programs = fetching::fetch_all_programs(&programs_provider).await?;
 
-    debug!("Number of programs after refresh: {}", programs.len());
+    debug!("Programs count after refresh: {}", programs.len());
 
     Ok(Json(programs))
 }

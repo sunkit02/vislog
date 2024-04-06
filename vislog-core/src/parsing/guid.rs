@@ -1,21 +1,15 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{
+    de::{self, Visitor},
+    Deserialize, Deserializer, Serialize,
+};
 use thiserror::Error;
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub struct GUID {
+pub struct Guid {
     inner: [u8; 16],
 }
 
-impl Serialize for GUID {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.to_string().as_str())
-    }
-}
-
-impl std::fmt::Debug for GUID {
+impl std::fmt::Debug for Guid {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut n: u128 = 0;
         for (i, byte) in self.inner.iter().enumerate() {
@@ -37,7 +31,7 @@ impl std::fmt::Debug for GUID {
     }
 }
 
-impl std::fmt::Display for GUID {
+impl std::fmt::Display for Guid {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{self:?}")
     }
@@ -55,7 +49,7 @@ pub enum GUIDParsingError {
     InvalidCharacter,
 }
 
-impl TryFrom<&str> for GUID {
+impl TryFrom<&str> for Guid {
     type Error = GUIDParsingError;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
@@ -104,6 +98,42 @@ impl TryFrom<&str> for GUID {
     }
 }
 
+impl Serialize for Guid {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.to_string().as_str())
+    }
+}
+
+// TODO: Implement deserialization for byte arrays and u128 integers
+impl<'de> Deserialize<'de> for Guid {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct GuidVisitor;
+
+        impl<'de> Visitor<'de> for GuidVisitor {
+            type Value = Guid;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                write!(formatter, "a string representing a Guid/Uuid")
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Guid::try_from(v).map_err(|e| de::Error::custom(e))
+            }
+        }
+
+        deserializer.deserialize_any(GuidVisitor)
+    }
+}
+
 const ASCII_NUMS_START: u32 = 48;
 const ASCII_UPPER_ALPHA_START: u32 = 65;
 const ASCII_LOWER_ALPHA_START: u32 = 97;
@@ -123,7 +153,7 @@ fn hex_to_num(c: char) -> Option<u8> {
     Some(n as u8)
 }
 
-pub(crate) fn deserialize_guid_with_curly_braces<'de, D>(deserializer: D) -> Result<GUID, D::Error>
+pub(crate) fn deserialize_guid_with_curly_braces<'de, D>(deserializer: D) -> Result<Guid, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -132,7 +162,7 @@ where
     // Ommit the curly braces in the source when parsing
     s = &s[1..s.len() - 1];
 
-    GUID::try_from(s).map_err(serde::de::Error::custom)
+    Guid::try_from(s).map_err(serde::de::Error::custom)
 }
 
 #[cfg(test)]
@@ -176,9 +206,9 @@ mod test {
     #[test]
     fn parse_guid_from_str_with_hyphens() {
         let s = "C7AD875E-1344-4D9B-A883-32E748890908";
-        let guid = GUID::try_from(s).expect("Failed to parse GUID");
+        let guid = Guid::try_from(s).expect("Failed to parse GUID");
 
-        let expected = GUID {
+        let expected = Guid {
             inner: [
                 0xC7, 0xAD, 0x87, 0x5E, 0x13, 0x44, 0x4D, 0x9B, 0xA8, 0x83, 0x32, 0xE7, 0x48, 0x89,
                 0x09, 0x08,
@@ -191,9 +221,9 @@ mod test {
     #[test]
     fn parse_guid_from_str_without_hyphens() {
         let s = "C7AD875E13444D9BA88332E748890908";
-        let guid = GUID::try_from(s).expect("Failed to parse GUID");
+        let guid = Guid::try_from(s).expect("Failed to parse GUID");
 
-        let expected = GUID {
+        let expected = Guid {
             inner: [
                 0xC7, 0xAD, 0x87, 0x5E, 0x13, 0x44, 0x4D, 0x9B, 0xA8, 0x83, 0x32, 0xE7, 0x48, 0x89,
                 0x09, 0x08,
@@ -207,27 +237,27 @@ mod test {
     fn error_when_parse_guid_from_str_when_too_long() {
         let s = "C7AD875E-1344-4D9B-A883-32E748890908-123321123";
 
-        assert_eq!(GUID::try_from(s), Err(GUIDParsingError::TooLong));
+        assert_eq!(Guid::try_from(s), Err(GUIDParsingError::TooLong));
     }
 
     #[test]
     fn error_when_parse_guid_from_str_when_too_short() {
         let s = "C7AD875E-1344-4D9B-A883";
 
-        assert_eq!(GUID::try_from(s), Err(GUIDParsingError::TooShort));
+        assert_eq!(Guid::try_from(s), Err(GUIDParsingError::TooShort));
     }
 
     #[test]
     fn error_when_parse_guid_from_str_with_invalid_char() {
         let s = "+7AD875E-1344-4D9B-A883-32E748890908";
 
-        assert_eq!(GUID::try_from(s), Err(GUIDParsingError::InvalidCharacter));
+        assert_eq!(Guid::try_from(s), Err(GUIDParsingError::InvalidCharacter));
     }
 
     #[test]
     fn parse_guid_then_back_to_str() {
         let s = "C7AD875E-1344-4D9B-A883-32E748890908";
-        let guid = GUID::try_from(s).expect("Failed to parse GUID");
+        let guid = Guid::try_from(s).expect("Failed to parse GUID");
 
         assert_eq!(guid.to_string(), s);
     }

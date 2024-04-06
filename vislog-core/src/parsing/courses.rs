@@ -6,7 +6,7 @@ use anyhow::Error as AnyhowError;
 use serde::Deserialize;
 use thiserror::Error;
 
-use crate::parsing::guid::GUID;
+use crate::parsing::guid::Guid;
 use crate::Label;
 use crate::{Course, CourseEntries, CourseEntry};
 
@@ -969,7 +969,7 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
                         let guid = entry.guid.as_str();
                         let guid = &guid[1..guid.len() - 1];
 
-                        GUID::try_from(guid)?
+                        Guid::try_from(guid)?
                     };
 
                     let credits = parse_course_credits(entry.credits.as_str())?;
@@ -991,7 +991,7 @@ impl TryFrom<RawCourseEntry> for ParsedCourseEntry {
             let guid = entry.guid.as_str();
             let guid = &guid[1..guid.len() - 1];
 
-            GUID::try_from(guid)?
+            Guid::try_from(guid)?
         };
 
         let number = entry

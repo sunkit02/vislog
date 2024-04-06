@@ -13,7 +13,7 @@ use crate::{
 
 use self::{
     courses::{parse_course_credits, CoursesParser, RawCourseEntry},
-    guid::GUID,
+    guid::Guid,
 };
 
 pub mod courses;
@@ -304,7 +304,7 @@ impl<'de> Deserialize<'de> for CourseEntries {
             {
                 let mut url: Option<String> = None;
                 let mut path: Option<String> = None;
-                let mut guid: Option<GUID> = None;
+                let mut guid: Option<Guid> = None;
                 let mut name: Option<Option<String>> = None;
                 let mut number: Option<Option<String>> = None;
                 let mut subject_name: Option<Option<String>> = None;
@@ -338,7 +338,7 @@ impl<'de> Deserialize<'de> for CourseEntries {
                             let guid_str_trimmed =
                                 &guid_str_with_braces[1..guid_str_with_braces.len() - 1];
 
-                            guid = Some(GUID::try_from(guid_str_trimmed).map_err(|e| {
+                            guid = Some(Guid::try_from(guid_str_trimmed).map_err(|e| {
                                 de::Error::custom(format!("error parsing guid: {}", e))
                             })?);
                         }
@@ -638,7 +638,7 @@ impl<'de> Deserialize<'de> for CourseDetails {
                     .transpose()?;
 
                 let guid_str = guid.ok_or(de::Error::missing_field("GUID"))?;
-                let guid = GUID::try_from(&guid_str[1..guid_str.len() - 1])
+                let guid = Guid::try_from(&guid_str[1..guid_str.len() - 1])
                     .map_err(|e| de::Error::custom(e))?;
 
                 // Construct CourseDetails
@@ -666,7 +666,7 @@ impl<'de> Deserialize<'de> for CourseDetails {
         /// Extracts only the `GUID` field from a [Value](serde_json::Value) constructed from
         /// the `prerequisite` or `corequisite` field of an unparsed JSON object representing
         /// the [CourseDetails](crate::CourseDetails) struct
-        fn extract_guid_from_requisite(requisite_json: Value) -> Result<GUID, String> {
+        fn extract_guid_from_requisite(requisite_json: Value) -> Result<Guid, String> {
             let Value::Object(map) = requisite_json else {
                 return Err("expected JSON object".to_owned());
             };
@@ -678,7 +678,7 @@ impl<'de> Deserialize<'de> for CourseDetails {
 
             let guid_str_without_curly_braces = &guid_str[1..guid_str.len() - 1];
 
-            GUID::try_from(guid_str_without_curly_braces).map_err(|e| e.to_string())
+            Guid::try_from(guid_str_without_curly_braces).map_err(|e| e.to_string())
         }
 
         deserializer.deserialize_map(CourseDetailsVisitor)
@@ -716,14 +716,14 @@ where
 
 pub(crate) fn deserialize_extract_guid_only<'de, D>(
     deserializer: D,
-) -> Result<Option<GUID>, D::Error>
+) -> Result<Option<Guid>, D::Error>
 where
     D: Deserializer<'de>,
 {
     struct ExtractGuidVisitor;
 
     impl<'d> Visitor<'d> for ExtractGuidVisitor {
-        type Value = Option<GUID>;
+        type Value = Option<Guid>;
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
             formatter.write_str("a string representing a GUID surounded by curly braces")
@@ -752,7 +752,7 @@ where
                     Err(de::Error::custom("string not long enough to be GUID"))
                 }
                 Some(s) => Ok(Some(
-                    GUID::try_from(&s[1..s.len() - 1]).map_err(|e| de::Error::custom(e))?,
+                    Guid::try_from(&s[1..s.len() - 1]).map_err(|e| de::Error::custom(e))?,
                 )),
                 None => Ok(None),
             }

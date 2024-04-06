@@ -3,7 +3,7 @@ use std::ops::{Deref, DerefMut};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::parsing::guid::{deserialize_guid_with_curly_braces, GUID};
+use crate::parsing::guid::{deserialize_guid_with_curly_braces, Guid};
 
 pub mod parsing;
 
@@ -20,7 +20,7 @@ pub struct Program {
     /// GUID given by the system
     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
     #[serde(alias = "GUID")]
-    pub guid: GUID,
+    pub guid: Guid,
 
     /// Name of the program
     pub title: String,
@@ -137,7 +137,7 @@ pub struct Course {
     pub url: String,
     pub path: String,
     #[serde(deserialize_with = "deserialize_guid_with_curly_braces")]
-    pub guid: GUID,
+    pub guid: Guid,
 
     /// This field is normally not, but sometimes can be empty for special courses.
     ///
@@ -172,7 +172,7 @@ pub struct Course {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Label {
     pub url: String,
-    pub guid: GUID,
+    pub guid: Guid,
     pub name: String,
     pub number: Option<String>,
     pub subject_code: Option<String>,
@@ -185,7 +185,7 @@ pub struct Label {
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct CourseDetails {
     pub url: String,
-    pub guid: GUID,
+    pub guid: Guid,
     pub path: String,
     pub subject_code: String,
     pub subject_name: Option<String>,
@@ -195,9 +195,9 @@ pub struct CourseDetails {
     pub credits_max: Option<u8>,
     pub description: String,
     pub prerequisite_narrative: Option<String>,
-    pub prerequisite: Option<GUID>,
+    pub prerequisite: Option<Guid>,
     pub corequisite_narrative: Option<String>,
-    pub corequisite: Option<GUID>,
+    pub corequisite: Option<Guid>,
 }
 
 impl PartialOrd for Program {
@@ -225,7 +225,7 @@ mod test {
             .expect("Failed to parse `Program`");
 
         let expected_url = "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-computer-science/major-in-computer-science-42-hours";
-        let expected_guid = GUID::try_from("5B72AC3A-9A84-4CF5-B1BE-B3E0B48163A5").unwrap();
+        let expected_guid = Guid::try_from("5B72AC3A-9A84-4CF5-B1BE-B3E0B48163A5").unwrap();
         let expected_title = "Major in Computer Science—42 hours";
 
         let expected_req_mod_title = "Degree Requirements";
@@ -258,7 +258,7 @@ mod test {
             .expect("Failed to parse `Program`");
 
         let expected_url = "https://iq5prod1.smartcatalogiq.com:443/en/catalogs/union-university/2023/academic-catalogue-undergraduate-catalogue/college-of-arts-and-sciences/department-of-communication-arts/major-in-digital-media-communications-48-hours";
-        let expected_guid = GUID::try_from("0780CBF3-68C6-4999-95B9-7722170F47DD").unwrap();
+        let expected_guid = Guid::try_from("0780CBF3-68C6-4999-95B9-7722170F47DD").unwrap();
         let expected_title = "Major in Digital Media Communications—48 hours";
 
         assert_eq!(parsed_program.url, expected_url);

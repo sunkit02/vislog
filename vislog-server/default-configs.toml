@@ -1,0 +1,14 @@
+[server]
+host = "127.0.0.1"
+port = 8080
+
+[data]
+storage = "../data"
+all_programs_file = "programs.json"
+
+[log]
+level = "info"
+with_target = true
+
+[fetching]
+url = "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json"

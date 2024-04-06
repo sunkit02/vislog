@@ -1,34 +1,82 @@
 use std::net::SocketAddr;
 
 use data::parsing::{json_providers::FileJsonProvider, ProgramsProvider};
+use lazy_static::lazy_static;
 use tokio::net::TcpListener;
+use tracing::{error, info};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::{self, util::SubscriberInitExt};
 use tracing_subscriber::{fmt, EnvFilter};
 
 use web::init_server;
 
+use crate::config::ServerConfig;
+
+mod config;
 mod data;
 mod web;
 
+lazy_static! {
+    static ref DEFAULT_CONFIGS: ServerConfig = ServerConfig::default();
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let fmt_layer = fmt::layer().with_target(false);
-    let filter_layer = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    let (configs, config_err) = match ServerConfig::new() {
+        Ok(configs) => (configs, None),
+        Err(err) => (DEFAULT_CONFIGS.clone(), Some(err.to_string())),
+    };
+
+    let fmt_layer = fmt::layer().with_target(configs.log.with_target.unwrap_or({
+        DEFAULT_CONFIGS
+            .log
+            .with_target
+            .expect("Should be populated")
+    }));
+    let filter_layer = EnvFilter::new(
+        &configs.log.level.unwrap_or(
+            DEFAULT_CONFIGS
+                .log
+                .level
+                .as_ref()
+                .expect("Should be populated")
+                .clone(),
+        ),
+    );
 
     tracing_subscriber::registry()
         .with(filter_layer)
         .with(fmt_layer)
         .init();
 
-    let json_provider = FileJsonProvider::init("../data", "programs.json");
+    if let Some(err) = config_err {
+        error!(
+            "Failed to load config file '{}' due to {}",
+            config::CONFIG_FILE_PATH,
+            err
+        );
+
+        info!("Using default configurations");
+    } else {
+        info!(
+            "Successfully loaded config file '{}'",
+            config::CONFIG_FILE_PATH,
+        );
+        info!(
+            "Using custom configurations from config file '{}'",
+            config::CONFIG_FILE_PATH,
+        )
+    }
+
+    let json_provider =
+        FileJsonProvider::init(&configs.data.storage, &configs.data.all_programs_file);
     let programs_provider = ProgramsProvider::with(Box::new(json_provider));
 
-    let addr = "127.0.0.1:8080";
-    let listener = TcpListener::bind(addr).await?;
+    let addr = format!("{}:{}", configs.server.host, configs.server.port);
+    let listener = TcpListener::bind(&addr).await?;
     let server = init_server(programs_provider);
 
-    tracing::info!("Listening at {addr}");
+    info!("Listening at {addr}");
 
     axum::serve(
         listener,

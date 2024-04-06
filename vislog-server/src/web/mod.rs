@@ -4,6 +4,7 @@ use axum::{
     body::Body,
     extract::ConnectInfo,
     http::{Response, StatusCode},
+    middleware::map_response,
     response::IntoResponse,
     routing::get,
     Router,
@@ -20,6 +21,7 @@ async fn check_health_handler(ConnectInfo(addr): ConnectInfo<SocketAddr>) -> Res
 
 mod api;
 mod error;
+mod middleware;
 
 pub fn init_server(
     programs_provider: ProgramsProvider,
@@ -28,4 +30,7 @@ pub fn init_server(
     Router::new()
         .route("/check_health", get(check_health_handler))
         .nest("/api", api::routes(programs_provider, courses_provider))
+        .layer(map_response(
+            middleware::cors::mw_set_access_control_allow_origin,
+        ))
 }

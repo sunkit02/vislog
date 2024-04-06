@@ -13,3 +13,6 @@ with_target = true
 
 [fetching]
 url = "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json"
+
+[cors]
+origins = []

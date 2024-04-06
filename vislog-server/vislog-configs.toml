@@ -1,5 +1,5 @@
 [server]
-host = "127.0.0.1"
+host = "0.0.0.0"
 port = 8080
 
 [data]
@@ -8,9 +8,12 @@ all_programs_file = "programs.json"
 all_courses_file = "courses.json"
 
 [log]
-level = "trace"
+level = "debug"
 with_target = true
 
 [fetching]
 programs_url = "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json"
 courses_url = "https://iq5prod1.smartcatalogiq.com/apis/courseAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json"
+
+[cors]
+origins = ["*"]

@@ -11,7 +11,7 @@ use tracing_subscriber::{fmt, EnvFilter};
 
 use web::init_server;
 
-use crate::configs::ServerConfig;
+use crate::configs::{Cors, ServerConfig};
 use crate::data::providers::courses::CoursesProvider;
 use crate::data::providers::json_providers;
 use crate::data::providers::programs::ProgramsProvider;
@@ -138,6 +138,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let server = init_server(programs_provider, courses_provider);
 
     info!("Listening at {addr}");
+
+    if let Some(cors) = &CONFIGS.cors {
+        if cors.origins.len() >= 1 {
+            info!(
+                "Allowing requests from origins: \"{}\"",
+                cors.origins_to_string()
+            );
+        }
+    }
 
     axum::serve(
         listener,

@@ -1,4 +1,4 @@
-use std::{net::Ipv4Addr, path::PathBuf, str::FromStr};
+use std::{fmt::Display, net::Ipv4Addr, ops::Deref, path::PathBuf, str::FromStr};
 
 use config::{Config, ConfigError, File, FileFormat};
 use serde::Deserialize;
@@ -11,6 +11,7 @@ pub struct ServerConfig {
     pub log: Log,
     pub data: Data,
     pub fetching: Fetching,
+    pub cors: Option<Cors>,
 }
 
 impl ServerConfig {
@@ -46,11 +47,14 @@ impl Default for ServerConfig {
             courses_url: "https://iq5prod1.smartcatalogiq.com/APIs/courseAPI?path=/sitecore/content/Catalogs/Union-University/2023/Academic-Catalogue-Undergraduate-Catalogue&format=json".to_owned(),
         };
 
+        let cors = None;
+
         Self {
             server,
             data,
             log,
             fetching,
+            cors,
         }
     }
 }
@@ -89,6 +93,7 @@ impl AsRef<str> for LogLevel {
             LogLevel::Trace => "trace",
             LogLevel::Debug => "debug",
             LogLevel::Info => "info",
+            LogLevel::Warn => "warn",
             LogLevel::Error => "error",
         }
     }
@@ -98,4 +103,33 @@ impl AsRef<str> for LogLevel {
 pub struct Fetching {
     pub programs_url: String,
     pub courses_url: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Cors {
+    pub origins: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Origins(Vec<String>);
+
+impl Deref for Origins {
+    type Target = Vec<String>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Cors {
+    pub fn origins_to_string(&self) -> String {
+        let len = self.origins.len();
+        self.origins.iter().enumerate().fold(String::new(), |mut acc, (idx, origin)| {
+            acc.push_str(&origin);
+            if idx < len - 1 {
+                acc.push_str(", ");
+            }
+            acc
+        })
+    }
 }

@@ -50,6 +50,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with(fmt_layer)
         .init();
 
+    let (programs_provider, courses_provider) = init_programs_and_courses_providers().await?;
+
+    let addr = format!("{}:{}", CONFIGS.server.host, CONFIGS.server.port);
+    let listener = TcpListener::bind(&addr).await?;
+    let server = init_server(programs_provider, courses_provider);
+
+    info!("Listening at {addr}");
+
+    if let Some(cors) = &CONFIGS.cors {
+        if cors.origins.len() >= 1 {
+            info!(
+                "Allowing requests from origins: \"{}\"",
+                cors.origins_to_string()
+            );
+        }
+    }
+
+    axum::serve(
+        listener,
+        server.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await?;
+
+    Ok(())
+}
+
+async fn init_programs_and_courses_providers(
+) -> Result<(ProgramsProvider, CoursesProvider), Box<dyn std::error::Error>> {
     // TODO: Figure out why logs in this code block doesn't work
     let programs_provider = {
         let (json_provider, need_refetch) = {
@@ -133,26 +161,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         courses_provider
     };
 
-    let addr = format!("{}:{}", CONFIGS.server.host, CONFIGS.server.port);
-    let listener = TcpListener::bind(&addr).await?;
-    let server = init_server(programs_provider, courses_provider);
-
-    info!("Listening at {addr}");
-
-    if let Some(cors) = &CONFIGS.cors {
-        if cors.origins.len() >= 1 {
-            info!(
-                "Allowing requests from origins: \"{}\"",
-                cors.origins_to_string()
-            );
-        }
-    }
-
-    axum::serve(
-        listener,
-        server.into_make_service_with_connect_info::<SocketAddr>(),
-    )
-    .await?;
-
-    Ok(())
+    Ok((programs_provider, courses_provider))
 }

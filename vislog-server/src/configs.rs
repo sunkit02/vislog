@@ -1,4 +1,4 @@
-use std::{fmt::Display, net::Ipv4Addr, ops::Deref, path::PathBuf, str::FromStr};
+use std::{net::Ipv4Addr, ops::Deref, path::PathBuf, str::FromStr};
 
 use config::{Config, ConfigError, File, FileFormat};
 use serde::Deserialize;

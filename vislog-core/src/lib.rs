@@ -25,8 +25,12 @@ pub struct Program {
     /// Name of the program
     pub title: String,
 
-    // TODO: Add `hours` field
-    //
+    /// Introductory information about the program
+    pub content: Option<String>,
+
+    /// Last information on the page about the program
+    pub bottom_content: Option<String>,
+
     /// Course requirements for the Program
     pub requirements: Option<Requirements>,
 }

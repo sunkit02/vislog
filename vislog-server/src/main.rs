@@ -11,7 +11,7 @@ use tracing_subscriber::{fmt, EnvFilter};
 
 use web::init_server;
 
-use crate::configs::{Cors, ServerConfig};
+use crate::configs::ServerConfig;
 use crate::data::providers::courses::CoursesProvider;
 use crate::data::providers::json_providers;
 use crate::data::providers::programs::ProgramsProvider;

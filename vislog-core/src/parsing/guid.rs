@@ -11,13 +11,26 @@ pub struct Guid {
 
 impl std::fmt::Debug for Guid {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut n: u128 = 0;
-        for (i, byte) in self.inner.iter().enumerate() {
-            let byte = *byte as u128;
-            n |= byte << (8 * (15 - i as u128))
-        }
+        // let mut n: u128 = 0;
+        // for (i, byte) in self.inner.iter().enumerate() {
+        //     let byte = *byte as u128;
+        //     n |= byte << (8 * (15 - i as u128))
+        // }
 
-        let hex_chars = format!("{:X}", n);
+        let hex_chars = self
+            .inner
+            .iter()
+            .map(|byte| {
+                let first_half = byte >> 4;
+                let second_half = byte & 0b00001111;
+
+                [format!("{:X}", first_half), format!("{:X}", second_half)]
+            })
+            .flatten()
+            .fold(String::new(), |mut acc, c| {
+                acc.push_str(&c);
+                acc
+            });
 
         write!(
             f,
@@ -167,6 +180,8 @@ where
 
 #[cfg(test)]
 mod test {
+    use uuid::uuid;
+
     use super::*;
 
     #[test]
@@ -260,5 +275,22 @@ mod test {
         let guid = Guid::try_from(s).expect("Failed to parse GUID");
 
         assert_eq!(guid.to_string(), s);
+    }
+
+    #[test]
+    fn parse_and_display_guid_starting_with_0() {
+        let s = "08DD69D3-9F67-4A81-A5AA-5738B6A79D2B";
+        let guid = Guid::try_from(s).unwrap();
+
+        assert_eq!(guid.to_string(), s);
+    }
+
+    #[test]
+    fn equivalent_results_with_uuid() {
+        let uuid = uuid!("08DD69D3-9F67-4A81-A5AA-5738B6A79D2B");
+
+        let guid = Guid::try_from("08DD69D3-9F67-4A81-A5AA-5738B6A79D2B").unwrap();
+
+        assert_eq!(uuid.to_string().to_uppercase(), guid.to_string());
     }
 }

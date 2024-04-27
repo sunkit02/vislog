@@ -12,6 +12,7 @@ pub struct ServerConfig {
     pub data: Data,
     pub fetching: Fetching,
     pub cors: Option<Cors>,
+    pub static_assets: Option<StaticAssets>
 }
 
 impl ServerConfig {
@@ -49,12 +50,15 @@ impl Default for ServerConfig {
 
         let cors = None;
 
+        let static_assets = None;
+
         Self {
             server,
             data,
             log,
             fetching,
             cors,
+            static_assets,
         }
     }
 }
@@ -132,4 +136,9 @@ impl Cors {
             acc
         })
     }
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct StaticAssets {
+    pub dir: PathBuf
 }

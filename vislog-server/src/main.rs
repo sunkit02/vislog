@@ -29,6 +29,13 @@ lazy_static! {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let test_configs = ServerConfig::new().expect(&format!(
+        "Failed to load config file '{}'",
+        configs::CONFIG_FILE_PATH
+    ));
+
+    dbg!(test_configs);
+
     let fmt_layer = fmt::layer().with_target(CONFIGS.log.with_target.unwrap_or({
         ServerConfig::default()
             .log
@@ -54,7 +61,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let addr = format!("{}:{}", CONFIGS.server.host, CONFIGS.server.port);
     let listener = TcpListener::bind(&addr).await?;
-    let server = init_server(programs_provider, courses_provider);
+    let server = init_server(
+        programs_provider,
+        courses_provider,
+        CONFIGS.static_assets.as_ref().map(|c| c.dir.clone()),
+    );
 
     info!("Listening at {addr}");
 

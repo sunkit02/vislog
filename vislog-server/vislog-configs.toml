@@ -17,3 +17,6 @@ courses_url = "https://iq5prod1.smartcatalogiq.com/apis/courseAPI?path=/sitecore
 
 [cors]
 origins = ["*"]
+
+[static_assets]
+dir = "../../../js/vislog-front-ts/dist"

@@ -16,3 +16,6 @@ url = "https://iq5prod1.smartcatalogiq.com/apis/progAPI?path=/sitecore/content/C
 
 [cors]
 origins = []
+
+[static_assets]
+dir = "./dist"

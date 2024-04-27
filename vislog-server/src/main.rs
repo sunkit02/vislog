@@ -29,13 +29,6 @@ lazy_static! {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let test_configs = ServerConfig::new().expect(&format!(
-        "Failed to load config file '{}'",
-        configs::CONFIG_FILE_PATH
-    ));
-
-    dbg!(test_configs);
-
     let fmt_layer = fmt::layer().with_target(CONFIGS.log.with_target.unwrap_or({
         ServerConfig::default()
             .log
@@ -95,6 +88,7 @@ async fn init_programs_and_courses_providers(
             match FileJsonProvider::init(&CONFIGS.data.storage, &CONFIGS.data.all_programs_file) {
                 Ok(provider) => (provider, false),
                 Err(json_providers::Error::FileNotFound(path)) => {
+                    // TODO: Change data file not existing to warn
                     error!("Given data file '{path:?}' doesn't exist");
                     info!("Creating data file at '{path:?}'");
 
@@ -147,7 +141,7 @@ async fn init_programs_and_courses_providers(
                     // fix the issue
                     let provider = FileJsonProvider::init(
                         &CONFIGS.data.storage,
-                        &CONFIGS.data.all_programs_file,
+                        &CONFIGS.data.all_courses_file,
                     )
                     .expect("JsonProvider initialization should succeed after file creation");
 

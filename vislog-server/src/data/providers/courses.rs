@@ -1,8 +1,8 @@
-use std::{collections::HashMap, fmt::Display, sync::Arc};
+use std::{collections::HashMap, fmt::Display, io::Write, sync::Arc};
 
 use thiserror::Error;
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
-use tracing::{field::debug, instrument, Level};
+use tracing::{debug, instrument, Level};
 use vislog_core::{parsing::guid::Guid, CourseDetails};
 use vislog_parser::{parse_courses, ParsingError};
 
@@ -37,7 +37,7 @@ impl CoursesProvider {
             let read_cache_guard = self.cache.read().await;
 
             if read_cache_guard.items.is_empty() && read_cache_guard.errors.is_empty() {
-                debug("cache empty");
+                debug!("cache empty");
                 drop(read_cache_guard);
                 let json_provider_read_guard = self.json_provider.read().await;
                 let write_cache_guard = self.cache.write().await;
@@ -46,7 +46,7 @@ impl CoursesProvider {
                 // Reacquire read lock
                 self.cache.read().await
             } else {
-                debug("cache populated");
+                debug!("cache populated");
                 read_cache_guard
             }
         };
@@ -63,7 +63,7 @@ impl CoursesProvider {
             let read_cache_guard = self.cache.read().await;
 
             if read_cache_guard.items.is_empty() && read_cache_guard.errors.is_empty() {
-                debug("cache empty");
+                debug!("cache empty");
 
                 drop(read_cache_guard);
                 let json_provider_read_guard = self.json_provider.read().await;
@@ -73,7 +73,7 @@ impl CoursesProvider {
                 // Reacquire read lock
                 self.cache.read().await
             } else {
-                debug("cache populated");
+                debug!("cache populated");
                 read_cache_guard
             }
         };
@@ -98,6 +98,8 @@ impl CoursesProvider {
         >,
     ) -> Result<()> {
         let course_jsons = json_provider_read_guard.get_all_course_jsons()?;
+
+        std::io::stdout().lock().flush().unwrap();
         let (courses, errors) = parse_courses(course_jsons);
 
         let programs = courses

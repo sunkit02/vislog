@@ -1,6 +1,7 @@
 use serde_json::Value;
 
 use tokio::{fs::File, io::AsyncWriteExt};
+use tracing::debug;
 use vislog_core::{Course, CourseDetails, Program};
 
 use crate::{data::providers::programs::ProgramsProvider, CONFIGS};
@@ -47,6 +48,7 @@ pub async fn fetch_all_programs(programs_provider: &ProgramsProvider) -> Result<
     let mut f = File::create(storage_path).await.unwrap();
     f.write_all(serde_json::to_string_pretty(&body)?.as_bytes())
         .await?;
+    f.flush().await?;
 
     // Refresh cache and fetch new results from cache
     programs_provider.refresh_cache().await?;
@@ -68,6 +70,7 @@ pub async fn fetch_all_courses(courses_provider: &CoursesProvider) -> Result<Vec
     let mut f = File::create(storage_path).await.unwrap();
     f.write_all(serde_json::to_string_pretty(&body)?.as_bytes())
         .await?;
+    f.flush().await?;
 
     // Refresh cache and fetch new results from cache
     courses_provider.refresh_cache().await?;

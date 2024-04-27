@@ -53,7 +53,7 @@ impl JsonProvider for WebJsonProvider {
 #[derive(Debug, Clone)]
 pub struct FileJsonProvider {
     data_root: PathBuf,
-    all_programs_file: PathBuf,
+    all_jsons_file: PathBuf,
 }
 
 impl FileJsonProvider {
@@ -71,7 +71,7 @@ impl FileJsonProvider {
 
         Ok(Self {
             data_root,
-            all_programs_file,
+            all_jsons_file: all_programs_file,
         })
     }
 }
@@ -79,7 +79,7 @@ impl FileJsonProvider {
 impl JsonProvider for FileJsonProvider {
     fn get_all_program_jsons(&self) -> Result<Vec<Value>, Error> {
         let mut path = self.data_root.clone();
-        path.push(&self.all_programs_file);
+        path.push(&self.all_jsons_file);
 
         let json_str = std::fs::read_to_string(path)?;
 
@@ -133,7 +133,7 @@ impl JsonProvider for FileJsonProvider {
 
     fn get_all_course_jsons(&self) -> Result<Vec<Value>, Error> {
         let mut path = self.data_root.clone();
-        path.push(&self.all_programs_file);
+        path.push(&self.all_jsons_file);
 
         let json_str = std::fs::read_to_string(path)?;
 

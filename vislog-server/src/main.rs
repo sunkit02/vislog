@@ -4,7 +4,7 @@ use data::fetching;
 use data::providers::json_providers::FileJsonProvider;
 use lazy_static::lazy_static;
 use tokio::net::TcpListener;
-use tracing::{error, info};
+use tracing::{error, info, warn};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::{self, util::SubscriberInitExt};
 use tracing_subscriber::{fmt, EnvFilter};
@@ -88,8 +88,7 @@ async fn init_programs_and_courses_providers(
             match FileJsonProvider::init(&CONFIGS.data.storage, &CONFIGS.data.all_programs_file) {
                 Ok(provider) => (provider, false),
                 Err(json_providers::Error::FileNotFound(path)) => {
-                    // TODO: Change data file not existing to warn
-                    error!("Given data file '{path:?}' doesn't exist");
+                    warn!("Given data file '{path:?}' doesn't exist");
                     info!("Creating data file at '{path:?}'");
 
                     tokio::fs::File::create(&path)
@@ -130,7 +129,7 @@ async fn init_programs_and_courses_providers(
             match FileJsonProvider::init(&CONFIGS.data.storage, &CONFIGS.data.all_courses_file) {
                 Ok(provider) => (provider, false),
                 Err(json_providers::Error::FileNotFound(path)) => {
-                    error!("Given data file '{path:?}' doesn't exist");
+                    warn!("Given data file '{path:?}' doesn't exist");
                     info!("Creating data file at '{path:?}'");
 
                     tokio::fs::File::create(&path)

@@ -103,7 +103,7 @@ cargo build -r
 
 Keep note of the executable located at `{project-root}/target/release` called `vislog-server(.exe)` (You may or may not have the .exe extension based on your OS)
 
-### Configure the project (aka. Put the pieces in the right place)
+### Installation Steps
 
 1. Find a directory where you want to install the server to. We’ll call it `target-dir` from now on
 2. Copy the `vislog-server(.exe)` executable to `target-dir`

@@ -2,6 +2,8 @@
 
 Vislog is a project to visualize the Union University Catalog
 
+Go to [installation instructions](#installation).
+
 ## Architecture
 
 ![Image of Overall Architecture](./docs/vislog_architecture.png)

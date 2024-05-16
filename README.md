@@ -112,4 +112,4 @@ Keep note of the executable located at `{project-root}/target/release` called `v
 3. Copy the entire `dist` directory from the frontend build to `target-dir`
 4. Copy the `{vislog-repo-root-dir}/vislog-server/default-configs.toml` to `target-dir` and rename it to `vislog-configs.toml`
 5. Run the `vislog-server(.exe)` executable
-6. Open your browser of choice (preferably Chromium, I did not test any other ones) and go to the following URL: <http://127.0.0.1:8080>
+6. Open your browser of choice (preferably Chromium based) and go to the following URL: <http://127.0.0.1:8080>

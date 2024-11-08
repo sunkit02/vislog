@@ -1,6 +1,6 @@
 use serde_json::{self, Value};
 use thiserror::Error;
-use vislog_core::{Course, CourseDetails, Program};
+use vislog_core::{CourseDetails, Program};
 
 #[derive(Debug, Clone, Error)]
 pub enum ParsingError {

@@ -1,8 +1,7 @@
 use serde_json::Value;
 
 use tokio::{fs::File, io::AsyncWriteExt};
-use tracing::debug;
-use vislog_core::{Course, CourseDetails, Program};
+use vislog_core::{CourseDetails, Program};
 
 use crate::{data::providers::programs::ProgramsProvider, CONFIGS};
 
